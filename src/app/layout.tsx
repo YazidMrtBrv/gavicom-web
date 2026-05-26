@@ -37,6 +37,9 @@ export const metadata: Metadata = {
     "GAVICOM",
   ],
   metadataBase: new URL(SITE_URL),
+  verification: {
+    google: "er00xipii8hKUi9e9PUQGK-gJK_yQMprai4hsVUbGLw",
+  },
   alternates: {
     canonical: "/",
   },
