@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://gavicom.com";
+const SITE_URL = "https://gavicom-web.vercel.app";
 const EMPRESA = "GAVICOM SAS";
 
 export const metadata: Metadata = {

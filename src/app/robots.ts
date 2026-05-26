@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/_next/",
     },
-    sitemap: "https://gavicom.com/sitemap.xml",
+    sitemap: "https://gavicom-web.vercel.app/sitemap.xml",
   };
 }
