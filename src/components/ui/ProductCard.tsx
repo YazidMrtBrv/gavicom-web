@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import TechnicalTable from "./TechnicalTable";
 import { generarEnlaceWhatsApp } from "@/constants/productos";
 import type { Producto } from "@/constants/productos";
@@ -9,13 +9,61 @@ interface ProductCardProps {
   producto: Producto;
 }
 
+function VariantStrip({
+  variantes,
+  selected,
+  onSelect,
+}: {
+  variantes: { imagen: string }[];
+  selected: number;
+  onSelect: (i: number) => void;
+}) {
+  const stripRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = stripRef.current?.querySelector(`[data-idx="${selected}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, [selected]);
+
+  return (
+    <div
+      ref={stripRef}
+      className="flex gap-1.5 px-4 py-3 bg-[#f8f9fa] border-b border-[#e8edf2] overflow-x-auto"
+    >
+      {variantes.map((v, i) => (
+        <button
+          key={v.imagen}
+          data-idx={i}
+          onClick={() => onSelect(i)}
+          className={`shrink-0 w-14 h-10 border-2 transition-all overflow-hidden ${
+            i === selected
+              ? "border-[#D35400] opacity-100"
+              : "border-transparent opacity-50 hover:opacity-80"
+          }`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`/images/productos/${v.imagen}`}
+            alt=""
+            className="w-full h-full object-contain bg-white pointer-events-none"
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function ProductCard({ producto }: ProductCardProps) {
   const [imgError, setImgError] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
+  const [varianteIdx, setVarianteIdx] = useState(0);
 
   if (!producto) return null;
 
-  const { sku, nombre, categoria, subcategoria, origen, descripcion, imagen, especificaciones } = producto;
+  const { sku, nombre, categoria, subcategoria, origen, descripcion, especificaciones, variantes } = producto;
+  const todasLasVariantes = variantes ?? (producto.imagen ? [{ imagen: producto.imagen }] : []);
+  const varianteActual = todasLasVariantes[varianteIdx] ?? todasLasVariantes[0];
+  const specsActual = varianteActual?.especificaciones ?? especificaciones;
   const enlaceCotizacion = generarEnlaceWhatsApp(nombre, sku);
 
   return (
@@ -33,7 +81,7 @@ export default function ProductCard({ producto }: ProductCardProps) {
           </button>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`/images/productos/${imagen}`}
+            src={`/images/productos/${varianteActual.imagen}`}
             alt={nombre}
             className="max-w-full max-h-full object-contain cursor-zoom-out"
             onClick={() => setZoomOpen(false)}
@@ -49,7 +97,7 @@ export default function ProductCard({ producto }: ProductCardProps) {
           {!imgError ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
-              src={`/images/productos/${imagen}`}
+              src={`/images/productos/${varianteActual.imagen}`}
               alt={nombre}
               className="w-full h-full object-contain p-4 pointer-events-none"
               onError={() => setImgError(true)}
@@ -72,23 +120,36 @@ export default function ProductCard({ producto }: ProductCardProps) {
               <span className="text-[10px] font-mono text-zinc-400">{sku}</span>
             </div>
           )}
-          <span className="absolute top-3 left-3 z-10 bg-[#0a2a44]/90 text-[#d4a017] text-[10px] font-mono font-bold tracking-widest px-2 py-1 border border-[#d4a017]/30">
+          <span className="absolute top-3 left-3 z-10 bg-[#2a2a2a]/90 text-[#D35400] text-[10px] font-mono font-bold tracking-widest px-2 py-1 border border-[#D35400]/30">
             {sku}
           </span>
         </div>
 
+        {todasLasVariantes.length > 1 && (
+          <VariantStrip
+            variantes={todasLasVariantes}
+            selected={varianteIdx}
+            onSelect={(i) => { setVarianteIdx(i); setImgError(false); }}
+          />
+        )}
+
       <div className="p-5 flex flex-col flex-grow">
         <div className="mb-2 flex flex-wrap items-center gap-1.5">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1a6ba8]">
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#D35400]">
             {categoria}
           </span>
           <span className="text-zinc-300 text-xs">•</span>
           <span className="text-[10px] font-semibold text-zinc-500 bg-[#f8f9fa] px-2 py-0.5 rounded">
             {subcategoria}
           </span>
+          {todasLasVariantes.length > 1 && (
+            <span className="text-[10px] text-zinc-400 ml-auto">
+              {varianteIdx + 1}/{todasLasVariantes.length}
+            </span>
+          )}
         </div>
 
-        <h3 className="text-base font-bold text-[#0a2a44] group-hover:text-[#1a6ba8] transition-colors duration-300 mb-2 leading-snug">
+        <h3 className="text-base font-bold text-[#2a2a2a] group-hover:text-[#D35400] transition-colors duration-300 mb-2 leading-snug">
           {nombre}
         </h3>
 
@@ -97,7 +158,7 @@ export default function ProductCard({ producto }: ProductCardProps) {
         </p>
 
         <div className="mb-4">
-          <TechnicalTable especificaciones={especificaciones} />
+          <TechnicalTable especificaciones={specsActual} />
         </div>
 
         <div className="mt-auto pt-4 border-t border-[#e8edf2] flex items-center justify-between gap-4">
@@ -112,7 +173,7 @@ export default function ProductCard({ producto }: ProductCardProps) {
             href={enlaceCotizacion}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-glow inline-flex items-center text-[#0a2a44] text-xs font-bold px-4 py-2.5 rounded shadow-sm tracking-wide transition-all duration-200 active:scale-95 bg-[#d4a017] hover:bg-[#e0b02a]"
+            className="btn-glow inline-flex items-center text-[#2a2a2a] text-xs font-bold px-4 py-2.5 rounded shadow-sm tracking-wide transition-all duration-200 active:scale-95 bg-[#D35400] hover:bg-[#E67E22]"
           >
             Cotizar
           </a>

@@ -17,19 +17,19 @@ export default function Navbar() {
     <header
       className={`w-full border-b sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#0a2a44]/90 backdrop-blur-md border-[#1a6ba8]/40 shadow-lg shadow-black/10"
-          : "bg-[#0a2a44] border-[#1a6ba8]"
+          ? "bg-[#2a2a2a]/90 backdrop-blur-md border-[#D35400]/40 shadow-lg shadow-black/10"
+          : "bg-[#2a2a2a] border-[#D35400]"
       }`}
     >
-      <div className="bg-[#0d3355] text-zinc-300 py-1.5 px-4 text-[11px] font-medium tracking-wider flex justify-center items-center gap-1 sm:gap-3">
-        <span className="hidden sm:inline text-[#8ab4d6] uppercase text-[10px] font-bold">
+      <div className="bg-[#333333] text-zinc-300 py-1.5 px-4 text-[11px] font-medium tracking-wider flex justify-center items-center gap-1 sm:gap-3">
+        <span className="hidden sm:inline text-[#D35400] uppercase text-[10px] font-bold">
           Contacto Directo:
         </span>
         <a
           href={`https://wa.me/${COMPANIA_INFO.whatsappSales.replace("+", "")}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#d4a017] hover:text-white transition-colors font-bold"
+          className="text-[#D35400] hover:text-white transition-colors font-bold"
         >
           {COMPANIA_INFO.whatsappSales}
         </a>
@@ -82,7 +82,7 @@ export default function Navbar() {
 
         <Link
           href="/catalogo"
-          className="inline-flex items-center text-[#0a2a44] text-xs font-bold uppercase tracking-wider px-5 py-2.5 bg-[#d4a017] hover:bg-[#e0b02a] border border-[#d4a017] transition-all active:scale-95"
+          className="inline-flex items-center text-[#2a2a2a] text-xs font-bold uppercase tracking-wider px-5 py-2.5 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95"
         >
           Solicitar Cotización
         </Link>

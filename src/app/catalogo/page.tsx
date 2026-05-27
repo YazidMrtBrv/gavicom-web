@@ -55,11 +55,11 @@ export default function CatalogoPage() {
       <PageMetaUpdater title="Catálogo Técnico - Componentes y Suministros Ferroviarios" />
       <div className="flex flex-col min-h-screen">
       {/* HEADER */}
-      <div className="bg-[#0a2a44]">
+      <div className="bg-[#2a2a2a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <span className="text-[10px] font-black tracking-[0.3em] text-[#d4a017] uppercase">
+              <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase">
                 Catálogo Técnico
               </span>
               <h1 className="text-2xl sm:text-3xl font-black text-white mt-1">
@@ -70,7 +70,7 @@ export default function CatalogoPage() {
               href={enlaceWhatsAppGlobal}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center text-[#0a2a44] text-xs font-bold uppercase tracking-wider px-5 py-3 bg-[#d4a017] hover:bg-[#e0b02a] border border-[#d4a017] transition-all active:scale-95 self-start"
+              className="inline-flex items-center text-[#2a2a2a] text-xs font-bold uppercase tracking-wider px-5 py-3 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95 self-start"
             >
               Cotización Rápida
             </a>
@@ -85,7 +85,7 @@ export default function CatalogoPage() {
             <input
               type="text"
               placeholder="Buscar por nombre, SKU, categoría o especificación técnica..."
-              className="w-full pl-12 pr-4 py-3.5 bg-[#f8f9fa] border border-[#e8edf2] text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#1a6ba8] transition-all font-medium rounded"
+              className="w-full pl-12 pr-4 py-3.5 bg-[#f8f9fa] border border-[#e8edf2] text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all font-medium rounded"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
             />
@@ -113,7 +113,7 @@ export default function CatalogoPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
           <aside className="bg-white border border-[#e8edf2] rounded shadow-sm">
             <div className="p-4 border-b border-[#e8edf2] bg-[#f8f9fa]">
-              <h3 className="text-xs font-black uppercase tracking-wider text-[#0a2a44]">
+              <h3 className="text-xs font-black uppercase tracking-wider text-[#2a2a2a]">
                 Categorías
               </h3>
             </div>
@@ -124,8 +124,8 @@ export default function CatalogoPage() {
                   onClick={() => setCategoriaSeleccionada(cat)}
                   className={`w-full text-left px-3 py-2.5 text-xs font-bold transition-all rounded ${
                     categoriaSeleccionada === cat
-                      ? "bg-[#0a2a44] text-white"
-                      : "text-zinc-500 hover:bg-[#f8f9fa] hover:text-[#0a2a44]"
+                      ? "bg-[#2a2a2a] text-white"
+                      : "text-zinc-500 hover:bg-[#f8f9fa] hover:text-[#2a2a2a]"
                   }`}
                 >
                   {cat}
@@ -158,7 +158,7 @@ export default function CatalogoPage() {
                     />
                   </svg>
                 </div>
-                <h4 className="text-base font-bold text-[#0a2a44] mb-2">
+                <h4 className="text-base font-bold text-[#2a2a2a] mb-2">
                   Referencia no localizada
                 </h4>
                 <p className="text-sm text-zinc-500 leading-relaxed mb-6">
@@ -169,7 +169,7 @@ export default function CatalogoPage() {
                   href={`${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=Hola%20GAVICOM%20SAS,%20busco%20un%20suministro%20especifico%20que%20no%20aparece%20en%20el%20catalogo.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center text-xs font-bold text-[#0a2a44] bg-[#d4a017] hover:bg-[#e0b02a] px-5 py-2.5 transition-all active:scale-95"
+                  className="inline-flex items-center text-xs font-bold text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] px-5 py-2.5 transition-all active:scale-95"
                 >
                   Consultar Disponibilidad
                 </a>
@@ -180,7 +180,7 @@ export default function CatalogoPage() {
       </main>
 
       {/* FOOTER */}
-      <footer className="bg-[#0a2a44] py-8 border-t border-[#1a6ba8]/30">
+      <footer className="bg-[#2a2a2a] py-8 border-t border-[#D35400]/30">
         <div className="max-w-7xl mx-auto px-4 text-[11px] text-zinc-400 text-center leading-relaxed">
           {COMPANIA_INFO.disclaimerLegal}
         </div>

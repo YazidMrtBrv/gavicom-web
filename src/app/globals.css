@@ -18,8 +18,8 @@ body {
 }
 
 ::selection {
-  background: #d4a017;
-  color: #0a2a44;
+  background: #D35400;
+  color: #ffffff;
 }
 
 ::-webkit-scrollbar {
@@ -31,12 +31,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1a6ba8;
+  background: #D35400;
   border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0a2a44;
+  background: #A04000;
 }
 
 @keyframes fade-in-up {
@@ -133,8 +133,8 @@ body {
   height: 2px;
   background: repeating-linear-gradient(
     90deg,
-    #d4a017 0px,
-    #d4a017 4px,
+    #D35400 0px,
+    #D35400 4px,
     transparent 4px,
     transparent 12px
   );
@@ -147,7 +147,7 @@ body {
   top: 50%;
   width: 8px;
   height: 8px;
-  background: #d4a017;
+  background: #D35400;
   transform: translateY(-50%) rotate(45deg);
 }
 

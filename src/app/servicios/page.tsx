@@ -96,17 +96,17 @@ function ServicioCard({ servicio, index }: { servicio: (typeof SERVICIOS)[number
           alt={servicio.nombre}
           className="w-full h-full object-contain p-4"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a2a44]/60 via-transparent to-transparent" />
-        <div className="absolute top-3 left-3 w-12 h-12 text-[#d4a017] bg-[#0a2a44]/90 p-2.5 border border-[#d4a017]/30">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2a2a2a]/60 via-transparent to-transparent" />
+        <div className="absolute top-3 left-3 w-12 h-12 text-[#D35400] bg-[#2a2a2a]/90 p-2.5 border border-[#D35400]/30">
           {icon}
         </div>
-        <span className="absolute top-3 right-3 bg-[#0a2a44]/90 text-[#d4a017] text-[10px] font-mono font-bold tracking-widest px-2 py-1 border border-[#d4a017]/30">
+        <span className="absolute top-3 right-3 bg-[#2a2a2a]/90 text-[#D35400] text-[10px] font-mono font-bold tracking-widest px-2 py-1 border border-[#D35400]/30">
           {servicio.sku}
         </span>
       </div>
 
       <div className="p-6 space-y-3">
-        <h3 className="text-base font-bold text-[#0a2a44] group-hover:text-[#1a6ba8] transition-colors leading-snug">
+        <h3 className="text-base font-bold text-[#2a2a2a] group-hover:text-[#D35400] transition-colors leading-snug">
           {servicio.nombre}
         </h3>
         <p className="text-xs text-zinc-500 leading-relaxed">
@@ -124,7 +124,7 @@ function ServicioCard({ servicio, index }: { servicio: (typeof SERVICIOS)[number
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-glow inline-flex items-center text-[#0a2a44] text-xs font-bold px-5 py-2.5 bg-[#d4a017] hover:bg-[#e0b02a] transition-all active:scale-95"
+            className="btn-glow inline-flex items-center text-[#2a2a2a] text-xs font-bold px-5 py-2.5 bg-[#D35400] hover:bg-[#E67E22] transition-all active:scale-95"
           >
             Cotizar Servicio
           </a>
@@ -145,7 +145,7 @@ export default function ServiciosPage() {
       <PageMetaUpdater title="Servicios Ferroviarios - Topografía, Mantenimiento y Diseño" />
       <div className="flex flex-col min-h-screen">
       {/* HERO */}
-      <section className="relative bg-[#0a2a44] text-white overflow-hidden min-h-[55vh] flex items-center">
+      <section className="relative bg-[#2a2a2a] text-white overflow-hidden min-h-[55vh] flex items-center">
         <div className="absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -154,26 +154,26 @@ export default function ServiciosPage() {
             className="w-full h-full object-cover scale-105"
             style={{ filter: "saturate(0.8) contrast(1.25) brightness(0.85)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a2a44]/80 via-[#0a2a44]/50 to-[#0a2a44]/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a2a44]/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#2a2a2a]/80 via-[#2a2a2a]/50 to-[#2a2a2a]/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#2a2a2a]/60 via-transparent to-transparent" />
           {/* Perspective lines */}
           <svg className="absolute inset-0 w-full h-full opacity-[0.07]" viewBox="0 0 1440 600" preserveAspectRatio="none">
-            <line x1="0" y1="600" x2="720" y2="100" stroke="#d4a017" strokeWidth="2" />
-            <line x1="1440" y1="600" x2="720" y2="100" stroke="#d4a017" strokeWidth="2" />
-            <line x1="100" y1="600" x2="720" y2="200" stroke="#d4a017" strokeWidth="1" />
-            <line x1="1340" y1="600" x2="720" y2="200" stroke="#d4a017" strokeWidth="1" />
+            <line x1="0" y1="600" x2="720" y2="100" stroke="#D35400" strokeWidth="2" />
+            <line x1="1440" y1="600" x2="720" y2="100" stroke="#D35400" strokeWidth="2" />
+            <line x1="100" y1="600" x2="720" y2="200" stroke="#D35400" strokeWidth="1" />
+            <line x1="1340" y1="600" x2="720" y2="200" stroke="#D35400" strokeWidth="1" />
           </svg>
         </div>
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 py-20">
           <div className="animate-fade-in-up">
-            <span className="text-[10px] font-black tracking-[0.3em] text-[#d4a017] uppercase border border-[#d4a017]/40 px-3 py-1.5 inline-block">
+            <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/40 px-3 py-1.5 inline-block">
               Portafolio de Servicios
             </span>
           </div>
           <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-white animate-fade-in-up anim-delay-2">
             Soluciones Técnicas para la
-            <span className="block text-[#d4a017] mt-2">Infraestructura Ferroviaria</span>
+            <span className="block text-[#D35400] mt-2">Infraestructura Ferroviaria</span>
           </h1>
           <p className="mt-5 text-base sm:text-lg text-zinc-300 max-w-2xl mx-auto animate-fade-in-up anim-delay-3">
             Desde levantamientos topográficos hasta diseño de planos y renderizado 3D.
@@ -184,7 +184,7 @@ export default function ServiciosPage() {
               href={enlaceWhatsAppGlobal}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-glow inline-flex items-center gap-2 text-[#0a2a44] bg-[#d4a017] hover:bg-[#e0b02a] text-sm font-bold px-8 py-4 border border-[#d4a017] transition-all active:scale-95"
+              className="btn-glow inline-flex items-center gap-2 text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] text-sm font-bold px-8 py-4 border border-[#D35400] transition-all active:scale-95"
             >
               Solicitar Asesoría
             </a>
@@ -201,13 +201,13 @@ export default function ServiciosPage() {
       {/* CONTENIDO */}
       <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-grow">
         <div className="text-center mb-14 space-y-3">
-          <span className="text-[10px] font-black tracking-[0.3em] text-[#1a6ba8] uppercase">
+          <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase">
             Capacidades Técnicas
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#0a2a44]">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#2a2a2a]">
             Nuestros Servicios Especializados
           </h2>
-          <div className="w-16 h-[2px] bg-[#d4a017] mx-auto mt-4" />
+          <div className="w-16 h-[2px] bg-[#D35400] mx-auto mt-4" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -218,10 +218,10 @@ export default function ServiciosPage() {
       </main>
 
       {/* CTA */}
-      <section className="bg-[#0a2a44] py-16 text-center relative overflow-hidden">
+      <section className="bg-[#2a2a2a] py-16 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]">
           <div className="w-full h-full" style={{
-            backgroundImage: "repeating-linear-gradient(45deg, #d4a017 0px, #d4a017 2px, transparent 2px, transparent 20px)"
+            backgroundImage: "repeating-linear-gradient(45deg, #D35400 0px, #D35400 2px, transparent 2px, transparent 20px)"
           }} />
         </div>
         <div className="max-w-2xl mx-auto px-4 relative z-10 space-y-5">
@@ -236,7 +236,7 @@ export default function ServiciosPage() {
               href={enlaceWhatsAppGlobal}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-glow inline-flex items-center gap-2 text-[#0a2a44] bg-[#d4a017] hover:bg-[#e0b02a] text-sm font-bold px-8 py-4 border border-[#d4a017] transition-all active:scale-95"
+              className="btn-glow inline-flex items-center gap-2 text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] text-sm font-bold px-8 py-4 border border-[#D35400] transition-all active:scale-95"
             >
               Hablar con Asesor
             </a>

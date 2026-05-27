@@ -1,3 +1,9 @@
+export interface ProductoVariante {
+  imagen: string;
+  nombre?: string;
+  especificaciones?: Record<string, string>;
+}
+
 export interface Producto {
   sku: string;
   nombre: string;
@@ -8,6 +14,7 @@ export interface Producto {
   imagen: string;
   oculto?: boolean;
   especificaciones: Record<string, string>;
+  variantes?: ProductoVariante[];
 }
 
 export const COMPANIA_INFO = {
@@ -819,6 +826,29 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       Incluye: "Señalización y soporte",
       Aplicación: "Entornos ferroviarios",
     },
+    variantes: [
+      { imagen: "senializacion-ferroviaria-1.png" },
+      { imagen: "senializacion-ferroviaria-2.png" },
+      { imagen: "senializacion-ferroviaria-3.png" },
+      { imagen: "senializacion-ferroviaria-4.png" },
+      { imagen: "senializacion-ferroviaria-5.png" },
+      { imagen: "senializacion-ferroviaria-6.png" },
+      { imagen: "senializacion-ferroviaria-7.png" },
+      { imagen: "senializacion-ferroviaria-8.png" },
+      { imagen: "senializacion-ferroviaria-9.png" },
+      { imagen: "senializacion-ferroviaria-10.png" },
+      { imagen: "senializacion-ferroviaria-11.png" },
+      { imagen: "senializacion-ferroviaria-12.png" },
+      { imagen: "senializacion-ferroviaria-13.png" },
+      { imagen: "senializacion-ferroviaria-14.png" },
+      { imagen: "senializacion-ferroviaria-15.png" },
+      { imagen: "senializacion-ferroviaria-16.png" },
+      { imagen: "senializacion-ferroviaria-17.png" },
+      { imagen: "senializacion-ferroviaria-18.png" },
+      { imagen: "senializacion-ferroviaria-19.png" },
+      { imagen: "senializacion-ferroviaria-20.png" },
+      { imagen: "senializacion-ferroviaria-21.png" },
+    ],
   },
   {
     sku: "GVC-CR-001",
@@ -828,12 +858,17 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio de Señalizaciones",
     descripcion:
       "Cuña de alta resistencia con bandera para riel expuesto. Dispositivo de seguridad diseñado para el bloqueo y señalización visual de carriles ferroviarios durante labores de mantenimiento y operaciones en vía.",
-    imagen: "cunas-rueda-bandera.png",
+    imagen: "cunas-rueda-bandera-1.png",
     especificaciones: {
       Tipo: "Cuña de alta resistencia con bandera",
       Aplicación: "Riel expuesto",
       Función: "Bloqueo y señalización visual de seguridad",
     },
+    variantes: [
+      { imagen: "cunas-rueda-bandera-1.png" },
+      { imagen: "cunas-rueda-bandera-2.png" },
+      { imagen: "cunas-rueda-bandera-3.png" },
+    ],
   },
   {
     sku: "GVC-SV-001",
@@ -850,6 +885,13 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Material Base": "Lámina metálica con tratamiento anticorrosivo",
       Visibilidad: "Acabado reflectivo de alta especificación",
     },
+    variantes: [
+      { imagen: "senializacion-vial-1.png" },
+      { imagen: "senializacion-vial-2.png" },
+      { imagen: "senializacion-vial-3.png" },
+      { imagen: "senializacion-vial-4.png" },
+      { imagen: "senializacion-vial-5.png" },
+    ],
   },
   // =============================================
   // Portafolio Servicios

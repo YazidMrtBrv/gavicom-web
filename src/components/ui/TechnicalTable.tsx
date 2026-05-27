@@ -12,7 +12,7 @@ export default function TechnicalTable({
     <div className="w-full overflow-hidden rounded border border-[#e8edf2]">
       <table className="w-full text-left text-xs">
         <thead>
-          <tr className="border-b border-[#e8edf2] bg-[#0a2a44] text-white">
+          <tr className="border-b border-[#e8edf2] bg-[#2a2a2a] text-white">
             <th className="px-3 py-2 font-bold uppercase text-[10px] tracking-wider">
               Parámetro
             </th>
@@ -30,7 +30,7 @@ export default function TechnicalTable({
               <td className="px-3 py-2 font-semibold text-zinc-500 w-2/5">
                 {clave}
               </td>
-              <td className="px-3 py-2 text-[#0a2a44] font-medium">
+              <td className="px-3 py-2 text-[#2a2a2a] font-medium">
                 {String(valor)}
               </td>
             </tr>
