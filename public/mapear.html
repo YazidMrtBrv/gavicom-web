@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapear imágenes de señalización</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f5; padding: 20px; }
+  h1 { font-size: 18px; margin-bottom: 6px; color: #333; }
+  p.desc { font-size: 13px; color: #777; margin-bottom: 20px; }
+  .grid { display: flex; flex-direction: column; gap: 12px; max-width: 900px; margin: 0 auto; }
+  .card { background: white; border-radius: 6px; padding: 12px; display: flex; gap: 16px; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .card img { width: 220px; height: 165px; object-fit: contain; background: #fff; border: 1px solid #e0e0e0; border-radius: 3px; flex-shrink: 0; cursor: zoom-in; }
+  .card .info { flex: 1; min-width: 0; }
+  .card .filename { font-size: 11px; color: #999; font-family: monospace; }
+  .card select { width: 100%; padding: 8px; font-size: 13px; border: 2px solid #ddd; border-radius: 4px; margin-top: 4px; }
+  .card select.matched { border-color: #2ecc71; }
+  .grupo { font-size: 12px; font-weight: bold; color: #D35400; margin-top: 12px; padding: 8px 12px; background: #fff5f0; border-left: 3px solid #D35400; }
+  .btn { display: block; margin: 30px auto; padding: 14px 40px; font-size: 16px; font-weight: bold; background: #D35400; color: white; border: none; border-radius: 6px; cursor: pointer; }
+  .btn:hover { background: #E67E22; }
+  #output { max-width: 900px; margin: 20px auto; background: #1a1a1a; color: #0f0; padding: 16px; border-radius: 6px; font-family: monospace; font-size: 12px; white-space: pre; display: none; max-height: 400px; overflow: auto; }
+  .counter { text-align: center; font-size: 13px; color: #888; margin-bottom: 16px; }
+.zoom-overlay { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; cursor: zoom-out; }
+.zoom-overlay img { max-width: 90vw; max-height: 90vh; object-fit: contain; }
+</style>
+</head>
+<body>
+<div class="zoom-overlay" id="zoomOverlay" onclick="cerrarZoom()"><img id="zoomImg" alt="Zoom"></div>
+<h1>📸 Asigná cada imagen de señalización</h1>
+<p class="desc">Agrupá las imágenes que correspondan al mismo producto (serán variantes seleccionables)</p>
+<div class="counter" id="counter"></div>
+<div class="grid" id="grid"></div>
+<button class="btn" onclick="generar()">Generar comandos de renombrado</button>
+<div id="output"></div>
+
+<script>
+const productos = [
+  { nombre: "Señalización Ferroviaria", prefix: "senializacion-ferroviaria-", ext: "png" },
+  { nombre: "Señalización Vial", prefix: "senializacion-vial-", ext: "png" },
+  { nombre: "Cuñas de Rueda con Bandera", prefix: "cunas-rueda-bandera", ext: "png" },
+  { nombre: "❌ No usar / No corresponde", prefix: null },
+];
+
+let archivos = [];
+
+// Direct file list (Next.js no sirve directory listing)
+archivos = [
+  "img49.jpg","img60.jpg","img61.jpg","img72.jpg","img81.jpg",
+  "img89.jpg","img90.jpg","img98.jpg","img99.jpg",
+  "img107.jpg","img108.jpg",
+  "img116.jpg","img117.jpg",
+  "img125.jpg","img126.jpg",
+  "img134.jpg","img135.jpg",
+  "img143.jpg","img144.jpg",
+  "img152.jpg","img153.jpg",
+  "img161.jpg","img163.jpg",
+  "img172.jpg","img179.jpg","img180.jpg",
+  "img198.jpg","img457.jpg","img480.jpg",
+  "img490.jpg","img547.jpg","img566.jpg",
+  "img604.jpg","img623.jpg","img703.jpg",
+  "img706.jpg","img707.jpg","img709.jpg",
+  "img727.jpg","img728.jpg","img729.jpg","img730.jpg"
+].sort();
+render();
+
+function abrirZoom(src) { document.getElementById('zoomImg').src = src; document.getElementById('zoomOverlay').style.display = 'flex'; }
+function cerrarZoom() { document.getElementById('zoomOverlay').style.display = 'none'; }
+
+function render() {
+  document.getElementById("counter").textContent = `${archivos.length} imágenes para asignar`;
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  archivos.forEach((archivo, i) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const imgDiv = document.createElement("div");
+    imgDiv.innerHTML = `<img src="/images/productos-nuevas/${archivo}" alt="${archivo}" onerror="this.parentElement.innerHTML+='<span style=color:red;font-size:10px>❌</span>'" onclick="abrirZoom(this.src)">`;
+
+    const info = document.createElement("div");
+    info.className = "info";
+    info.innerHTML = `<div class="filename">${archivo}</div>`;
+
+    const select = document.createElement("select");
+    select.dataset.index = i;
+    let opts = `<option value="">— Seleccioná —</option>`;
+    productos.forEach((p, j) => {
+      opts += `<option value="${j}">${p.nombre}</option>`;
+    });
+    select.innerHTML = opts;
+    select.onchange = () => {
+      if (select.value) select.classList.add("matched");
+      else select.classList.remove("matched");
+    };
+
+    info.appendChild(select);
+    card.appendChild(imgDiv);
+    card.appendChild(info);
+    grid.appendChild(card);
+  });
+}
+
+function generar() {
+  const selects = document.querySelectorAll("select");
+  const asignacion = {};
+  let ok = true;
+
+  selects.forEach((sel) => {
+    if (!sel.value) ok = false;
+  });
+  if (!ok) {
+    document.getElementById("output").style.display = "block";
+    document.getElementById("output").textContent = "⚠️ Asigná todas las imágenes antes de generar.";
+    return;
+  }
+
+  selects.forEach((sel) => {
+    const archivo = archivos[parseInt(sel.dataset.index)];
+    const prod = productos[parseInt(sel.value)];
+    if (!prod.prefix) return;
+    if (!asignacion[prod.nombre]) asignacion[prod.nombre] = [];
+    asignacion[prod.nombre].push(archivo);
+  });
+
+  let lines = [];
+  let counter = {};
+  selects.forEach((sel) => {
+    const archivo = archivos[parseInt(sel.dataset.index)];
+    const prod = productos[parseInt(sel.value)];
+    if (!prod.prefix) return;
+    if (!counter[prod.nombre]) counter[prod.nombre] = 1;
+    else counter[prod.nombre]++;
+    const num = counter[prod.nombre];
+    const destino = prod.prefix === "cunas-rueda-bandera"
+      ? `${prod.prefix}.${prod.ext}`
+      : `${prod.prefix}${num}.${prod.ext}`;
+    lines.push(`Move-Item -LiteralPath "public/images/productos-nuevas/${archivo}" -Destination "public/images/productos-nuevas/${destino}" -Force`);
+  });
+
+  lines.push("");
+  lines.push("# Copiar al folder de trabajo:");
+  lines.push('Get-ChildItem "public/images/productos-nuevas/*" -Include *.png,*.jpg,*.jpeg,*.webp | Copy-Item -Destination "public/images/productos/" -Force');
+
+  // Summary
+  let summary = "=== RESUMEN ===\n";
+  for (const [prod, count] of Object.entries(counter)) {
+    summary += `${prod}: ${count} imagen(es)\n`;
+  }
+  summary += `\nTotal asignadas: ${Object.values(counter).reduce((a,b)=>a+b,0)}\n\n`;
+
+  document.getElementById("output").style.display = "block";
+  document.getElementById("output").textContent = summary + lines.join("\n");
+}
+</script>
+</body>
+</html>
