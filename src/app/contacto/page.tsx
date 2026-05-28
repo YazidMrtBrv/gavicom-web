@@ -213,7 +213,7 @@ export default function ContactoPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Gerente General</p>
+                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Directora Ejecutiva</p>
                       <p className="text-base font-bold text-zinc-800">{COMPANIA_INFO.gerente}</p>
                       <p className="text-sm text-zinc-500">{COMPANIA_INFO.cargo}</p>
                     </div>

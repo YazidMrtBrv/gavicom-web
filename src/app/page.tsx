@@ -554,7 +554,7 @@ export default function HomePage() {
                 <ul className="space-y-2.5">
                   <li>
                     <span className="text-xs text-zinc-500 block">
-                      <span className="text-zinc-400">Gerente General:</span>{" "}
+                      <span className="text-zinc-400">Directora Ejecutiva:</span>{" "}
                       {COMPANIA_INFO.gerente}
                     </span>
                   </li>

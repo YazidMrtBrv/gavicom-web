@@ -19,10 +19,10 @@ export interface Producto {
 
 export const COMPANIA_INFO = {
   nombre: "GAVICOM SAS",
-  gerente: "Geimar Martínez",
-  cargo: "Gerente General",
+  gerente: "Carol Martinez",
+  cargo: "DIRECTORA EJECUTIVA",
   email: "gvtsas01@gmail.com",
-  whatsappSales: "+573150509803",
+  whatsappSales: "+573017277888",
   whatsappBaseUrl: "https://api.whatsapp.com/send",
   disclaimerLegal:
     "GAVICOM SAS es comercializador y distribuidor independiente de componentes ferroviarios. Los nombres de normas, estándares (AREMA, UIC) o catálogos de fabricantes se mencionan exclusivamente como referencia técnica de compatibilidad y especificación de los materiales suministrados.",
