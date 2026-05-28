@@ -213,9 +213,30 @@ export default function ContactoPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Directora Ejecutiva</p>
+                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Gerente General</p>
                       <p className="text-base font-bold text-zinc-800">{COMPANIA_INFO.gerente}</p>
                       <p className="text-sm text-zinc-500">{COMPANIA_INFO.cargo}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4 p-5 bg-[#f5f5f7] rounded-2xl border border-zinc-200">
+                    <div className="w-10 h-10 rounded-xl bg-[#D35400]/10 flex items-center justify-center text-[#D35400] shrink-0">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Directora Ejecutiva</p>
+                      <p className="text-base font-bold text-zinc-800">{COMPANIA_INFO.directora}</p>
+                      <p className="text-sm text-zinc-500">{COMPANIA_INFO.cargoDirectora}</p>
+                      <a
+                        href={`https://wa.me/${COMPANIA_INFO.directoraWhatsapp.replace("+", "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-bold text-[#D35400] hover:text-[#E67E22] transition-colors mt-1 inline-block"
+                      >
+                        {COMPANIA_INFO.directoraWhatsapp}
+                      </a>
                     </div>
                   </div>
                 </div>

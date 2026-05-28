@@ -554,9 +554,25 @@ export default function HomePage() {
                 <ul className="space-y-2.5">
                   <li>
                     <span className="text-xs text-zinc-500 block">
-                      <span className="text-zinc-400">Directora Ejecutiva:</span>{" "}
+                      <span className="text-zinc-400">Gerente General:</span>{" "}
                       {COMPANIA_INFO.gerente}
                     </span>
+                  </li>
+                  <li>
+                    <span className="text-xs text-zinc-500 block">
+                      <span className="text-zinc-400">Directora Ejecutiva:</span>{" "}
+                      {COMPANIA_INFO.directora}
+                    </span>
+                  </li>
+                  <li>
+                    <a
+                      href={`https://wa.me/${COMPANIA_INFO.directoraWhatsapp.replace("+", "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-[#D35400] hover:text-[#E67E22] transition-colors"
+                    >
+                      {COMPANIA_INFO.directoraWhatsapp}
+                    </a>
                   </li>
                   <li>
                     <a
