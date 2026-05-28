@@ -169,21 +169,21 @@ export default function ServiciosPage() {
           </svg>
         </div>
 
-        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center relative z-10 py-28">
+        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center relative z-10 py-16 sm:py-20 lg:py-28">
           <div className="animate-fade-in-up">
             <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/40 px-3 py-1.5 inline-block">
               Portafolio de Servicios
             </span>
           </div>
-          <h1 className="mt-8 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-white animate-fade-in-up anim-delay-2">
+          <h1 className="mt-6 sm:mt-8 text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-white animate-fade-in-up anim-delay-2">
             Soluciones Técnicas para la
-            <span className="block text-[#D35400] mt-3">Infraestructura Ferroviaria</span>
+            <span className="block text-[#D35400] mt-2 sm:mt-3">Infraestructura Ferroviaria</span>
           </h1>
-          <p className="mt-6 text-base sm:text-lg text-zinc-300 max-w-2xl mx-auto animate-fade-in-up anim-delay-3">
+          <p className="mt-4 sm:mt-6 text-sm sm:text-lg text-zinc-300 max-w-2xl mx-auto animate-fade-in-up anim-delay-3">
             Desde levantamientos topográficos hasta diseño de planos y renderizado 3D.
             GAVICOM ofrece servicios especializados para cada etapa de su proyecto.
           </p>
-          <div className="mt-10 animate-fade-in-up anim-delay-4">
+          <div className="mt-8 sm:mt-10 animate-fade-in-up anim-delay-4">
             <a
               href={enlaceWhatsAppGlobal}
               target="_blank"
