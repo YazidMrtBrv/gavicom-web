@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import TechnicalTable from "./TechnicalTable";
 import { generarEnlaceWhatsApp } from "@/constants/productos";
 import type { Producto } from "@/constants/productos";
@@ -21,31 +22,39 @@ function VariantStrip({
   const stripRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = stripRef.current?.querySelector(`[data-idx="${selected}"]`);
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const strip = stripRef.current;
+    if (!strip) return;
+    const el = strip.querySelector(`[data-idx="${selected}"]`) as HTMLElement | null;
+    if (el) {
+      const containerWidth = strip.clientWidth;
+      const elLeft = el.offsetLeft;
+      const elWidth = el.offsetWidth;
+      strip.scrollLeft = elLeft - containerWidth / 2 + elWidth / 2;
+    }
   }, [selected]);
 
   return (
     <div
       ref={stripRef}
-      className="flex gap-1.5 px-4 py-3 bg-[#f8f9fa] border-b border-[#e8edf2] overflow-x-auto"
+      className="flex gap-1.5 px-4 py-3 bg-[#f5f5f7] border-b border-[#e8edf2] overflow-x-auto"
     >
       {variantes.map((v, i) => (
         <button
           key={v.imagen}
           data-idx={i}
           onClick={() => onSelect(i)}
-          className={`shrink-0 w-14 h-10 border-2 transition-all overflow-hidden ${
+          className={`shrink-0 w-14 h-10 border-2 transition-all overflow-hidden rounded-lg relative bg-white ${
             i === selected
               ? "border-[#D35400] opacity-100"
               : "border-transparent opacity-50 hover:opacity-80"
           }`}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={`/images/productos/${v.imagen}`}
             alt=""
-            className="w-full h-full object-contain bg-white pointer-events-none"
+            fill
+            className="object-contain pointer-events-none"
+            sizes="56px"
           />
         </button>
       ))}
@@ -79,27 +88,31 @@ export default function ProductCard({ producto }: ProductCardProps) {
           >
             &times;
           </button>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={`/images/productos/${varianteActual.imagen}`}
-            alt={nombre}
-            className="max-w-full max-h-full object-contain cursor-zoom-out"
-            onClick={() => setZoomOpen(false)}
-          />
+          <div className="relative w-full h-full">
+            <Image
+              src={`/images/productos/${varianteActual.imagen}`}
+              alt={nombre}
+              fill
+              className="object-contain cursor-zoom-out"
+              onClick={() => setZoomOpen(false)}
+              sizes="90vw"
+            />
+          </div>
         </div>
       )}
 
-      <div className="flex flex-col bg-white rounded-lg border border-[#e8edf2] overflow-hidden card-hover group shadow-sm">
+      <div className="flex flex-col bg-white rounded-2xl border border-[#e8edf2] overflow-hidden card-hover group shadow-sm">
         <div
-          className="relative w-full h-48 bg-[#f8f9fa] flex items-center justify-center overflow-hidden border-b border-[#e8edf2] cursor-zoom-in"
+          className="relative w-full h-48 bg-[#f5f5f7] overflow-hidden border-b border-[#e8edf2] cursor-zoom-in p-4"
           onClick={() => !imgError && setZoomOpen(true)}
         >
           {!imgError ? (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
+            <Image
               src={`/images/productos/${varianteActual.imagen}`}
               alt={nombre}
-              className="w-full h-full object-contain p-4 pointer-events-none"
+              fill
+              className="object-contain pointer-events-none"
+              sizes="(max-width: 768px) 100vw, 50vw"
               onError={() => setImgError(true)}
             />
           ) : (

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { PRODUCTOS_Y_SERVICIOS, COMPANIA_INFO, generarEnlaceWhatsApp } from "@/constants/productos";
 import { useInView } from "@/hooks/useInView";
 import PageMetaUpdater from "@/components/seo/PageMetaUpdater";
@@ -82,55 +83,56 @@ function ServicioCard({ servicio, index }: { servicio: (typeof SERVICIOS)[number
   const whatsappLink = generarEnlaceWhatsApp(servicio.nombre, servicio.sku);
 
   return (
-    <div
-      ref={ref}
-      className={`card-hover bg-white border border-[#e8edf2] overflow-hidden group transition-all duration-700 ${
-        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      }`}
-      style={{ transitionDelay: `${index * 0.1}s` }}
-    >
-      <div className="relative h-52 bg-[#f8f9fa] overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`/images/productos/${servicio.imagen}`}
-          alt={servicio.nombre}
-          className="w-full h-full object-contain p-4"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2a2a2a]/60 via-transparent to-transparent" />
-        <div className="absolute top-3 left-3 w-12 h-12 text-[#D35400] bg-[#2a2a2a]/90 p-2.5 border border-[#D35400]/30">
-          {icon}
+      <div
+        ref={ref}
+        className={`card-hover bg-white border border-[#e8edf2] overflow-hidden group transition-all duration-700 rounded-2xl ${
+          inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+        style={{ transitionDelay: `${index * 0.1}s` }}
+      >
+        <div className="relative h-56 bg-[#f5f5f7] overflow-hidden">
+          <Image
+            src={`/images/productos/${servicio.imagen}`}
+            alt={servicio.nombre}
+            fill
+            className="object-contain p-6"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#2a2a2a]/60 via-transparent to-transparent" />
+          <div className="absolute top-3 left-3 w-12 h-12 text-[#D35400] bg-[#2a2a2a]/90 p-2.5 border border-[#D35400]/30 rounded-xl">
+            {icon}
+          </div>
+          <span className="absolute top-3 right-3 bg-[#2a2a2a]/90 text-[#D35400] text-[10px] font-mono font-bold tracking-widest px-2 py-1 border border-[#D35400]/30 rounded-lg">
+            {servicio.sku}
+          </span>
         </div>
-        <span className="absolute top-3 right-3 bg-[#2a2a2a]/90 text-[#D35400] text-[10px] font-mono font-bold tracking-widest px-2 py-1 border border-[#D35400]/30">
-          {servicio.sku}
-        </span>
-      </div>
 
-      <div className="p-6 space-y-3">
-        <h3 className="text-base font-bold text-[#2a2a2a] group-hover:text-[#D35400] transition-colors leading-snug">
-          {servicio.nombre}
-        </h3>
-        <p className="text-xs text-zinc-500 leading-relaxed">
-          {servicio.descripcion}
-        </p>
-        <div className="pt-2 flex flex-wrap gap-1.5">
-          {Object.entries(servicio.especificaciones).slice(0, 3).map(([k, v]) => (
-            <span key={k} className="text-[10px] bg-[#f8f9fa] text-zinc-500 font-medium px-2 py-1 border border-[#e8edf2]">
-              {v}
-            </span>
-          ))}
-        </div>
-        <div className="pt-2">
-          <a
-            href={whatsappLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-glow inline-flex items-center text-[#2a2a2a] text-xs font-bold px-5 py-2.5 bg-[#D35400] hover:bg-[#E67E22] transition-all active:scale-95"
-          >
-            Cotizar Servicio
-          </a>
+        <div className="p-6 space-y-4">
+          <h3 className="text-base font-bold text-[#2a2a2a] group-hover:text-[#D35400] transition-colors leading-snug">
+            {servicio.nombre}
+          </h3>
+          <p className="text-xs text-zinc-500 leading-relaxed">
+            {servicio.descripcion}
+          </p>
+          <div className="pt-2 flex flex-wrap gap-1.5">
+            {Object.entries(servicio.especificaciones).slice(0, 3).map(([k, v]) => (
+              <span key={k} className="text-[10px] bg-[#f5f5f7] text-zinc-500 font-medium px-2.5 py-1 border border-[#e8edf2] rounded-lg">
+                {v}
+              </span>
+            ))}
+          </div>
+          <div className="pt-2">
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-glow inline-flex items-center text-[#2a2a2a] text-xs font-bold px-6 py-2.5 bg-[#D35400] hover:bg-[#E67E22] transition-all active:scale-95 rounded-xl"
+            >
+              Cotizar Servicio
+            </a>
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 
@@ -147,12 +149,14 @@ export default function ServiciosPage() {
       {/* HERO */}
       <section className="relative bg-[#2a2a2a] text-white overflow-hidden min-h-[55vh] flex items-center">
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/trenindustrial.png"
             alt="Servicios ferroviarios"
-            className="w-full h-full object-cover scale-105"
+            fill
+            className="object-cover scale-105"
             style={{ filter: "saturate(0.8) contrast(1.25) brightness(0.85)" }}
+            sizes="100vw"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#2a2a2a]/80 via-[#2a2a2a]/50 to-[#2a2a2a]/20" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#2a2a2a]/60 via-transparent to-transparent" />
@@ -165,26 +169,26 @@ export default function ServiciosPage() {
           </svg>
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 py-20">
+        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center relative z-10 py-28">
           <div className="animate-fade-in-up">
             <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/40 px-3 py-1.5 inline-block">
               Portafolio de Servicios
             </span>
           </div>
-          <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-white animate-fade-in-up anim-delay-2">
+          <h1 className="mt-8 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-white animate-fade-in-up anim-delay-2">
             Soluciones Técnicas para la
-            <span className="block text-[#D35400] mt-2">Infraestructura Ferroviaria</span>
+            <span className="block text-[#D35400] mt-3">Infraestructura Ferroviaria</span>
           </h1>
-          <p className="mt-5 text-base sm:text-lg text-zinc-300 max-w-2xl mx-auto animate-fade-in-up anim-delay-3">
+          <p className="mt-6 text-base sm:text-lg text-zinc-300 max-w-2xl mx-auto animate-fade-in-up anim-delay-3">
             Desde levantamientos topográficos hasta diseño de planos y renderizado 3D.
             GAVICOM ofrece servicios especializados para cada etapa de su proyecto.
           </p>
-          <div className="mt-8 animate-fade-in-up anim-delay-4">
+          <div className="mt-10 animate-fade-in-up anim-delay-4">
             <a
               href={enlaceWhatsAppGlobal}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-glow inline-flex items-center gap-2 text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] text-sm font-bold px-8 py-4 border border-[#D35400] transition-all active:scale-95"
+              className="btn-glow inline-flex items-center gap-2 text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] text-sm font-bold px-10 py-4 border border-[#D35400] transition-all active:scale-95 rounded-xl"
             >
               Solicitar Asesoría
             </a>
@@ -199,8 +203,8 @@ export default function ServiciosPage() {
       </section>
 
       {/* CONTENIDO */}
-      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-grow">
-        <div className="text-center mb-14 space-y-3">
+      <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 py-20 flex-grow">
+        <div className="text-center mb-16 space-y-4">
           <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase">
             Capacidades Técnicas
           </span>
@@ -218,13 +222,13 @@ export default function ServiciosPage() {
       </main>
 
       {/* CTA */}
-      <section className="bg-[#2a2a2a] py-16 text-center relative overflow-hidden">
+      <section className="bg-[#2a2a2a] py-20 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]">
           <div className="w-full h-full" style={{
             backgroundImage: "repeating-linear-gradient(45deg, #D35400 0px, #D35400 2px, transparent 2px, transparent 20px)"
           }} />
         </div>
-        <div className="max-w-2xl mx-auto px-4 relative z-10 space-y-5">
+        <div className="max-w-2xl mx-auto px-6 relative z-10 space-y-6">
           <h2 className="text-2xl font-black text-white animate-fade-in-up">
             ¿No encuentra lo que busca?
           </h2>
@@ -236,7 +240,7 @@ export default function ServiciosPage() {
               href={enlaceWhatsAppGlobal}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-glow inline-flex items-center gap-2 text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] text-sm font-bold px-8 py-4 border border-[#D35400] transition-all active:scale-95"
+              className="btn-glow inline-flex items-center gap-2 text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] text-sm font-bold px-10 py-4 border border-[#D35400] transition-all active:scale-95 rounded-xl"
             >
               Hablar con Asesor
             </a>
@@ -245,8 +249,8 @@ export default function ServiciosPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-[#0d2e45] py-8 text-center">
-        <div className="max-w-7xl mx-auto px-4 text-[11px] text-zinc-500 leading-relaxed">
+      <footer className="bg-[#2a2a2a] py-10 text-center">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-[11px] text-zinc-500 leading-relaxed">
           {COMPANIA_INFO.disclaimerLegal}
         </div>
       </footer>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, type FormEvent } from "react";
+import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { COMPANIA_INFO } from "@/constants/productos";
 import { useInView } from "@/hooks/useInView";
 import PageMetaUpdater from "@/components/seo/PageMetaUpdater";
@@ -77,7 +78,7 @@ function SectionHeader({ label, title, description }: { label: string; title: st
   return (
     <div
       ref={ref}
-      className={`text-center max-w-2xl mx-auto mb-14 space-y-4 transition-all duration-700 ${
+      className={`text-center max-w-3xl mx-auto mb-16 space-y-5 transition-all duration-700 ${
         inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       }`}
     >
@@ -88,9 +89,21 @@ function SectionHeader({ label, title, description }: { label: string; title: st
         {title}
       </h2>
       {description && (
-        <p className="text-sm text-zinc-500 leading-relaxed">{description}</p>
+        <p className="text-sm text-zinc-500 leading-relaxed max-w-2xl mx-auto">{description}</p>
       )}
-      <div className="w-16 h-[2px] bg-[#D35400] mx-auto mt-4" />
+      <div className="w-16 h-[2px] bg-[#D35400] mx-auto mt-5" />
+    </div>
+  );
+}
+
+function SectionReveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const { ref, inView } = useInView({ threshold: 0.1 });
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
+    >
+      {children}
     </div>
   );
 }
@@ -110,16 +123,16 @@ function ServiceCard({
   return (
     <div
       ref={ref}
-      className={`relative overflow-hidden group transition-all duration-700 ${
+      className={`relative overflow-hidden group transition-all duration-700 rounded-2xl ${
         inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
       }`}
       style={{ transitionDelay: `${delay}s` }}
     >
-      <div className={`relative min-h-[320px] flex items-end ${gradient}`}>
+      <div className={`relative min-h-[360px] flex items-end ${gradient} bg-center bg-cover`}>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
-        <div className="relative z-10 p-6 sm:p-8 w-full">
-          <h3 className="text-lg font-bold text-white mb-3">{title}</h3>
-          <ul className="space-y-1.5">
+        <div className="relative z-10 p-8 w-full">
+          <h3 className="text-lg font-bold text-white mb-4">{title}</h3>
+          <ul className="space-y-2">
             {items.map((item) => (
               <li key={item} className="flex items-start gap-2 text-sm text-zinc-300">
                 <span className="text-[#D35400] mt-0.5 shrink-0">▸</span>
@@ -127,7 +140,7 @@ function ServiceCard({
               </li>
             ))}
           </ul>
-          <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="mt-6 pt-4 border-t border-white/10">
             <Link
               href="/servicios"
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D35400] hover:text-[#E67E22] transition-colors uppercase tracking-wider"
@@ -203,40 +216,44 @@ export default function HomePage() {
         {/* ════════════════════════════════════════════
             HERO
         ════════════════════════════════════════════ */}
-        <section className="relative bg-[#2a2a2a] text-white overflow-hidden min-h-[85vh] flex items-center">
+        <SectionReveal>
+        <section className="relative bg-[#2a2a2a] text-white overflow-hidden min-h-[90vh] flex items-center">
           <div className="absolute inset-0">
-            <img
+            <Image
               src="/trenindustrial.png"
               alt="Tren industrial"
-              className="w-full h-full object-cover scale-105 animate-[fade-in_1.2s_ease-out_forwards]"
-              style={{ filter: "saturate(1.1) contrast(1.3) brightness(0.7)" }}
+              fill
+              className="object-cover scale-[1.02]"
+              style={{ filter: "saturate(1.1) contrast(1.3) brightness(0.65)" }}
+              sizes="100vw"
+              priority
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2a2a2a]/90 via-[#2a2a2a]/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#2a2a2a] to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#2a2a2a]/95 via-[#2a2a2a]/50 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#2a2a2a] to-transparent" />
           </div>
 
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
+          <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 py-28">
             <div className="animate-fade-in-up anim-delay-1">
               <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/40 px-3 py-1.5 inline-block">
                 Infraestructura y Superestructura Ferroviaria
               </span>
             </div>
-            <h1 className="mt-8 text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-none max-w-4xl animate-fade-in-up anim-delay-2">
+            <h1 className="mt-10 text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-none max-w-4xl animate-fade-in-up anim-delay-2">
               Suministro Confiable de
-              <span className="block text-[#D35400] mt-2">
+              <span className="block text-[#D35400] mt-3">
                 Componentes Ferroviarios
               </span>
             </h1>
-            <p className="mt-6 text-base sm:text-lg text-zinc-400 max-w-2xl font-medium leading-relaxed animate-fade-in-up anim-delay-3">
+            <p className="mt-8 text-base sm:text-lg text-zinc-400 max-w-2xl font-medium leading-relaxed animate-fade-in-up anim-delay-3">
               Especialistas en la distribución independiente de eclisas, sistemas
               elásticos de sujeción, cambiavías y herramientas certificadas para
               la industria del transporte y patios industriales.
             </p>
 
-            <div className="mt-10 pt-4 flex flex-col sm:flex-row items-center justify-start gap-4 animate-fade-in-up anim-delay-4">
+            <div className="mt-12 pt-4 flex flex-col sm:flex-row items-center justify-start gap-4 animate-fade-in-up anim-delay-4">
               <Link
                 href="/catalogo"
-                className="btn-glow w-full sm:w-auto text-center text-white text-sm font-bold uppercase tracking-wider px-8 py-4 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95"
+                className="btn-glow w-full sm:w-auto text-center text-white text-sm font-bold uppercase tracking-wider px-10 py-4.5 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95 rounded-xl"
               >
                 Explorar Catálogo
               </Link>
@@ -244,26 +261,28 @@ export default function HomePage() {
                 href={enlaceWhatsApp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto text-center text-white text-sm font-bold border-2 border-white/20 hover:border-white px-8 py-4 transition-all active:scale-95 hover:bg-white/5"
+                className="w-full sm:w-auto text-center text-white text-sm font-bold border border-white/20 hover:border-white/60 px-10 py-4.5 transition-all active:scale-95 hover:bg-white/5 rounded-xl"
               >
                 Contacto Directo
               </a>
             </div>
           </div>
 
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
-            <svg className="w-5 h-5 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </div>
         </section>
+        </SectionReveal>
 
         {/* ════════════════════════════════════════════
             STATS
         ════════════════════════════════════════════ */}
-        <section className="bg-[#f8f9fa] border-y border-zinc-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <SectionReveal>
+        <section className="bg-[#f5f5f7] border-y border-zinc-200">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
               {[
                 { to: 2, suffix: "", label: "Años de Experiencia" },
                 { to: 200, suffix: "+", label: "Productos Certificados" },
@@ -278,7 +297,7 @@ export default function HomePage() {
                       <AnimatedCounter to={stat.to} suffix={stat.suffix} delay={i * 120} />
                     )}
                   </div>
-                  <div className="text-xs text-zinc-500 font-semibold tracking-wide mt-2 uppercase">
+                  <div className="text-xs text-zinc-500 font-semibold tracking-wide mt-3 uppercase">
                     {stat.label}
                   </div>
                 </div>
@@ -286,19 +305,21 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+        </SectionReveal>
 
         {/* ════════════════════════════════════════════
             SERVICES - Image background cards
         ════════════════════════════════════════════ */}
-        <section className="bg-white py-24 relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionReveal>
+        <section className="bg-white py-28 relative">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
             <SectionHeader
               label="Nuestra Capacidad"
               title="Soluciones Integrales para la Industria Ferroviaria"
               description="Ofrecemos un portafolio completo de suministros y servicios certificados para la operación y mantenimiento de vía férrea en Colombia."
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {SERVICES.map((svc, i) => (
                 <ServiceCard
                   key={svc.title}
@@ -313,7 +334,7 @@ export default function HomePage() {
             <div className="mt-16 text-center">
               <Link
                 href="/catalogo"
-                className="inline-flex items-center gap-2 text-sm font-bold text-[#D35400] hover:text-[#E67E22] transition-colors uppercase tracking-wider border border-[#D35400] px-6 py-3 hover:bg-[#D35400]/5"
+                className="inline-flex items-center gap-2 text-sm font-bold text-[#D35400] hover:text-[#E67E22] transition-colors uppercase tracking-wider border border-[#D35400] px-8 py-3.5 hover:bg-[#D35400]/5 rounded-xl"
               >
                 Ver catálogo completo de productos
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -323,16 +344,18 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+        </SectionReveal>
 
         {/* ════════════════════════════════════════════
             RAILWAY AESTHETIC STRIP
         ════════════════════════════════════════════ */}
-        <section className="bg-[#2a2a2a] py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionReveal>
+        <section className="bg-[#2a2a2a] py-20">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
             <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto">
               {[RailWheelIcon, TrainIcon, RailIcon].map((Icon, i) => (
-                <div key={i} className="flex flex-col items-center gap-3 text-center">
-                  <div className="w-12 h-12 text-[#D35400] opacity-60">
+                <div key={i} className="flex flex-col items-center gap-4 text-center">
+                  <div className="w-14 h-14 text-[#D35400] opacity-60">
                     <Icon />
                   </div>
                   <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-widest">
@@ -341,32 +364,34 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <div className="rail-divider max-w-xs mx-auto mt-10" />
+            <div className="rail-divider max-w-xs mx-auto mt-12" />
           </div>
         </section>
+        </SectionReveal>
 
         {/* ════════════════════════════════════════════
             COVERAGE MAP
         ════════════════════════════════════════════ */}
-        <section className="bg-white py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionReveal>
+        <section className="bg-white py-28">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
             <SectionHeader
               label="Cobertura Nacional"
               title="Presencia en las Principales Zonas Ferroviarias del País"
               description="Distribuimos y entregamos materiales en los departamentos con mayor actividad minera, industrial y portuaria de Colombia."
             />
 
-            <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div className="flex flex-col lg:flex-row items-center gap-16">
               <div className="w-full lg:w-1/2">
                 <ColombiaMap />
               </div>
-              <div className="w-full lg:w-1/2 space-y-6">
+              <div className="w-full lg:w-1/2 space-y-8">
                 <p className="text-sm text-zinc-500 leading-relaxed">
                   Nuestra red de suministro cubre las regiones mineras del Caribe,
                   los corredores industriales del centro del país y los principales
                   puertos de comercio exterior.
                 </p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   {[
                     { region: "Caribe", deptos: "La Guajira, Cesar, Magdalena" },
                     { region: "Caribe", deptos: "Atlántico, Bolívar" },
@@ -377,12 +402,12 @@ export default function HomePage() {
                   ].map((item) => (
                     <div
                       key={item.deptos}
-                      className="border border-zinc-200 p-3 hover:border-[#D35400]/30 transition-colors"
+                      className="border border-zinc-200 p-4 hover:border-[#D35400]/30 transition-all hover:bg-[#D35400]/[0.02] rounded-xl"
                     >
                       <span className="text-[10px] font-bold text-[#D35400] uppercase tracking-wider">
                         {item.region}
                       </span>
-                      <p className="text-xs text-zinc-600 mt-1">{item.deptos}</p>
+                      <p className="text-xs text-zinc-600 mt-1.5">{item.deptos}</p>
                     </div>
                   ))}
                 </div>
@@ -390,18 +415,20 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+        </SectionReveal>
 
         {/* ════════════════════════════════════════════
             FORMULARIO RÁPIDO
         ════════════════════════════════════════════ */}
-        <section className="bg-[#f8f9fa] border-y border-zinc-200 py-20">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionReveal>
+        <section className="bg-[#f5f5f7] border-y border-zinc-200 py-24">
+          <div className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
             <SectionHeader label="Contacto Rápido" title="Cuéntenos su proyecto y le respondemos al instante" />
 
-            <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+                  <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-2">
                     Nombre *
                   </label>
                   <input
@@ -410,11 +437,11 @@ export default function HomePage() {
                     value={formNombre}
                     onChange={(e) => setFormNombre(e.target.value)}
                     placeholder="Su nombre"
-                    className="w-full px-4 py-3 bg-white border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-colors"
+                    className="w-full px-4 py-3.5 bg-white border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all rounded-xl"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+                  <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-2">
                     Teléfono
                   </label>
                   <input
@@ -422,12 +449,12 @@ export default function HomePage() {
                     value={formTelefono}
                     onChange={(e) => setFormTelefono(e.target.value)}
                     placeholder="+57 300 000 0000"
-                    className="w-full px-4 py-3 bg-white border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-colors"
+                    className="w-full px-4 py-3.5 bg-white border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all rounded-xl"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+                <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-2">
                   Mensaje *
                 </label>
                 <textarea
@@ -436,13 +463,13 @@ export default function HomePage() {
                   value={formMensaje}
                   onChange={(e) => setFormMensaje(e.target.value)}
                   placeholder="Describa brevemente su necesidad..."
-                  className="w-full px-4 py-3 bg-white border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-colors resize-none"
+                  className="w-full px-4 py-3.5 bg-white border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all resize-none rounded-xl"
                 />
               </div>
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="btn-glow w-full text-center text-white text-sm font-bold uppercase tracking-wider px-8 py-4 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95"
+                  className="btn-glow w-full text-center text-white text-sm font-bold uppercase tracking-wider px-8 py-4 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95 rounded-xl"
                 >
                   Enviar por WhatsApp
                 </button>
@@ -453,19 +480,22 @@ export default function HomePage() {
             </form>
           </div>
         </section>
+        </SectionReveal>
 
         {/* ════════════════════════════════════════════
             FOOTER - Multi-column
         ════════════════════════════════════════════ */}
         <footer className="bg-[#2a2a2a] border-t border-zinc-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
               {/* Brand */}
               <div className="space-y-4">
-                <img
+                <Image
                   src="/logo-gavicom.png"
                   alt="GAVICOM SAS"
-                  className="h-8 w-auto object-contain opacity-70"
+                  width={40}
+                  height={40}
+                  className="opacity-80"
                 />
                 <p className="text-xs text-zinc-500 leading-relaxed">
                   {COMPANIA_INFO.disclaimerLegal}
@@ -502,7 +532,7 @@ export default function HomePage() {
                     { label: "Inicio", href: "/" },
                     { label: "Catálogo", href: "/catalogo" },
                     { label: "Servicios", href: "/servicios" },
-                    { label: "Contacto", href: "/#contacto" },
+                    { label: "Contacto", href: "/contacto" },
                   ].map((link) => (
                     <li key={link.label}>
                       <Link

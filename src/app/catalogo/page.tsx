@@ -56,13 +56,13 @@ export default function CatalogoPage() {
       <div className="flex flex-col min-h-screen">
       {/* HEADER */}
       <div className="bg-[#2a2a2a]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase">
                 Catálogo Técnico
               </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white mt-1">
+              <h1 className="text-2xl sm:text-3xl font-black text-white mt-2">
                 Componentes y Suministros
               </h1>
             </div>
@@ -70,7 +70,7 @@ export default function CatalogoPage() {
               href={enlaceWhatsAppGlobal}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center text-[#2a2a2a] text-xs font-bold uppercase tracking-wider px-5 py-3 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95 self-start"
+              className="inline-flex items-center text-[#2a2a2a] text-xs font-bold uppercase tracking-wider px-6 py-3 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95 self-start rounded-xl"
             >
               Cotización Rápida
             </a>
@@ -80,16 +80,16 @@ export default function CatalogoPage() {
 
       {/* SEARCH */}
       <div className="bg-white border-b border-[#e8edf2]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-6">
           <div className="relative">
             <input
               type="text"
               placeholder="Buscar por nombre, SKU, categoría o especificación técnica..."
-              className="w-full pl-12 pr-4 py-3.5 bg-[#f8f9fa] border border-[#e8edf2] text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all font-medium rounded"
+              className="w-full pl-12 pr-4 py-4 bg-[#f5f5f7] border border-[#e8edf2] text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all font-medium rounded-2xl"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
             />
-            <div className="absolute left-4 top-3.5 text-zinc-400">
+            <div className="absolute left-4 top-4 text-zinc-400">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -109,23 +109,23 @@ export default function CatalogoPage() {
       </div>
 
       {/* CONTENT */}
-      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">
+      <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 py-12 flex-grow">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-          <aside className="bg-white border border-[#e8edf2] rounded shadow-sm">
-            <div className="p-4 border-b border-[#e8edf2] bg-[#f8f9fa]">
+          <aside className="bg-white border border-[#e8edf2] rounded-2xl shadow-sm overflow-hidden">
+            <div className="p-5 border-b border-[#e8edf2] bg-[#f5f5f7]">
               <h3 className="text-xs font-black uppercase tracking-wider text-[#2a2a2a]">
                 Categorías
               </h3>
             </div>
-            <div className="p-2 space-y-0.5">
+            <div className="p-3 space-y-0.5">
               {categorias.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setCategoriaSeleccionada(cat)}
-                  className={`w-full text-left px-3 py-2.5 text-xs font-bold transition-all rounded ${
+                  className={`w-full text-left px-4 py-3 text-xs font-bold transition-all rounded-xl ${
                     categoriaSeleccionada === cat
                       ? "bg-[#2a2a2a] text-white"
-                      : "text-zinc-500 hover:bg-[#f8f9fa] hover:text-[#2a2a2a]"
+                      : "text-zinc-500 hover:bg-[#f5f5f7] hover:text-[#2a2a2a]"
                   }`}
                 >
                   {cat}
@@ -142,8 +142,8 @@ export default function CatalogoPage() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white border border-[#e8edf2] rounded p-12 text-center max-w-xl mx-auto shadow-sm">
-                <div className="w-12 h-12 flex items-center justify-center mx-auto mb-4 border border-[#e8edf2] text-zinc-300">
+              <div className="bg-white border border-[#e8edf2] rounded-2xl p-16 text-center max-w-xl mx-auto shadow-sm">
+                <div className="w-14 h-14 flex items-center justify-center mx-auto mb-5 border border-[#e8edf2] text-zinc-300 rounded-xl">
                   <svg
                     className="w-6 h-6"
                     fill="none"
@@ -158,10 +158,10 @@ export default function CatalogoPage() {
                     />
                   </svg>
                 </div>
-                <h4 className="text-base font-bold text-[#2a2a2a] mb-2">
+                <h4 className="text-base font-bold text-[#2a2a2a] mb-3">
                   Referencia no localizada
                 </h4>
-                <p className="text-sm text-zinc-500 leading-relaxed mb-6">
+                <p className="text-sm text-zinc-500 leading-relaxed mb-8 max-w-sm mx-auto">
                   Algunas especificaciones pesadas no se muestran públicamente.
                   Consúltenos por cualquier estándar AREMA/UIC.
                 </p>
@@ -169,7 +169,7 @@ export default function CatalogoPage() {
                   href={`${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=Hola%20GAVICOM%20SAS,%20busco%20un%20suministro%20especifico%20que%20no%20aparece%20en%20el%20catalogo.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center text-xs font-bold text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] px-5 py-2.5 transition-all active:scale-95"
+                  className="inline-flex items-center text-xs font-bold text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] px-6 py-3 transition-all active:scale-95 rounded-xl"
                 >
                   Consultar Disponibilidad
                 </a>
@@ -180,8 +180,8 @@ export default function CatalogoPage() {
       </main>
 
       {/* FOOTER */}
-      <footer className="bg-[#2a2a2a] py-8 border-t border-[#D35400]/30">
-        <div className="max-w-7xl mx-auto px-4 text-[11px] text-zinc-400 text-center leading-relaxed">
+      <footer className="bg-[#2a2a2a] py-10 border-t border-[#D35400]/20">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-[11px] text-zinc-400 text-center leading-relaxed">
           {COMPANIA_INFO.disclaimerLegal}
         </div>
       </footer>

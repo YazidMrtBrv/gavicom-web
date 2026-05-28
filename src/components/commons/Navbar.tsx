@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { COMPANIA_INFO } from "@/constants/productos";
 
 export default function Navbar() {
@@ -15,13 +16,13 @@ export default function Navbar() {
 
   return (
     <header
-      className={`w-full border-b sticky top-0 z-50 transition-all duration-300 ${
+      className={`w-full border-b sticky top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-[#2a2a2a]/90 backdrop-blur-md border-[#D35400]/40 shadow-lg shadow-black/10"
-          : "bg-[#2a2a2a] border-[#D35400]"
+          ? "bg-[#2a2a2a]/80 backdrop-blur-xl border-[#D35400]/30 shadow-2xl shadow-black/20"
+          : "bg-[#2a2a2a] border-[#D35400]/50"
       }`}
     >
-      <div className="bg-[#333333] text-zinc-300 py-1.5 px-4 text-[11px] font-medium tracking-wider flex justify-center items-center gap-1 sm:gap-3">
+      <div className="bg-[#2a2a2a]/50 text-zinc-300 py-2 px-4 text-[11px] font-medium tracking-wider flex justify-center items-center gap-1 sm:gap-3 border-b border-white/[0.03]">
         <span className="hidden sm:inline text-[#D35400] uppercase text-[10px] font-bold">
           Contacto Directo:
         </span>
@@ -44,11 +45,12 @@ export default function Navbar() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/logo-gavicom.png"
             alt="GAVICOM SAS"
-            className="h-14 w-auto object-contain"
+            width={56}
+            height={56}
+            className="object-contain"
           />
         </Link>
 
@@ -73,7 +75,7 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/#contacto"
+            href="/contacto"
             className="hover:text-white transition-colors tracking-wide"
           >
             Contacto

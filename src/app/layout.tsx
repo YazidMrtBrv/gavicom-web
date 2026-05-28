@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/commons/Navbar";
 import WhatsAppFloat from "@/components/commons/WhatsAppFloat";
 import PageTransition from "@/components/PageTransition";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -124,7 +125,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-white text-zinc-900 font-sans antialiased flex flex-col">
         <Navbar />
-        <main className="flex-grow"><PageTransition>{children}</PageTransition></main>
+        <main className="flex-grow"><ErrorBoundary><PageTransition>{children}</PageTransition></ErrorBoundary></main>
         <WhatsAppFloat />
       </body>
     </html>
