@@ -285,7 +285,7 @@ export default function HomePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
               {[
                 { to: 2, suffix: "", label: "Años de Experiencia" },
-                { to: 200, suffix: "+", label: "Productos Certificados" },
+                { to: 999, suffix: "", label: "Cobertura Nacional" },
                 { to: 100, suffix: "%", label: "Calidad Garantizada" },
                 { to: 247, suffix: "", label: "Soporte Técnico" },
               ].map((stat, i) => (
@@ -293,6 +293,13 @@ export default function HomePage() {
                   <div className="text-4xl sm:text-5xl font-black text-[#D35400]">
                     {stat.to === 247 ? (
                       <span>24/7</span>
+                    ) : stat.to === 999 ? (
+                      <span className="text-2xl sm:text-3xl flex items-center justify-center gap-2">
+                        <svg className="w-8 h-8 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>COLOMBIA</span>
+                      </span>
                     ) : (
                       <AnimatedCounter to={stat.to} suffix={stat.suffix} delay={i * 120} />
                     )}
