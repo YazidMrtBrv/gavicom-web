@@ -216,6 +216,14 @@ export default function ContactoPage() {
                       <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Gerente General</p>
                       <p className="text-base font-bold text-zinc-800">{COMPANIA_INFO.gerente}</p>
                       <p className="text-sm text-zinc-500">{COMPANIA_INFO.cargo}</p>
+                      <a
+                        href={`https://wa.me/${COMPANIA_INFO.whatsappSales.replace("+", "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-bold text-[#D35400] hover:text-[#E67E22] transition-colors mt-1 inline-block"
+                      >
+                        {COMPANIA_INFO.whatsappSales}
+                      </a>
                     </div>
                   </div>
 

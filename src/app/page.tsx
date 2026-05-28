@@ -559,6 +559,16 @@ export default function HomePage() {
                     </span>
                   </li>
                   <li>
+                    <a
+                      href={`https://wa.me/${COMPANIA_INFO.whatsappSales.replace("+", "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-[#D35400] hover:text-[#E67E22] transition-colors"
+                    >
+                      {COMPANIA_INFO.whatsappSales}
+                    </a>
+                  </li>
+                  <li>
                     <span className="text-xs text-zinc-500 block">
                       <span className="text-zinc-400">Directora Ejecutiva:</span>{" "}
                       {COMPANIA_INFO.directora}
