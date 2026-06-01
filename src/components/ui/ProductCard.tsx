@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import TechnicalTable from "./TechnicalTable";
 import { generarEnlaceWhatsApp } from "@/constants/productos";
 import type { Producto } from "@/constants/productos";
@@ -49,12 +48,10 @@ function VariantStrip({
               : "border-transparent opacity-50 hover:opacity-80"
           }`}
         >
-          <Image
+          <img
             src={`/images/productos/${v.imagen}`}
             alt=""
-            fill
-            className="object-contain pointer-events-none"
-            sizes="56px"
+            className="w-full h-full object-contain pointer-events-none"
           />
         </button>
       ))}
@@ -79,7 +76,7 @@ export default function ProductCard({ producto }: ProductCardProps) {
     <>
       {zoomOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 md:p-8 cursor-zoom-out"
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 md:p-8"
           onClick={() => setZoomOpen(false)}
         >
           <button
@@ -88,16 +85,11 @@ export default function ProductCard({ producto }: ProductCardProps) {
           >
             &times;
           </button>
-          <div className="relative w-full h-full">
-            <Image
-              src={`/images/productos/${varianteActual.imagen}`}
-              alt={nombre}
-              fill
-              className="object-contain cursor-zoom-out"
-              onClick={() => setZoomOpen(false)}
-              sizes="90vw"
-            />
-          </div>
+          <img
+            src={`/images/productos/${varianteActual.imagen}`}
+            alt={nombre}
+            className="max-w-[90vw] max-h-[80vh] object-contain"
+          />
         </div>
       )}
 
@@ -107,12 +99,10 @@ export default function ProductCard({ producto }: ProductCardProps) {
           onClick={() => !imgError && setZoomOpen(true)}
         >
           {!imgError ? (
-            <Image
+            <img
               src={`/images/productos/${varianteActual.imagen}`}
               alt={nombre}
-              fill
-              className="object-contain pointer-events-none"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              className="w-full h-full object-contain pointer-events-none"
               onError={() => setImgError(true)}
             />
           ) : (

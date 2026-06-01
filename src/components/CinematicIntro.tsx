@@ -202,7 +202,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[300] bg-[#030303] flex flex-col items-center justify-center overflow-hidden cursor-default"
+      className="fixed top-0 left-0 w-full h-[100dvh] z-[10000] bg-[#030303] flex flex-col items-center justify-center overflow-hidden cursor-default"
       animate={exiting ? { opacity: 0, scale: 1.03 } : { opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
     >

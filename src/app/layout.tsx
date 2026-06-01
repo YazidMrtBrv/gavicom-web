@@ -17,6 +17,13 @@ const inter = Inter({
 const SITE_URL = "https://gavicom-web.vercel.app";
 const EMPRESA = "GAVICOM SAS";
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+};
+
 export const metadata: Metadata = {
   title: {
     default: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
