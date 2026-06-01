@@ -1,9 +1,10 @@
 "use client";
 
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { PRODUCTOS_Y_SERVICIOS, COMPANIA_INFO, generarEnlaceWhatsApp } from "@/constants/productos";
-import { useInView } from "@/hooks/useInView";
 import PageMetaUpdater from "@/components/seo/PageMetaUpdater";
 
 const ICONOS_SERVICIOS: Record<string, React.ReactNode> = {
@@ -77,66 +78,130 @@ const ICONOS_SERVICIOS: Record<string, React.ReactNode> = {
 
 const SERVICIOS = PRODUCTOS_Y_SERVICIOS.filter((p) => p.categoria === "Servicios");
 
-function ServicioCard({ servicio, index }: { servicio: (typeof SERVICIOS)[number]; index: number }) {
-  const { ref, inView } = useInView();
+function BrutalistServiceCard({ servicio, index }: { servicio: (typeof SERVICIOS)[number]; index: number }) {
+  const [isHovered, setIsHovered] = useState(false);
   const icon = ICONOS_SERVICIOS[servicio.nombre];
   const whatsappLink = generarEnlaceWhatsApp(servicio.nombre, servicio.sku);
 
   return (
-      <div
-        ref={ref}
-        className={`card-hover bg-white border border-[#e8edf2] overflow-hidden group transition-all duration-700 rounded-2xl ${
-          inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-        }`}
-        style={{ transitionDelay: `${index * 0.1}s` }}
-      >
-        <div className="relative h-56 bg-[#f5f5f7] overflow-hidden">
-          <Image
-            src={`/images/productos/${servicio.imagen}`}
-            alt={servicio.nombre}
-            fill
-            className="object-contain p-6"
-            sizes="(max-width: 768px) 100vw, 33vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#2a2a2a]/60 via-transparent to-transparent" />
-          <div className="absolute top-3 left-3 w-12 h-12 text-[#D35400] bg-[#2a2a2a]/90 p-2.5 border border-[#D35400]/30 rounded-xl">
-            {icon}
-          </div>
-          <span className="absolute top-3 right-3 bg-[#2a2a2a]/90 text-[#D35400] text-[10px] font-mono font-bold tracking-widest px-2 py-1 border border-[#D35400]/30 rounded-lg">
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group relative flex flex-col h-full bg-white z-10"
+    >
+      {/* Pseudo-3D shadow layer (becomes visible on hover) */}
+      <div className="absolute inset-0 bg-[#D35400] translate-x-2 translate-y-2 -z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none"></div>
+
+      {/* Main Card Content */}
+      <div className="border border-zinc-200 group-hover:border-[#D35400] transition-colors duration-300 flex flex-col h-full bg-white">
+        
+        {/* Header bar */}
+        <div className="border-b border-zinc-200 bg-[#f8f9fa] p-4 flex justify-between items-center group-hover:bg-[#1a1a2e] transition-colors duration-300">
+          <span className="text-[10px] font-mono font-bold tracking-widest text-[#D35400]">
             {servicio.sku}
           </span>
+          <div className="w-8 h-8 text-[#1a1a2e] group-hover:text-white transition-colors duration-300">
+            {icon}
+          </div>
         </div>
 
-        <div className="p-6 space-y-4">
-          <h3 className="text-base font-bold text-[#2a2a2a] group-hover:text-[#D35400] transition-colors leading-snug">
+        {/* Image container */}
+        <div className="relative h-56 bg-[#f0f2f5] overflow-hidden border-b border-zinc-200">
+          <motion.div
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={`/images/productos/${servicio.imagen}`}
+              alt={servicio.nombre}
+              fill
+              className="object-contain p-8 mix-blend-multiply opacity-80"
+              sizes="(max-width: 768px) 100vw, 33vw"
+            />
+          </motion.div>
+          {/* Scanning line effect */}
+          <motion.div
+            initial={{ top: "-10%" }}
+            animate={{ top: isHovered ? "110%" : "-10%" }}
+            transition={{ duration: 1.5, ease: "linear", repeat: isHovered ? Infinity : 0 }}
+            className="absolute left-0 right-0 h-0.5 bg-[#D35400] shadow-[0_0_8px_#D35400]"
+            style={{ opacity: isHovered ? 1 : 0 }}
+          />
+        </div>
+
+        {/* Content */}
+        <div className="p-6 flex flex-col flex-grow">
+          <h3 className="text-xl font-black text-[#1a1a2e] uppercase tracking-tight leading-none mb-4 group-hover:text-[#D35400] transition-colors">
             {servicio.nombre}
           </h3>
-          <p className="text-xs text-zinc-500 leading-relaxed">
+          <p className="text-xs font-mono text-zinc-500 leading-relaxed mb-6 flex-grow">
             {servicio.descripcion}
           </p>
-          <div className="pt-2 flex flex-wrap gap-1.5">
-            {Object.entries(servicio.especificaciones).slice(0, 3).map(([k, v]) => (
-              <span key={k} className="text-[10px] bg-[#f5f5f7] text-zinc-500 font-medium px-2.5 py-1 border border-[#e8edf2] rounded-lg">
-                {v}
-              </span>
+
+          {/* Specs grid */}
+          <div className="grid grid-cols-2 gap-px bg-zinc-200 border border-zinc-200 mb-6">
+            {Object.entries(servicio.especificaciones).slice(0, 4).map(([k, v]) => (
+              <div key={k} className="bg-[#f8f9fa] p-3 hover:bg-white transition-colors">
+                <span className="block text-[8px] font-bold uppercase tracking-[0.2em] text-[#D35400] mb-1.5">{k}</span>
+                <span className="block text-[10px] font-mono text-[#1a1a2e] leading-tight">{v as string}</span>
+              </div>
             ))}
           </div>
-          <div className="pt-2">
+
+          {/* Action */}
+          <div className="mt-auto pt-4 border-t border-zinc-200">
             <a
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-glow inline-flex items-center text-[#2a2a2a] text-xs font-bold px-6 py-2.5 bg-[#D35400] hover:bg-[#E67E22] transition-all active:scale-95 rounded-xl"
+              className="inline-flex w-full items-center justify-between text-[#1a1a2e] text-xs font-bold uppercase tracking-[0.2em] border border-[#1a1a2e] px-6 py-3 hover:border-[#D35400] hover:bg-[#D35400] hover:text-white transition-all active:scale-[0.98] group/btn"
             >
-              Cotizar Servicio
+              <span>Solicitar</span>
+              <span className="group-hover/btn:translate-x-1 transition-transform">→</span>
             </a>
           </div>
         </div>
       </div>
+    </motion.div>
+  );
+}
+
+// Interactive scrolling marquee
+function TechMarquee() {
+  const words = ["INGENIERÍA", "TOPOGRAFÍA", "MANTENIMIENTO", "SOLDADURA", "RENDERIZADO 3D", "INFRAESTRUCTURA"];
+  return (
+    <div className="bg-[#1a1a2e] border-y border-[#D35400] overflow-hidden py-3 relative z-20">
+      <motion.div 
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ ease: "linear", duration: 20, repeat: Infinity }}
+        className="flex whitespace-nowrap"
+      >
+        {[...words, ...words, ...words, ...words].map((word, i) => (
+          <span key={i} className="text-[#D35400] font-mono font-bold text-xs tracking-[0.4em] mx-8 flex items-center">
+            {word}
+            <span className="w-1.5 h-1.5 bg-zinc-600 rounded-full ml-16 inline-block"></span>
+          </span>
+        ))}
+      </motion.div>
+    </div>
   );
 }
 
 export default function ServiciosPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
   const mensajeGlobal = encodeURIComponent(
     "Hola GAVICOM SAS, quiero información sobre sus servicios ferroviarios."
   );
@@ -145,116 +210,162 @@ export default function ServiciosPage() {
   return (
     <>
       <PageMetaUpdater title="Servicios Ferroviarios - Topografía, Mantenimiento y Diseño" />
-      <div className="flex flex-col min-h-screen">
-      {/* HERO */}
-      <section className="relative bg-[#2a2a2a] text-white overflow-hidden min-h-[55vh] flex items-center">
-        <div className="absolute inset-0">
-          <Image
-            src="/trenindustrial.png"
-            alt="Servicios ferroviarios"
-            fill
-            className="object-cover scale-105"
-            style={{ filter: "saturate(0.8) contrast(1.25) brightness(0.85)" }}
-            sizes="100vw"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#2a2a2a]/80 via-[#2a2a2a]/50 to-[#2a2a2a]/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#2a2a2a]/60 via-transparent to-transparent" />
-          {/* Perspective lines */}
-          <svg className="absolute inset-0 w-full h-full opacity-[0.07]" viewBox="0 0 1440 600" preserveAspectRatio="none">
-            <line x1="0" y1="600" x2="720" y2="100" stroke="#D35400" strokeWidth="2" />
-            <line x1="1440" y1="600" x2="720" y2="100" stroke="#D35400" strokeWidth="2" />
-            <line x1="100" y1="600" x2="720" y2="200" stroke="#D35400" strokeWidth="1" />
-            <line x1="1340" y1="600" x2="720" y2="200" stroke="#D35400" strokeWidth="1" />
-          </svg>
-        </div>
+      <div className="flex flex-col min-h-screen bg-[#f8f9fa]" ref={containerRef}>
+        
+        {/* HERO with parallax */}
+        <section className="relative bg-[#f8f9fa] overflow-hidden min-h-[60vh] flex items-center border-b border-[#D35400]/10">
+          <motion.div style={{ y, opacity }} className="absolute inset-0">
+            <Image
+              src="/images/gemini-hero.png"
+              alt="Servicios ferroviarios"
+              fill
+              className="object-cover object-center grayscale opacity-20 mix-blend-multiply"
+              sizes="100vw"
+              priority
+            />
+            {/* Blueprint grid overlay */}
+            <div 
+              className="absolute inset-0 pointer-events-none" 
+              style={{ backgroundImage: 'linear-gradient(rgba(211,84,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(211,84,0,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }} 
+            />
+          </motion.div>
 
-        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center relative z-10 py-16 sm:py-20 lg:py-28">
-          <div className="animate-fade-in-up">
-            <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/40 px-3 py-1.5 inline-block">
-              Portafolio de Servicios
-            </span>
+          <div className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 relative z-10 py-20">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              
+              <div className="max-w-2xl">
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                >
+                  <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/40 px-3 py-1.5 inline-block mb-6">
+                    Portafolio de Servicios
+                  </span>
+                </motion.div>
+                
+                <motion.h1 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+                  className="text-4xl sm:text-6xl lg:text-7xl font-black text-[#1a1a2e] leading-[0.9]"
+                  style={{ letterSpacing: "-0.05em" }}
+                >
+                  Soluciones<br />
+                  <span className="text-zinc-400">Técnicas.</span>
+                </motion.h1>
+                
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  className="mt-6 text-sm font-mono text-zinc-500 leading-relaxed max-w-lg border-l-2 border-[#D35400] pl-4"
+                >
+                  Levantamientos topográficos, mantenimiento hidráulico, diseño de planos técnicos y operaciones logísticas certificadas para la infraestructura ferroviaria en Colombia.
+                </motion.p>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  className="mt-10"
+                >
+                  <a
+                    href={enlaceWhatsAppGlobal}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center text-[#1a1a2e] text-xs font-bold uppercase tracking-[0.2em] border border-[#1a1a2e] px-10 py-4 hover:border-[#D35400] hover:bg-[#D35400] hover:text-white transition-all active:scale-[0.97] bg-white group"
+                  >
+                    Asesoría Técnica
+                    <span className="ml-3 text-[#D35400] group-hover:text-white transition-colors">→</span>
+                  </a>
+                </motion.div>
+              </div>
+
+              {/* Animated schematic element */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.5 }}
+                className="hidden lg:flex justify-end"
+              >
+                <div className="relative w-80 h-80 border border-zinc-300 rounded-full flex items-center justify-center p-8 bg-white/50 backdrop-blur-sm shadow-2xl">
+                  <motion.div 
+                    animate={{ rotate: 360 }} 
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 border border-dashed border-[#D35400]/40 rounded-full m-4"
+                  />
+                  <motion.div 
+                    animate={{ rotate: -360 }} 
+                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 border-2 border-transparent border-t-[#D35400]/20 border-b-[#1a1a2e]/10 rounded-full m-8"
+                  />
+                  <div className="text-center font-mono text-[9px] text-zinc-400 tracking-[0.3em] uppercase">
+                    <span className="block text-[#1a1a2e] text-xl font-black tracking-tighter mb-2">ISO / AREMA</span>
+                    Estándares Operativos
+                  </div>
+                </div>
+              </motion.div>
+
+            </div>
           </div>
-          <h1 className="mt-6 sm:mt-8 text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-white animate-fade-in-up anim-delay-2">
-            Soluciones Técnicas para la
-            <span className="block text-[#D35400] mt-2 sm:mt-3">Infraestructura Ferroviaria</span>
-          </h1>
-          <p className="mt-4 sm:mt-6 text-sm sm:text-lg text-zinc-300 max-w-2xl mx-auto animate-fade-in-up anim-delay-3">
-            Desde levantamientos topográficos hasta diseño de planos y renderizado 3D.
-            GAVICOM ofrece servicios especializados para cada etapa de su proyecto.
-          </p>
-          <div className="mt-8 sm:mt-10 animate-fade-in-up anim-delay-4">
-            <a
-              href={enlaceWhatsAppGlobal}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-glow inline-flex items-center gap-2 text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] text-sm font-bold px-10 py-4 border border-[#D35400] transition-all active:scale-95 rounded-xl"
-            >
-              Solicitar Asesoría
-            </a>
+        </section>
+
+        <TechMarquee />
+
+        {/* CONTENIDO */}
+        <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 py-24 flex-grow relative z-10">
+          <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-200 pb-8">
+            <div>
+              <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-[#D35400] uppercase mb-4 block">
+                [01] Catálogo de Operaciones
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black text-[#1a1a2e] tracking-tight uppercase">
+                Servicios Especializados
+              </h2>
+            </div>
+            <p className="text-xs font-mono text-zinc-500 max-w-sm text-right hidden md:block">
+              Despliegue operativo y soporte técnico continuo para infraestructura de transporte pesado.
+            </p>
           </div>
-        </div>
 
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
-          <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </div>
-      </section>
-
-      {/* CONTENIDO */}
-      <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 py-20 flex-grow">
-        <div className="text-center mb-16 space-y-4">
-          <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase">
-            Capacidades Técnicas
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#2a2a2a]">
-            Nuestros Servicios Especializados
-          </h2>
-          <div className="w-16 h-[2px] bg-[#D35400] mx-auto mt-4" />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SERVICIOS.map((s, i) => (
-            <ServicioCard key={s.sku} servicio={s} index={i} />
-          ))}
-        </div>
-      </main>
-
-      {/* CTA */}
-      <section className="bg-[#2a2a2a] py-20 text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div className="w-full h-full" style={{
-            backgroundImage: "repeating-linear-gradient(45deg, #D35400 0px, #D35400 2px, transparent 2px, transparent 20px)"
-          }} />
-        </div>
-        <div className="max-w-2xl mx-auto px-6 relative z-10 space-y-6">
-          <h2 className="text-2xl font-black text-white animate-fade-in-up">
-            ¿No encuentra lo que busca?
-          </h2>
-          <p className="text-sm text-zinc-300 animate-fade-in-up anim-delay-2">
-            Consúltenos por servicios a medida para su proyecto ferroviario.
-          </p>
-          <div className="pt-2 animate-fade-in-up anim-delay-3">
-            <a
-              href={enlaceWhatsAppGlobal}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-glow inline-flex items-center gap-2 text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] text-sm font-bold px-10 py-4 border border-[#D35400] transition-all active:scale-95 rounded-xl"
-            >
-              Hablar con Asesor
-            </a>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-12">
+            {SERVICIOS.map((s, i) => (
+              <BrutalistServiceCard key={s.sku} servicio={s} index={i} />
+            ))}
           </div>
-        </div>
-      </section>
+        </main>
 
-      {/* FOOTER */}
-      <footer className="bg-[#2a2a2a] py-10 text-center">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-[11px] text-zinc-500 leading-relaxed">
-          {COMPANIA_INFO.disclaimerLegal}
-        </div>
-      </footer>
-    </div>
+        {/* CTA */}
+        <section className="bg-[#1a1a2e] py-24 text-center relative overflow-hidden border-t border-[#D35400]">
+          <div className="absolute inset-0 opacity-[0.05]">
+            <div className="w-full h-full" style={{
+              backgroundImage: "repeating-linear-gradient(45deg, #D35400 0px, #D35400 2px, transparent 2px, transparent 20px)"
+            }} />
+          </div>
+          <div className="max-w-2xl mx-auto px-6 relative z-10 space-y-8">
+            <h2 className="text-3xl font-black text-white uppercase tracking-tight">
+              ¿Requieres una <span className="text-[#D35400]">solución a medida?</span>
+            </h2>
+            <p className="text-xs font-mono text-zinc-400 max-w-md mx-auto leading-relaxed border-l border-r border-[#D35400]/30 px-6 py-2">
+              Nuestro equipo de ingeniería diseña operaciones logísticas y mecánicas adaptadas a los requerimientos específicos de tu patio o vía férrea.
+            </p>
+            <div className="pt-4">
+              <a
+                href={enlaceWhatsAppGlobal}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center text-white text-xs font-bold uppercase tracking-[0.2em] border border-[#D35400] px-10 py-4 hover:bg-[#D35400] transition-all active:scale-[0.97] group"
+              >
+                Hablar con un Ingeniero
+                <span className="ml-3 text-[#D35400] group-hover:text-white group-hover:translate-x-1 transition-all">→</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+
+      </div>
     </>
   );
 }

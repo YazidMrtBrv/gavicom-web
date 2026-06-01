@@ -1,652 +1,767 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, useInView } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { COMPANIA_INFO } from "@/constants/productos";
-import { useInView } from "@/hooks/useInView";
 import PageMetaUpdater from "@/components/seo/PageMetaUpdater";
 import ColombiaMap from "@/components/ui/ColombiaMap";
+import ColombiaProud from "@/components/ui/ColombiaProud";
 
-function AnimatedCounter({ to, suffix = "", delay = 0 }: { to: number; suffix?: string; delay?: number }) {
-  const { ref, inView } = useInView();
-  const [count, setCount] = useState(0);
+gsap.registerPlugin(ScrollTrigger);
+
+// ─── Animated counter ─────────────────────────────────────────────────────────
+function AnimatedCounter({
+  to,
+  suffix = "",
+  delay = 0,
+}: {
+  to: number;
+  suffix?: string;
+  delay?: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref as React.RefObject<Element>, { once: true });
 
   useEffect(() => {
     if (!inView) return;
     const timer = setTimeout(() => {
-      const duration = 1500;
+      const duration = 1600;
       const start = performance.now();
       const animate = (now: number) => {
         const elapsed = now - start;
         const progress = Math.min(elapsed / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
-        setCount(Math.floor(eased * to));
+        const val = Math.floor(eased * to);
+        if (ref.current) ref.current.textContent = `${val}${suffix}`;
         if (progress < 1) requestAnimationFrame(animate);
       };
       requestAnimationFrame(animate);
     }, delay);
     return () => clearTimeout(timer);
-  }, [inView, to, delay]);
+  }, [inView, to, delay, suffix]);
 
-  return <span ref={ref}>{count}{suffix}</span>;
+  return <span ref={ref}>0{suffix}</span>;
 }
 
-function RailWheelIcon({ className = "w-full h-full" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 48 48" fill="none" className={className}>
-      <circle cx="24" cy="22" r="12" stroke="currentColor" strokeWidth="2.5" />
-      <circle cx="24" cy="22" r="5" stroke="currentColor" strokeWidth="2" />
-      <circle cx="24" cy="22" r="1.5" fill="currentColor" />
-      <rect x="12" y="34" width="24" height="4" rx="1" fill="currentColor" opacity="0.3" />
-      <rect x="8" y="38" width="32" height="3" rx="1.5" fill="currentColor" opacity="0.2" />
-    </svg>
-  );
-}
-
-function TrainIcon({ className = "w-full h-full" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 48 48" fill="none" className={className}>
-      <rect x="6" y="18" width="36" height="14" rx="3" stroke="currentColor" strokeWidth="2" />
-      <rect x="10" y="10" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="2" />
-      <rect x="30" y="10" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="2" />
-      <circle cx="15" cy="36" r="4" stroke="currentColor" strokeWidth="2" />
-      <circle cx="33" cy="36" r="4" stroke="currentColor" strokeWidth="2" />
-      <circle cx="15" cy="36" r="1.5" fill="currentColor" />
-      <circle cx="33" cy="36" r="1.5" fill="currentColor" />
-      <rect x="12" y="22" width="24" height="2" fill="currentColor" opacity="0.2" />
-    </svg>
-  );
-}
-
-function RailIcon({ className = "w-full h-full" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 48 48" fill="none" className={className}>
-      <rect x="4" y="8" width="40" height="6" rx="1" stroke="currentColor" strokeWidth="2" />
-      <rect x="4" y="34" width="40" height="6" rx="1" stroke="currentColor" strokeWidth="2" />
-      <rect x="8" y="14" width="4" height="20" fill="currentColor" opacity="0.3" />
-      <rect x="24" y="14" width="4" height="20" fill="currentColor" opacity="0.3" />
-      <rect x="36" y="14" width="4" height="20" fill="currentColor" opacity="0.3" />
-      <rect x="16" y="16" width="4" height="16" fill="currentColor" opacity="0.2" />
-      <rect x="32" y="16" width="4" height="16" fill="currentColor" opacity="0.2" />
-    </svg>
-  );
-}
-
-function SectionHeader({ label, title, description }: { label: string; title: string; description?: string }) {
-  const { ref, inView } = useInView();
-  return (
-    <div
-      ref={ref}
-      className={`text-center max-w-3xl mx-auto mb-16 space-y-5 transition-all duration-700 ${
-        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-      }`}
-    >
-      <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase">
-        {label}
-      </span>
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#2a2a2a] leading-tight">
-        {title}
-      </h2>
-      {description && (
-        <p className="text-sm text-zinc-500 leading-relaxed max-w-2xl mx-auto">{description}</p>
-      )}
-      <div className="w-16 h-[2px] bg-[#D35400] mx-auto mt-5" />
-    </div>
-  );
-}
-
-function SectionReveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const { ref, inView } = useInView({ threshold: 0.1 });
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function ServiceCard({
-  title,
-  items,
-  gradient,
-  delay,
+// ─── Shiny CTA button ────────────────────────────────────────────────────────
+function ShinyButton({
+  href,
+  children,
 }: {
-  title: string;
-  items: string[];
-  gradient: string;
-  delay: number;
+  href: string;
+  children: React.ReactNode;
 }) {
-  const { ref, inView } = useInView();
   return (
-    <div
-      ref={ref}
-      className={`relative overflow-hidden group transition-all duration-700 rounded-2xl ${
-        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      }`}
-      style={{ transitionDelay: `${delay}s` }}
+    <Link
+      href={href}
+      className="shiny-btn relative w-full sm:w-auto text-center text-[#030303] text-xs font-mono font-bold uppercase tracking-[0.2em] px-10 py-4 bg-[#CC4C00] hover:bg-[#D95800] border border-[#CC4C00] transition-colors active:scale-[0.97] overflow-hidden inline-block"
     >
-      <div className={`relative min-h-[360px] flex items-end ${gradient} bg-center bg-cover`}>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
-        <div className="relative z-10 p-8 w-full">
-          <h3 className="text-lg font-bold text-white mb-4">{title}</h3>
-          <ul className="space-y-2">
-            {items.map((item) => (
-              <li key={item} className="flex items-start gap-2 text-sm text-zinc-300">
-                <span className="text-[#D35400] mt-0.5 shrink-0">▸</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6 pt-4 border-t border-white/10">
-            <Link
-              href="/servicios"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D35400] hover:text-[#E67E22] transition-colors uppercase tracking-wider"
-            >
-              Ver servicios
-              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
+      <span className="relative z-10">{children}</span>
+    </Link>
   );
 }
 
-const SERVICES = [
-  {
-    title: "Suministros Ferroviarios",
-    items: [
-      "Eclisas y fijaciones para rieles AREMA/UIC",
-      "Sistemas elásticos de sujeción certificados",
-      "Componentes para superestructura de vía",
-      "Materiales para patios industriales y talleres",
-    ],
-    gradient: "bg-[url('/tren-hero.jpg')] bg-cover bg-center",
-  },
-  {
-    title: "Herramientas de Vía",
-    items: [
-      "Herramientas manuales para montaje y mantenimiento",
-      "Equipos de precisión para alineación de rieles",
-      "Instrumentos de medición y verificación",
-      "Kit completo para cuadrillas de vía",
-    ],
-    gradient: "bg-[url('/herramientas-via.png')] bg-cover bg-center",
-  },
-  {
-    title: "Logística y Soporte",
-    items: [
-      "Entrega en frentes de obra a nivel nacional",
-      "Aprovisionamiento directo en patios de maniobra",
-      "Atención técnica personalizada por la gerencia",
-      "Estructuración de ofertas para licitaciones",
-    ],
-    gradient: "bg-[url('/logistica-soporte.png')] bg-cover bg-center",
-  },
-];
+// ─── Ghost CTA button with animated arrow ────────────────────────────────────
+function GhostButton({
+  href,
+  target,
+  rel,
+  children,
+}: {
+  href: string;
+  target?: string;
+  rel?: string;
+  children: React.ReactNode;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <a
+      href={href}
+      target={target}
+      rel={rel}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="w-full sm:w-auto text-center text-[#1a1a2e] text-xs font-bold uppercase tracking-[0.2em] border border-zinc-300 hover:border-[#D35400] px-10 py-4 transition-all active:scale-[0.97] inline-flex items-center justify-center gap-2.5 group"
+    >
+      <span>{children}</span>
+      <motion.span
+        animate={{ x: hovered ? 5 : 0 }}
+        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        className="text-[#CC4C00] text-sm leading-none"
+      >
+        →
+      </motion.span>
+    </a>
+  );
+}
 
-export default function HomePage() {
+// ─── DESKTOP VIEW ─────────────────────────────────────────────────────────────
+function DesktopView() {
+  const heroRef = useRef<HTMLElement>(null);
+  const linesRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Rail lines parallax on scroll
+      ScrollTrigger.create({
+        trigger: heroRef.current,
+        start: "top top",
+        end: "bottom top",
+        onUpdate: (self) => {
+          if (linesRef.current) {
+            linesRef.current.style.transform = `translateX(-${self.progress * 30}px)`;
+            linesRef.current.style.opacity = `${1 - self.progress * 1.4}`;
+          }
+        },
+      });
+
+      // GSAP glitch on hero heading
+      ScrollTrigger.create({
+        trigger: heroRef.current,
+        start: "top top",
+        end: "+=400",
+        scrub: 0.5,
+        onUpdate: (self) => {
+          if (textRef.current && self.progress > 0.5) {
+            const intensity = (self.progress - 0.5) * 2;
+            if (intensity > 0.8) {
+              textRef.current.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+              textRef.current.style.clipPath = `inset(${Math.random() * 20}% 0 ${Math.random() * 20}% 0)`;
+            }
+          } else if (textRef.current) {
+            textRef.current.style.transform = "translate(0, 0)";
+            textRef.current.style.clipPath = "inset(0)";
+          }
+        },
+      });
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
+
   const mensajeInicio = encodeURIComponent(
     "Hola GAVICOM SAS, requiero atención personalizada para el suministro de materiales ferroviarios."
   );
   const enlaceWhatsApp = `${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=${mensajeInicio}`;
 
-  const [formNombre, setFormNombre] = useState("");
-  const [formTelefono, setFormTelefono] = useState("");
-  const [formMensaje, setFormMensaje] = useState("");
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    const texto = encodeURIComponent(
-      `Hola GAVICOM SAS, soy ${formNombre || "Cliente"}.${formTelefono ? ` Mi teléfono es ${formTelefono}.` : ""} ${formMensaje || "Quiero información sobre sus productos y servicios ferroviarios."}`
-    );
-    window.open(`${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=${texto}`, "_blank");
-  };
-
   return (
-    <>
-      <PageMetaUpdater title="GAVICOM SAS - Suministros Ferroviarios y Herramientas de Vía" />
-      <div className="flex flex-col">
+    <div className="flex flex-col">
+      {/* ── HERO ── */}
+      <section
+        ref={heroRef}
+        className="relative bg-[#f8f9fa] min-h-screen flex items-center overflow-hidden border-b border-[#D35400]/10"
+      >
+        <div className="absolute inset-0">
+          <Image
+            src="/images/gemini-hero.png"
+            alt="GAVICOM — Maquinaria ferroviaria en entorno natural"
+            fill
+            className="object-cover object-center"
+            sizes="100vw"
+            priority
+          />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(to right, #f8f9fa 0%, #f8f9fa 30%, rgba(248,249,250,0.6) 55%, transparent 100%)",
+            }}
+          />
+        </div>
 
-        {/* ════════════════════════════════════════════
-            HERO
-        ════════════════════════════════════════════ */}
-        <SectionReveal>
-        <section className="relative bg-[#2a2a2a] text-white overflow-hidden min-h-[90vh] flex items-center">
-          <div className="absolute inset-0">
-            <Image
-              src="/trenindustrial.png"
-              alt="Tren industrial"
-              fill
-              className="object-cover scale-[1.02]"
-              style={{ filter: "saturate(1.1) contrast(1.3) brightness(0.65)" }}
-              sizes="100vw"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2a2a2a]/95 via-[#2a2a2a]/50 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#2a2a2a] to-transparent" />
-          </div>
+        {/* Perspective rail lines */}
+        <div ref={linesRef} className="absolute inset-0 opacity-[0.045] pointer-events-none">
+          <svg className="w-[200%] h-full" viewBox="0 0 2880 900" preserveAspectRatio="none">
+            <line x1="0" y1="900" x2="720" y2="0" stroke="#D35400" strokeWidth="0.5" />
+            <line x1="1440" y1="900" x2="720" y2="0" stroke="#D35400" strokeWidth="0.5" />
+            <line x1="200" y1="900" x2="900" y2="0" stroke="#D35400" strokeWidth="0.3" />
+            <line x1="1640" y1="900" x2="900" y2="0" stroke="#D35400" strokeWidth="0.3" />
+            <line x1="400" y1="900" x2="1080" y2="0" stroke="#D35400" strokeWidth="0.2" />
+            <line x1="1840" y1="900" x2="1080" y2="0" stroke="#D35400" strokeWidth="0.2" />
+          </svg>
+        </div>
 
-          <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 py-28">
-            <div className="animate-fade-in-up anim-delay-1">
-              <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/40 px-3 py-1.5 inline-block">
-                Infraestructura y Superestructura Ferroviaria
-              </span>
-            </div>
-            <h1 className="mt-10 text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-none max-w-4xl animate-fade-in-up anim-delay-2">
-              Suministro Confiable de
-              <span className="block text-[#D35400] mt-3">
-                Componentes Ferroviarios
-              </span>
-            </h1>
-            <p className="mt-8 text-base sm:text-lg text-zinc-400 max-w-2xl font-medium leading-relaxed animate-fade-in-up anim-delay-3">
-              Especialistas en la distribución independiente de eclisas, sistemas
-              elásticos de sujeción, cambiavías y herramientas certificadas para
-              la industria del transporte y patios industriales.
-            </p>
-
-            <div className="mt-12 pt-4 flex flex-col sm:flex-row items-center justify-start gap-4 animate-fade-in-up anim-delay-4">
-              <Link
-                href="/catalogo"
-                className="btn-glow w-full sm:w-auto text-center text-white text-sm font-bold uppercase tracking-wider px-10 py-4.5 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95 rounded-xl"
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full py-32 lg:py-40">
+          <div className="grid grid-cols-1 items-end">
+            <div>
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
+                className="text-[10px] font-mono font-bold tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/30 px-3 py-1.5 inline-block"
               >
-                Explorar Catálogo
-              </Link>
-              <a
-                href={enlaceWhatsApp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto text-center text-white text-sm font-bold border border-white/20 hover:border-white/60 px-10 py-4.5 transition-all active:scale-95 hover:bg-white/5 rounded-xl"
-              >
-                Contacto Directo
-              </a>
-            </div>
-          </div>
+                Suministros · Fabricación · Obras Civiles
+              </motion.span>
 
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </div>
-        </section>
-        </SectionReveal>
-
-        {/* ════════════════════════════════════════════
-            STATS
-        ════════════════════════════════════════════ */}
-        <SectionReveal>
-        <section className="bg-[#f5f5f7] border-y border-zinc-200">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
-              {[
-                { to: 2, suffix: "", label: "Años de Experiencia" },
-                { to: 999, suffix: "", label: "Cobertura Nacional" },
-                { to: 100, suffix: "%", label: "Calidad Garantizada" },
-                { to: 247, suffix: "", label: "Soporte Técnico" },
-              ].map((stat, i) => (
-                <div key={stat.label} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.12}s` }}>
-                  <div className="text-4xl sm:text-5xl font-black text-[#D35400]">
-                    {stat.to === 247 ? (
-                      <span>24/7</span>
-                    ) : stat.to === 999 ? (
-                      <span className="text-2xl sm:text-3xl flex items-center justify-center gap-2">
-                        <svg className="w-8 h-8 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>COLOMBIA</span>
-                      </span>
-                    ) : (
-                      <AnimatedCounter to={stat.to} suffix={stat.suffix} delay={i * 120} />
-                    )}
-                  </div>
-                  <div className="text-xs text-zinc-500 font-semibold tracking-wide mt-3 uppercase">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-        </SectionReveal>
-
-        {/* ════════════════════════════════════════════
-            SERVICES - Image background cards
-        ════════════════════════════════════════════ */}
-        <SectionReveal>
-        <section className="bg-white py-28 relative">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-            <SectionHeader
-              label="Nuestra Capacidad"
-              title="Soluciones Integrales para la Industria Ferroviaria"
-              description="Ofrecemos un portafolio completo de suministros y servicios certificados para la operación y mantenimiento de vía férrea en Colombia."
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {SERVICES.map((svc, i) => (
-                <ServiceCard
-                  key={svc.title}
-                  title={svc.title}
-                  items={svc.items}
-                  gradient={svc.gradient}
-                  delay={i * 0.15}
-                />
-              ))}
-            </div>
-
-            <div className="mt-16 text-center">
-              <Link
-                href="/catalogo"
-                className="inline-flex items-center gap-2 text-sm font-bold text-[#D35400] hover:text-[#E67E22] transition-colors uppercase tracking-wider border border-[#D35400] px-8 py-3.5 hover:bg-[#D35400]/5 rounded-xl"
-              >
-                Ver catálogo completo de productos
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </section>
-        </SectionReveal>
-
-        {/* ════════════════════════════════════════════
-            RAILWAY AESTHETIC STRIP
-        ════════════════════════════════════════════ */}
-        <SectionReveal>
-        <section className="bg-[#2a2a2a] py-20">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-            <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto">
-              {[RailWheelIcon, TrainIcon, RailIcon].map((Icon, i) => (
-                <div key={i} className="flex flex-col items-center gap-4 text-center">
-                  <div className="w-14 h-14 text-[#D35400] opacity-60">
-                    <Icon />
-                  </div>
-                  <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-widest">
-                    {["Calidad", "Precisión", "Confiabilidad"][i]}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="rail-divider max-w-xs mx-auto mt-12" />
-          </div>
-        </section>
-        </SectionReveal>
-
-        {/* ════════════════════════════════════════════
-            COVERAGE MAP
-        ════════════════════════════════════════════ */}
-        <SectionReveal>
-        <section className="bg-white py-28">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-            <SectionHeader
-              label="Cobertura Nacional"
-              title="Presencia en las Principales Zonas Ferroviarias del País"
-              description="Distribuimos y entregamos materiales en los departamentos con mayor actividad minera, industrial y portuaria de Colombia."
-            />
-
-            <div className="flex flex-col lg:flex-row items-center gap-16">
-              <div className="w-full lg:w-1/2">
-                <ColombiaMap />
-              </div>
-              <div className="w-full lg:w-1/2 space-y-8">
-                <p className="text-sm text-zinc-500 leading-relaxed">
-                  Nuestra red de suministro cubre las regiones mineras del Caribe,
-                  los corredores industriales del centro del país y los principales
-                  puertos de comercio exterior.
-                </p>
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { region: "Caribe", deptos: "La Guajira, Cesar, Magdalena" },
-                    { region: "Caribe", deptos: "Atlántico, Bolívar" },
-                    { region: "Centro", deptos: "Antioquia, Santander" },
-                    { region: "Centro", deptos: "Boyacá, Cundinamarca" },
-                    { region: "Pacífico", deptos: "Valle del Cauca" },
-                    { region: "Orinoquía", deptos: "Meta, Casanare" },
-                  ].map((item) => (
-                    <div
-                      key={item.deptos}
-                      className="border border-zinc-200 p-4 hover:border-[#D35400]/30 transition-all hover:bg-[#D35400]/[0.02] rounded-xl"
-                    >
-                      <span className="text-[10px] font-bold text-[#D35400] uppercase tracking-wider">
-                        {item.region}
-                      </span>
-                      <p className="text-xs text-zinc-600 mt-1.5">{item.deptos}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        </SectionReveal>
-
-        {/* ════════════════════════════════════════════
-            FORMULARIO RÁPIDO
-        ════════════════════════════════════════════ */}
-        <SectionReveal>
-        <section className="bg-[#f5f5f7] border-y border-zinc-200 py-24">
-          <div className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
-            <SectionHeader label="Contacto Rápido" title="Cuéntenos su proyecto y le respondemos al instante" />
-
-            <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-2">
-                    Nombre *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formNombre}
-                    onChange={(e) => setFormNombre(e.target.value)}
-                    placeholder="Su nombre"
-                    className="w-full px-4 py-3.5 bg-white border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all rounded-xl"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-2">
-                    Teléfono
-                  </label>
-                  <input
-                    type="tel"
-                    value={formTelefono}
-                    onChange={(e) => setFormTelefono(e.target.value)}
-                    placeholder="+57 300 000 0000"
-                    className="w-full px-4 py-3.5 bg-white border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all rounded-xl"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-2">
-                  Mensaje *
-                </label>
-                <textarea
-                  required
-                  rows={3}
-                  value={formMensaje}
-                  onChange={(e) => setFormMensaje(e.target.value)}
-                  placeholder="Describa brevemente su necesidad..."
-                  className="w-full px-4 py-3.5 bg-white border border-zinc-200 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all resize-none rounded-xl"
-                />
-              </div>
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  className="btn-glow w-full text-center text-white text-sm font-bold uppercase tracking-wider px-8 py-4 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95 rounded-xl"
+              <h1 ref={textRef} className="mt-8" style={{ letterSpacing: "-0.05em" }}>
+                <motion.span
+                  initial={{ opacity: 0, y: 80 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1], delay: 0.2 }}
+                  className="block text-6xl sm:text-7xl lg:text-8xl xl:text-[9rem] font-black leading-[0.82] text-[#1a1a2e]"
                 >
-                  Enviar por WhatsApp
-                </button>
-              </div>
-              <p className="text-[10px] text-zinc-400 text-center">
-                Al enviar se abrirá WhatsApp con sus datos pre-cargados. Sin formularios ni esperas.
-              </p>
-            </form>
+                  GAVICOM
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, y: 60 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1], delay: 0.35 }}
+                  className="block text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-zinc-400 mt-3"
+                >
+                  Infraestructura Ferroviaria
+                </motion.span>
+              </h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1], delay: 0.5 }}
+                className="mt-6 text-sm text-zinc-600 max-w-xl leading-relaxed"
+              >
+                Especialistas en suministro de componentes ferroviarios, fabricación de herramientas
+                especializadas y ejecución de obras civiles para infraestructura de transporte en Colombia.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1], delay: 0.65 }}
+                className="mt-10 flex flex-col sm:flex-row items-center justify-start gap-4"
+              >
+                <ShinyButton href="/catalogo">Explorar Catálogo</ShinyButton>
+                <GhostButton href={enlaceWhatsApp} target="_blank" rel="noopener noreferrer">
+                  Contacto Directo
+                </GhostButton>
+              </motion.div>
+            </div>
           </div>
-        </section>
-        </SectionReveal>
+        </div>
 
-        {/* ════════════════════════════════════════════
-            FOOTER - Multi-column
-        ════════════════════════════════════════════ */}
-        <footer className="bg-[#2a2a2a] border-t border-zinc-800">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-              {/* Brand */}
-              <div className="space-y-4">
-                <Image
-                  src="/logo-gavicom.png"
-                  alt="GAVICOM SAS"
-                  width={40}
-                  height={40}
-                  className="opacity-80"
-                />
-                <p className="text-xs text-zinc-500 leading-relaxed">
-                  {COMPANIA_INFO.disclaimerLegal}
-                </p>
-                <div className="flex items-center gap-3 pt-2">
-                  <a
-                    href={enlaceWhatsApp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-8 h-8 flex items-center justify-center border border-zinc-700 text-zinc-400 hover:text-[#D35400] hover:border-[#D35400] transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                    </svg>
-                  </a>
-                  <a
-                    href={`mailto:${COMPANIA_INFO.email}`}
-                    className="w-8 h-8 flex items-center justify-center border border-zinc-700 text-zinc-400 hover:text-[#D35400] hover:border-[#D35400] transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <span className="text-[9px] font-mono text-zinc-700 uppercase tracking-[0.3em]">
+              SCROLL ↓
+            </span>
+          </motion.div>
+        </div>
+      </section>
 
-              {/* Enlaces */}
-              <div>
-                <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-wider mb-4">
-                  Enlaces
-                </h4>
-                <ul className="space-y-2.5">
-                  {[
-                    { label: "Inicio", href: "/" },
-                    { label: "Catálogo", href: "/catalogo" },
-                    { label: "Servicios", href: "/servicios" },
-                    { label: "Contacto", href: "/contacto" },
-                  ].map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-                      >
-                        {link.label}
-                      </Link>
+      {/* ── STATS BAND ── */}
+      <section className="border-b border-[#D35400]/10 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
+          >
+            <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase">
+              Trazabilidad
+            </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-[#1a1a2e] mt-3">
+              Cifras que Respaldan
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-3 gap-8 md:gap-12 mt-12">
+            {[
+              { type: "proud", label: "Orgullo Colombiano" },
+              { to: 100, suffix: "%", label: "Calidad Garantizada", sub: "bajo estándares AREMA/UIC" },
+              { to: 247, suffix: "", label: "Soporte Técnico", sub: "atención continua especializada" },
+            ].map((stat: any, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.12, ease: [0.65, 0, 0.35, 1] }}
+              >
+                {stat.type === "proud" ? (
+                  <ColombiaProud />
+                ) : (
+                  <>
+                    <div
+                      className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#1a1a2e]"
+                      style={{ letterSpacing: "-0.05em" }}
+                    >
+                      {stat.to === 247 ? (
+                        <span>24/7</span>
+                      ) : (
+                        <AnimatedCounter to={stat.to} suffix={stat.suffix} delay={i * 120} />
+                      )}
+                    </div>
+                    <div className="mt-2">
+                      <span className="text-xs font-bold text-zinc-600 tracking-wide uppercase">
+                        {stat.label}
+                      </span>
+                      <span className="text-[10px] text-zinc-400 block mt-0.5">{stat.sub}</span>
+                    </div>
+                  </>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SERVICES PREVIEW ── */}
+      <section className="border-b border-[#D35400]/10 bg-[#f8f9fa]">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
+            className="mb-16"
+          >
+            <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase">
+              Capacidades
+            </span>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter leading-[0.9] text-[#1a1a2e] mt-4">
+              Soluciones Integrales
+            </h2>
+            <p className="text-sm text-zinc-600 mt-4 max-w-xl">
+              Ofrecemos un portafolio completo de suministros y servicios certificados para la operación y
+              mantenimiento de vía férrea en Colombia.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-zinc-200">
+            {[
+              {
+                title: "Suministros Ferroviarios",
+                items: [
+                  "Eclisas y fijaciones para rieles AREMA/UIC",
+                  "Sistemas elásticos de sujeción certificados",
+                  "Componentes para superestructura de vía",
+                  "Materiales para patios industriales y talleres",
+                ],
+              },
+              {
+                title: "Fabricación de Herramientas",
+                items: [
+                  "Herramientas manuales para montaje y mantenimiento",
+                  "Equipos de señalización ferroviaria propios",
+                  "Carpa y protectores para soldadura aluminotérmica",
+                  "Troleys y plataformas de carga sobre medida",
+                ],
+              },
+              {
+                title: "Obras Civiles",
+                items: [
+                  "Estudios topográficos con drones y modelado 3D",
+                  "Movimiento de tierras y adecuación de plataformas",
+                  "Obras de drenaje y sub-drenaje ferroviario",
+                  "Diseño y planos técnicos para infraestructura",
+                ],
+              },
+            ].map((svc, i) => (
+              <motion.div
+                key={svc.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.12, ease: [0.65, 0, 0.35, 1] }}
+                className="neon-chase bg-white p-8 hover:bg-[#f0f2f5] transition-colors group"
+              >
+                <span className="text-[10px] font-bold text-[#D35400] tracking-widest uppercase">
+                  {`0${i + 1}`}
+                </span>
+                <h3 className="text-lg font-bold text-[#1a1a2e] mt-3 mb-4">{svc.title}</h3>
+                <ul className="space-y-2">
+                  {svc.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-xs text-zinc-600">
+                      <span className="text-[#D35400] mt-0.5 shrink-0">▸</span>
+                      {item}
                     </li>
                   ))}
                 </ul>
-              </div>
-
-              {/* Contacto */}
-              <div>
-                <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-wider mb-4">
-                  Contacto
-                </h4>
-                <ul className="space-y-2.5">
-                  <li>
-                    <span className="text-xs text-zinc-500 block">
-                      <span className="text-zinc-400">Gerente General:</span>{" "}
-                      {COMPANIA_INFO.gerente}
-                    </span>
-                  </li>
-                  <li>
-                    <a
-                      href={`https://wa.me/${COMPANIA_INFO.whatsappSales.replace("+", "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-[#D35400] hover:text-[#E67E22] transition-colors"
-                    >
-                      {COMPANIA_INFO.whatsappSales}
-                    </a>
-                  </li>
-                  <li>
-                    <span className="text-xs text-zinc-500 block">
-                      <span className="text-zinc-400">Directora Ejecutiva:</span>{" "}
-                      {COMPANIA_INFO.directora}
-                    </span>
-                  </li>
-                  <li>
-                    <a
-                      href={`https://wa.me/${COMPANIA_INFO.directoraWhatsapp.replace("+", "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-[#D35400] hover:text-[#E67E22] transition-colors"
-                    >
-                      {COMPANIA_INFO.directoraWhatsapp}
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href={`mailto:${COMPANIA_INFO.email}`}
-                      className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-                    >
-                      {COMPANIA_INFO.email}
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href={enlaceWhatsApp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-[#D35400] hover:text-[#E67E22] transition-colors font-medium"
-                    >
-                      +57 315 050 9803
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Legal */}
-              <div>
-                <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-wider mb-4">
-                  Legal
-                </h4>
-                <ul className="space-y-2.5">
-                  <li>
-                    <span className="text-xs text-zinc-500">
-                      © {new Date().getFullYear()} {COMPANIA_INFO.nombre}
-                    </span>
-                  </li>
-                  <li>
-                    <span className="text-xs text-zinc-500">
-                      Todos los derechos reservados
-                    </span>
-                  </li>
-                  <li>
-                    <span className="text-xs text-zinc-500">
-                      NIT en trámite
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="rail-divider max-w-md mx-auto mt-12 mb-6" />
-
-            <p className="text-[10px] text-zinc-600 text-center leading-relaxed max-w-2xl mx-auto">
-              GAVICOM SAS es comercializador y distribuidor independiente de
-              componentes ferroviarios. Las marcas, normas y estándares
-              mencionados pertenecen a sus respectivos dueños y se usan
-              exclusivamente como referencia técnica.
-            </p>
+                <div className="mt-6 pt-4 border-t border-zinc-100">
+                  <Link
+                    href="/servicios"
+                    className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[#D35400] hover:text-[#1a1a2e] transition-colors uppercase tracking-wider"
+                  >
+                    Ver servicios
+                    <span className="text-xs">→</span>
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </footer>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-12 text-center"
+          >
+            <Link
+              href="/catalogo"
+              className="inline-flex items-center gap-2 text-xs font-bold text-[#D35400] hover:text-[#1a1a2e] transition-colors uppercase tracking-wider border border-[#D35400]/30 hover:border-[#D35400]/60 px-8 py-3.5"
+            >
+              Ver catálogo completo de productos
+              <span className="text-sm">→</span>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── COVERAGE MAP ── */}
+      <section className="border-b border-[#D35400]/10 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
+            className="mb-16"
+          >
+            <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase">
+              Cobertura Nacional
+            </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-[#1a1a2e] mt-3">
+              Presencia en las Principales Zonas Ferroviarias
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <ColombiaMap />
+
+            <div className="space-y-5">
+              {[
+                { zona: "Caribe", desc: "Carga minera Cerrejón + logística portuaria", proyectos: 4 },
+                { zona: "Centro", desc: "Talleres Facatativá + Corredor Central", proyectos: 6 },
+                { zona: "Pacífico", desc: "Conexión férrea Buenaventura", proyectos: 2 },
+                { zona: "Orinoquía", desc: "Plataforma de carga Villavicencio", proyectos: 1 },
+                { zona: "Sur", desc: "Eje férreo Tolima–Huila–Nariño", proyectos: 2 },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.zona}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.08 }}
+                  className="flex items-center gap-4 border-l-2 border-[#D35400]/40 pl-4 hover:border-[#D35400] transition-colors group"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-sm font-bold text-[#1a1a2e] tracking-tight">
+                        {item.zona}
+                      </span>
+                      <span className="text-[10px] text-[#D35400]/70">{item.proyectos} proyectos</span>
+                    </div>
+                    <span className="text-[10px] text-zinc-500 mt-0.5 block">{item.desc}</span>
+                  </div>
+                  <motion.span
+                    animate={{ x: 0 }}
+                    whileHover={{ x: 4 }}
+                    className="text-zinc-300 group-hover:text-[#D35400] text-xs transition-colors"
+                  >
+                    →
+                  </motion.span>
+                </motion.div>
+              ))}
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="mt-6 border border-[#D35400]/20 px-5 py-4 flex items-center justify-between bg-white/50"
+              >
+                <span className="text-[10px] text-zinc-600 uppercase tracking-widest">
+                  Total proyectos activos
+                </span>
+                <span className="text-2xl font-black text-[#1a1a2e]" style={{ letterSpacing: "-0.04em" }}>
+                  15
+                </span>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ─── MOBILE VIEW (100% NATIVE MOBILE EXPERIENCE) ─────────────────────────────
+function MobileView() {
+  const mensajeInicio = encodeURIComponent(
+    "Hola GAVICOM SAS, requiero atención personalizada para el suministro de materiales ferroviarios."
+  );
+  const enlaceWhatsApp = `${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=${mensajeInicio}`;
+
+  return (
+    <div className="flex flex-col bg-[#f8f9fa] overflow-x-hidden">
+      {/* ── MOBILE HERO ── */}
+      <section className="relative min-h-[100dvh] flex flex-col justify-end pb-16 px-6">
+        {/* Background Image Optimized for Mobile */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/gemini-hero.png"
+            alt="GAVICOM Maquinaria"
+            fill
+            className="object-cover object-[80%_center]"
+            priority
+          />
+          {/* Vertical gradient overlay to ensure text contrast */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#f8f9fa] via-[#f8f9fa]/90 to-transparent" />
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/30 px-3 py-1.5 inline-block mb-5">
+              Suministros · Obras
+            </span>
+            <h1 className="text-[3.5rem] font-black leading-[0.85] text-[#1a1a2e] tracking-tighter drop-shadow-sm">
+              GAVICOM
+            </h1>
+            <h2 className="text-2xl font-black text-zinc-600 mt-3 leading-tight">
+              Infraestructura<br />Ferroviaria
+            </h2>
+            <p className="mt-5 text-sm text-zinc-700 leading-relaxed max-w-[95%]">
+              Especialistas en componentes, herramientas y obras civiles para infraestructura de transporte en todo el país.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="mt-8 flex flex-col gap-3 w-full"
+          >
+            <ShinyButton href="/catalogo">Explorar Catálogo</ShinyButton>
+            <GhostButton href={enlaceWhatsApp} target="_blank" rel="noopener noreferrer">
+              Contacto Directo
+            </GhostButton>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── MOBILE STATS (VERTICAL CARDS) ── */}
+      <section className="py-20 px-6 bg-white border-y border-[#D35400]/10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-12 text-center"
+        >
+          <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase block mb-2">
+            Trazabilidad
+          </span>
+          <h2 className="text-3xl font-black tracking-tighter text-[#1a1a2e]">
+            Cifras que Respaldan
+          </h2>
+        </motion.div>
+
+        <div className="flex flex-col gap-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
+          >
+            <div className="scale-125 mb-4"><ColombiaProud /></div>
+            <span className="text-sm font-bold text-zinc-800 uppercase mt-4">Orgullo Colombiano</span>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
+          >
+            <div className="text-6xl font-black text-[#1a1a2e] tracking-tighter">
+              <AnimatedCounter to={100} suffix="%" />
+            </div>
+            <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Calidad Garantizada</span>
+            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">bajo estándares AREMA/UIC</span>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
+          >
+            <div className="text-6xl font-black text-[#1a1a2e] tracking-tighter">
+              24/7
+            </div>
+            <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Soporte Técnico</span>
+            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">atención continua</span>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── MOBILE SERVICES (STACKED LIST) ── */}
+      <section className="py-20 px-6 bg-[#f8f9fa]">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-10"
+        >
+          <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase block mb-2">
+            Capacidades
+          </span>
+          <h2 className="text-4xl font-black tracking-tighter leading-[0.9] text-[#1a1a2e]">
+            Soluciones<br />Integrales
+          </h2>
+        </motion.div>
+
+        <div className="flex flex-col gap-4">
+          {[
+            {
+              title: "Suministros Ferroviarios",
+              items: ["Eclisas y fijaciones AREMA/UIC", "Sistemas elásticos de sujeción", "Materiales para patios"],
+            },
+            {
+              title: "Fabricación de Herramientas",
+              items: ["Equipos de señalización propios", "Protección aluminotérmica", "Troleys sobre medida"],
+            },
+            {
+              title: "Obras Civiles",
+              items: ["Estudios con drones y 3D", "Obras de drenaje ferroviario", "Adecuación de plataformas"],
+            },
+          ].map((svc, i) => (
+            <motion.div
+              key={svc.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-bold text-[#1a1a2e]">{svc.title}</h3>
+                <span className="text-[10px] font-bold text-[#D35400] tracking-widest bg-[#D35400]/10 px-2 py-1 rounded">
+                  0{i + 1}
+                </span>
+              </div>
+              <ul className="space-y-3">
+                {svc.items.map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-xs text-zinc-600 leading-snug">
+                    <span className="text-[#D35400] shrink-0 font-bold">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-10 w-full"
+        >
+          <Link
+            href="/catalogo"
+            className="flex items-center justify-center w-full bg-white border border-[#D35400]/30 text-[#D35400] text-xs font-bold uppercase tracking-wider py-5 rounded-xl shadow-sm active:scale-[0.98] transition-transform"
+          >
+            Ver catálogo completo →
+          </Link>
+        </motion.div>
+      </section>
+
+      {/* ── MOBILE MAP ── */}
+      <section className="py-20 px-6 bg-white border-t border-[#D35400]/10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-10 text-center"
+        >
+          <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase block mb-2">
+            Cobertura Nacional
+          </span>
+          <h2 className="text-3xl font-black tracking-tighter text-[#1a1a2e]">
+            Presencia Activa
+          </h2>
+        </motion.div>
+
+        {/* Map Container scaled for mobile */}
+        <div className="w-full flex justify-center mb-12">
+          <div className="scale-[0.8] origin-center">
+            <ColombiaMap />
+          </div>
+        </div>
+
+        <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100">
+          <div className="space-y-5">
+            {[
+              { zona: "Caribe", desc: "Carga minera Cerrejón + logística", proyectos: 4 },
+              { zona: "Centro", desc: "Talleres Facatativá + Corredor Central", proyectos: 6 },
+              { zona: "Pacífico", desc: "Conexión férrea Buenaventura", proyectos: 2 },
+              { zona: "Orinoquía", desc: "Plataforma de carga Villavicencio", proyectos: 1 },
+              { zona: "Sur", desc: "Eje férreo Tolima–Huila–Nariño", proyectos: 2 },
+            ].map((item, i) => (
+              <motion.div
+                key={item.zona}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-start gap-3 border-b border-zinc-200 pb-4 last:border-0 last:pb-0"
+              >
+                <div className="mt-1 w-2 h-2 rounded-full bg-[#D35400] shrink-0" />
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm font-bold text-[#1a1a2e]">{item.zona}</span>
+                    <span className="text-[10px] bg-zinc-200 text-zinc-600 px-2 py-0.5 rounded-full">
+                      {item.proyectos}
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-zinc-500 mt-1 block leading-tight">{item.desc}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="mt-8 pt-5 border-t border-zinc-200 flex justify-between items-center">
+            <span className="text-[10px] text-zinc-600 uppercase tracking-widest font-bold">
+              Total Proyectos
+            </span>
+            <span className="text-2xl font-black text-[#D35400]">
+              15
+            </span>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ─── MAIN EXPORT ──────────────────────────────────────────────────────────────
+export default function HomePage() {
+  return (
+    <>
+      <PageMetaUpdater title="GAVICOM SAS - Suministros Ferroviarios, Fabricación y Obras Civiles" />
+
+      {/* Render the complex Desktop view only on medium screens and up */}
+      <div className="hidden md:block">
+        <DesktopView />
+      </div>
+
+      {/* Render the highly-optimized native Mobile view on small screens */}
+      <div className="block md:hidden">
+        <MobileView />
       </div>
     </>
   );

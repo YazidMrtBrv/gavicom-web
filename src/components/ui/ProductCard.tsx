@@ -36,14 +36,14 @@ function VariantStrip({
   return (
     <div
       ref={stripRef}
-      className="flex gap-1.5 px-4 py-3 bg-[#f5f5f7] border-b border-[#e8edf2] overflow-x-auto"
+      className="flex gap-1.5 px-4 py-3 bg-[#f8f9fa] border-b border-zinc-200 overflow-x-auto"
     >
       {variantes.map((v, i) => (
         <button
           key={v.imagen}
           data-idx={i}
           onClick={() => onSelect(i)}
-          className={`shrink-0 w-14 h-10 border-2 transition-all overflow-hidden rounded-lg relative bg-white ${
+          className={`shrink-0 w-14 h-10 border-2 transition-all overflow-hidden rounded-none relative bg-white ${
             i === selected
               ? "border-[#D35400] opacity-100"
               : "border-transparent opacity-50 hover:opacity-80"
@@ -101,9 +101,9 @@ export default function ProductCard({ producto }: ProductCardProps) {
         </div>
       )}
 
-      <div className="flex flex-col bg-white rounded-2xl border border-[#e8edf2] overflow-hidden card-hover group shadow-sm">
+      <div className="flex flex-col bg-white rounded-none border border-zinc-200 overflow-hidden card-hover group transition-all duration-300 hover:border-[#D35400]/50">
         <div
-          className="relative w-full h-48 bg-[#f5f5f7] overflow-hidden border-b border-[#e8edf2] cursor-zoom-in p-4"
+          className="relative w-full h-48 bg-[#f8f9fa] overflow-hidden border-b border-zinc-200 cursor-zoom-in p-4"
           onClick={() => !imgError && setZoomOpen(true)}
         >
           {!imgError ? (
@@ -152,17 +152,17 @@ export default function ProductCard({ producto }: ProductCardProps) {
             {categoria}
           </span>
           <span className="text-zinc-300 text-xs">•</span>
-          <span className="text-[10px] font-semibold text-zinc-500 bg-[#f8f9fa] px-2 py-0.5 rounded">
+          <span className="text-[9px] font-mono tracking-widest text-zinc-500 border border-zinc-200 px-2 py-0.5">
             {subcategoria}
           </span>
           {todasLasVariantes.length > 1 && (
-            <span className="text-[10px] text-zinc-400 ml-auto">
+            <span className="text-[10px] font-mono text-zinc-400 ml-auto border border-zinc-200 px-1.5">
               {varianteIdx + 1}/{todasLasVariantes.length}
             </span>
           )}
         </div>
 
-        <h3 className="text-base font-bold text-[#2a2a2a] group-hover:text-[#D35400] transition-colors duration-300 mb-2 leading-snug">
+        <h3 className="text-base font-bold text-[#1a1a2e] group-hover:text-[#D35400] transition-colors duration-300 mb-2 leading-snug">
           {nombre}
         </h3>
 
@@ -174,9 +174,9 @@ export default function ProductCard({ producto }: ProductCardProps) {
           <TechnicalTable especificaciones={specsActual} />
         </div>
 
-        <div className="mt-auto pt-4 border-t border-[#e8edf2] flex items-center justify-between gap-4">
+        <div className="mt-auto pt-4 border-t border-zinc-200 flex items-center justify-between gap-4">
           <span
-            className="text-[10px] font-mono text-zinc-400 tracking-tight block max-w-[140px] truncate"
+            className="text-[9px] font-mono text-zinc-400 tracking-widest uppercase block max-w-[140px] truncate"
             title={origen}
           >
             {origen}
@@ -186,9 +186,9 @@ export default function ProductCard({ producto }: ProductCardProps) {
             href={enlaceCotizacion}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-glow inline-flex items-center text-[#2a2a2a] text-xs font-bold px-4 py-2.5 rounded shadow-sm tracking-wide transition-all duration-200 active:scale-95 bg-[#D35400] hover:bg-[#E67E22]"
+            className="inline-flex items-center justify-center text-[#D35400] text-[10px] font-bold uppercase tracking-[0.2em] border border-[#D35400] px-4 py-2 hover:bg-[#D35400] hover:text-white transition-all active:scale-[0.97]"
           >
-            Cotizar
+            Cotizar →
           </a>
         </div>
       </div>

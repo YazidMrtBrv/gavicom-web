@@ -9,28 +9,28 @@ export default function TechnicalTable({
     return null;
 
   return (
-    <div className="w-full overflow-hidden rounded border border-[#e8edf2]">
-      <table className="w-full text-left text-xs">
+    <div className="w-full border border-zinc-200">
+      <table className="w-full text-left text-xs font-mono">
         <thead>
-          <tr className="border-b border-[#e8edf2] bg-[#2a2a2a] text-white">
-            <th className="px-3 py-2 font-bold uppercase text-[10px] tracking-wider">
+          <tr className="border-b border-zinc-200 bg-[#f8f9fa] text-[#1a1a2e]">
+            <th className="px-3 py-2 font-bold uppercase text-[9px] tracking-[0.2em] border-r border-zinc-200 w-2/5">
               Parámetro
             </th>
-            <th className="px-3 py-2 font-bold uppercase text-[10px] tracking-wider">
+            <th className="px-3 py-2 font-bold uppercase text-[9px] tracking-[0.2em]">
               Especificación
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#e8edf2]">
+        <tbody className="divide-y divide-zinc-200">
           {Object.entries(especificaciones).map(([clave, valor]) => (
             <tr
               key={clave}
-              className="hover:bg-[#f8f9fa] transition-colors duration-150"
+              className="hover:bg-[#f5f5f7] transition-colors duration-150"
             >
-              <td className="px-3 py-2 font-semibold text-zinc-500 w-2/5">
+              <td className="px-3 py-2 font-semibold text-zinc-500 border-r border-zinc-200 text-[10px]">
                 {clave}
               </td>
-              <td className="px-3 py-2 text-[#2a2a2a] font-medium">
+              <td className="px-3 py-2 text-[#1a1a2e] font-medium text-[10px]">
                 {String(valor)}
               </td>
             </tr>

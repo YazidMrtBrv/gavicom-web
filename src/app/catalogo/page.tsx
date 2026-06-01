@@ -53,57 +53,56 @@ export default function CatalogoPage() {
   return (
     <>
       <PageMetaUpdater title="Catálogo Técnico - Componentes y Suministros Ferroviarios" />
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-[#f8f9fa]">
       {/* HEADER */}
-      <div className="bg-[#2a2a2a]">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-white border-b border-[#D35400]/10 relative overflow-hidden">
+        {/* Subtle grid background */}
+        <div 
+          className="absolute inset-0 opacity-[0.02] pointer-events-none" 
+          style={{ backgroundImage: 'linear-gradient(#1a1a2e 1px, transparent 1px), linear-gradient(90deg, #1a1a2e 1px, transparent 1px)', backgroundSize: '32px 32px' }} 
+        />
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16 lg:py-20 relative z-10">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
             <div>
-              <span className="text-[10px] font-black tracking-[0.3em] text-[#D35400] uppercase">
+              <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/30 px-3 py-1.5 inline-block mb-6">
                 Catálogo Técnico
               </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white mt-2">
-                Componentes y Suministros
+              <h1 
+                className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#1a1a2e] leading-none"
+                style={{ letterSpacing: "-0.05em" }}
+              >
+                Componentes y<br />
+                <span className="text-zinc-400">Suministros</span>
               </h1>
             </div>
             <a
               href={enlaceWhatsAppGlobal}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center text-[#2a2a2a] text-xs font-bold uppercase tracking-wider px-6 py-3 bg-[#D35400] hover:bg-[#E67E22] border border-[#D35400] transition-all active:scale-95 self-start rounded-xl"
+              className="inline-flex items-center justify-center text-[#1a1a2e] text-xs font-bold uppercase tracking-[0.2em] border border-zinc-300 px-10 py-4 hover:border-[#D35400] transition-all active:scale-[0.97] bg-white group self-start sm:self-end"
             >
               Cotización Rápida
+              <span className="ml-2 text-[#CC4C00] group-hover:translate-x-1 transition-transform">→</span>
             </a>
           </div>
         </div>
       </div>
 
       {/* SEARCH */}
-      <div className="bg-white border-b border-[#e8edf2]">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-6">
-          <div className="relative">
+      <div className="bg-white border-b border-zinc-200 sticky top-0 z-30 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-4">
+          <div className="flex items-center relative bg-[#f8f9fa] border border-zinc-200 focus-within:border-[#D35400] focus-within:ring-1 focus-within:ring-[#D35400] transition-all">
+            <div className="pl-4 pr-2 flex items-center justify-center text-[#D35400] font-mono text-[10px] sm:text-xs font-bold pointer-events-none">
+              <span className="hidden sm:inline">&gt; BUSCAR_REF:</span>
+              <span className="sm:hidden">&gt; ref:</span>
+            </div>
             <input
               type="text"
-              placeholder="Buscar por nombre, SKU, categoría o especificación técnica..."
-              className="w-full pl-12 pr-4 py-4 bg-[#f5f5f7] border border-[#e8edf2] text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#D35400] transition-all font-medium rounded-2xl"
+              placeholder="Ingresa SKU, nombre o especificación..."
+              className="w-full py-3.5 pr-4 bg-transparent text-sm font-mono text-[#1a1a2e] placeholder-zinc-400 focus:outline-none"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
             />
-            <div className="absolute left-4 top-4 text-zinc-400">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
           </div>
         </div>
       </div>
@@ -111,28 +110,56 @@ export default function CatalogoPage() {
       {/* CONTENT */}
       <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 py-12 flex-grow">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-          <aside className="bg-white border border-[#e8edf2] rounded-2xl shadow-sm overflow-hidden">
-            <div className="p-5 border-b border-[#e8edf2] bg-[#f5f5f7]">
-              <h3 className="text-xs font-black uppercase tracking-wider text-[#2a2a2a]">
-                Categorías
+          {/* Desktop: vertical sidebar */}
+          <aside className="hidden lg:block bg-white border border-zinc-200 rounded-none h-fit shadow-sm">
+            <div className="p-5 border-b border-zinc-200 bg-[#1a1a2e]">
+              <h3 className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white flex items-center gap-2">
+                <span className="w-2 h-2 bg-[#D35400] inline-block animate-pulse"></span>
+                Índice de Categorías
               </h3>
             </div>
-            <div className="p-3 space-y-0.5">
-              {categorias.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setCategoriaSeleccionada(cat)}
-                  className={`w-full text-left px-4 py-3 text-xs font-bold transition-all rounded-xl ${
-                    categoriaSeleccionada === cat
-                      ? "bg-[#2a2a2a] text-white"
-                      : "text-zinc-500 hover:bg-[#f5f5f7] hover:text-[#2a2a2a]"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+            <div className="p-3 space-y-1">
+              {categorias.map((cat, index) => {
+                const isActive = categoriaSeleccionada === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoriaSeleccionada(cat)}
+                    className={`w-full flex items-center text-left px-4 py-3 text-xs font-mono transition-all rounded-none border-l-2 ${
+                      isActive
+                        ? "border-[#D35400] bg-[#f8f9fa] text-[#D35400] font-bold"
+                        : "border-transparent text-zinc-500 hover:bg-[#f8f9fa] hover:text-[#1a1a2e]"
+                    }`}
+                  >
+                    <span className="text-zinc-400 mr-3 w-5 opacity-50">{String(index).padStart(2, "0")}.</span>
+                    <span className="uppercase tracking-widest leading-relaxed">{cat}</span>
+                  </button>
+                );
+              })}
             </div>
           </aside>
+
+          {/* Mobile: horizontal scroll pills */}
+          <div className="lg:hidden -mx-6 sm:-mx-8 lg:-mx-12 px-6 sm:px-8 lg:px-12">
+            <div className="flex gap-2 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-none">
+              {categorias.map((cat, index) => {
+                const isActive = categoriaSeleccionada === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoriaSeleccionada(cat)}
+                    className={`shrink-0 snap-start text-[11px] font-bold uppercase tracking-wider px-5 py-2.5 border transition-all whitespace-nowrap rounded-full ${
+                      isActive
+                        ? "bg-[#D35400] text-white border-[#D35400]"
+                        : "bg-white text-zinc-500 border-zinc-200 hover:border-[#D35400]/50 hover:text-[#D35400]"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           <div className="lg:col-span-3">
             {productosFiltrados.length > 0 ? (
@@ -142,36 +169,24 @@ export default function CatalogoPage() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white border border-[#e8edf2] rounded-2xl p-16 text-center max-w-xl mx-auto shadow-sm">
-                <div className="w-14 h-14 flex items-center justify-center mx-auto mb-5 border border-[#e8edf2] text-zinc-300 rounded-xl">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                    />
-                  </svg>
+              <div className="bg-white border border-zinc-200 rounded-none p-16 text-center max-w-xl mx-auto">
+                <div className="w-16 h-16 flex items-center justify-center mx-auto mb-6 border border-zinc-200 bg-[#f8f9fa]">
+                  <span className="text-[#D35400] text-2xl font-mono">!</span>
                 </div>
-                <h4 className="text-base font-bold text-[#2a2a2a] mb-3">
-                  Referencia no localizada
+                <h4 className="text-base font-black tracking-tight text-[#1a1a2e] mb-3 uppercase">
+                  Referencia No Localizada
                 </h4>
-                <p className="text-sm text-zinc-500 leading-relaxed mb-8 max-w-sm mx-auto">
-                  Algunas especificaciones pesadas no se muestran públicamente.
-                  Consúltenos por cualquier estándar AREMA/UIC.
+                <p className="text-xs font-mono text-zinc-500 leading-relaxed mb-8 max-w-sm mx-auto">
+                  Algunas especificaciones restringidas no se muestran públicamente. 
+                  Consúltenos directamente por estándares AREMA/UIC.
                 </p>
                 <a
                   href={`${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=Hola%20GAVICOM%20SAS,%20busco%20un%20suministro%20especifico%20que%20no%20aparece%20en%20el%20catalogo.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center text-xs font-bold text-[#2a2a2a] bg-[#D35400] hover:bg-[#E67E22] px-6 py-3 transition-all active:scale-95 rounded-xl"
+                  className="inline-flex items-center text-xs font-bold uppercase tracking-[0.2em] text-[#1a1a2e] border border-[#D35400] px-8 py-3 hover:bg-[#D35400] hover:text-white transition-all active:scale-[0.97]"
                 >
-                  Consultar Disponibilidad
+                  Consultar Bodega
                 </a>
               </div>
             )}
@@ -179,12 +194,6 @@ export default function CatalogoPage() {
         </div>
       </main>
 
-      {/* FOOTER */}
-      <footer className="bg-[#2a2a2a] py-10 border-t border-[#D35400]/20">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-[11px] text-zinc-400 text-center leading-relaxed">
-          {COMPANIA_INFO.disclaimerLegal}
-        </div>
-      </footer>
     </div>
     </>
   );

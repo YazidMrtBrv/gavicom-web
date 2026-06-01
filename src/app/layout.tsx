@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/commons/Navbar";
 import WhatsAppFloat from "@/components/commons/WhatsAppFloat";
 import PageTransition from "@/components/PageTransition";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+import IntroWrapper from "@/components/IntroWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import Footer from "@/components/ui/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -76,9 +74,9 @@ export const metadata: Metadata = {
     "max-image-preview": "large",
   },
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/favicon.png",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 
@@ -115,7 +113,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${inter.variable}`}
     >
       <head>
         <script
@@ -123,10 +121,13 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen bg-white text-zinc-900 font-sans antialiased flex flex-col">
-        <Navbar />
-        <main className="flex-grow"><ErrorBoundary><PageTransition>{children}</PageTransition></ErrorBoundary></main>
-        <WhatsAppFloat />
+      <body className="min-h-screen bg-[#f8f9fa] text-[#1a1a2e] font-sans antialiased flex flex-col">
+        <IntroWrapper>
+          <Navbar />
+          <main className="flex-grow"><SmoothScrollProvider><ErrorBoundary><PageTransition>{children}</PageTransition></ErrorBoundary></SmoothScrollProvider></main>
+          <Footer />
+          <WhatsAppFloat />
+        </IntroWrapper>
       </body>
     </html>
   );
