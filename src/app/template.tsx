@@ -43,18 +43,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
         ))}
       </div>
 
-      {/* Page Content Animation */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 30, filter: "blur(8px)" }}
-        animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-        transition={{
-          duration: 1,
-          ease: [0.22, 1, 0.36, 1],
-          delay: 0.6,
-        }}
-      >
-        {children}
-      </motion.div>
+      {/* The content is not wrapped in an entry animation here: its initial
+          opacity:0 shipped in the server HTML and left the page blank until
+          hydration finished. PageTransition fades it in from CSS instead. */}
+      {children}
     </>
   );
 }

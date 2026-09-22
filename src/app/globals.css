@@ -173,6 +173,23 @@ body {
 }
 
 /* ============================================================
+   Entrada de página. En CSS y no en JS a propósito: hecha con
+   framer-motion, el opacity:0 inicial viajaba en el HTML y dejaba
+   la página invisible hasta que terminaba de hidratar.
+   ============================================================ */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(4px);
+  }
+}
+
+.page-enter {
+  animation: page-enter 0.35s ease-out;
+}
+
+/* ============================================================
    Riel de progreso de scroll
    ============================================================ */
 @keyframes rail-progress {
