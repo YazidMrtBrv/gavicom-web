@@ -25,6 +25,10 @@ export const COMPANIA_INFO = {
   cargoDirectora: "DIRECTORA EJECUTIVA",
   directoraWhatsapp: "+573017277888",
   email: "gerencia@gavicom.com",
+  ciudad: "Barranquilla",
+  departamento: "Atlántico",
+  pais: "Colombia",
+  cobertura: "Cobertura en todo el territorio nacional",
   whatsappSales: "+573150509803",
   whatsappBaseUrl: "https://api.whatsapp.com/send",
   disclaimerLegal:

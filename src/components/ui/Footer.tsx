@@ -93,6 +93,21 @@ export default function Footer() {
                   {COMPANIA_INFO.email}
                 </a>
               </li>
+              <li className="pt-2">
+                <address className="not-italic">
+                  <span className="text-xs text-zinc-600 block">
+                    {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento}
+                  </span>
+                  <span className="text-xs text-zinc-500 block">
+                    {COMPANIA_INFO.pais}
+                  </span>
+                </address>
+              </li>
+              <li>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#D35400]">
+                  {COMPANIA_INFO.cobertura}
+                </span>
+              </li>
             </ul>
           </div>
 

@@ -8,6 +8,18 @@ const nextConfig: NextConfig = {
     qualities: [75, 90],
     minimumCacheTTL: 60 * 60 * 24 * 365,
   },
+  async redirects() {
+    return [
+      // Keeps gavicomferroviario.com as the single indexable address: without
+      // this the vercel.app alias serves the same pages and competes with it.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "gavicom-web.vercel.app" }],
+        destination: "https://gavicomferroviario.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

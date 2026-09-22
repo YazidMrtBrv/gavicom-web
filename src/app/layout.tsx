@@ -15,7 +15,7 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://gavicom-web.vercel.app";
+const SITE_URL = "https://gavicomferroviario.com";
 const EMPRESA = "GAVICOM SAS";
 
 export const viewport = {
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: `%s | ${EMPRESA}`,
   },
   description:
-    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía certificadas AREMA/UIC y señalización industrial en Colombia.",
+    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía certificadas AREMA/UIC y señalización industrial. Sede en Barranquilla con cobertura en toda Colombia.",
   keywords: [
     "herramientas ferroviarias",
     "suministros ferroviarios",
@@ -42,7 +42,11 @@ export const metadata: Metadata = {
     "distribuidor ferroviario Colombia",
     "mantenimiento de vía",
     "señalización ferroviaria",
+    "consultoría ferroviaria",
+    "suministros ferroviarios Barranquilla",
     "GAVICOM",
+    "GAVICOM SAS",
+    "GAVICOM ferroviario",
   ],
   metadataBase: new URL(SITE_URL),
   verification: {
@@ -91,15 +95,18 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": `${SITE_URL}/#organizacion`,
   name: EMPRESA,
-  alternateName: "GAVICOM",
+  alternateName: ["GAVICOM", "GAVICOM Ferroviario"],
   url: SITE_URL,
   logo: `${SITE_URL}/logo-gavicom.png`,
+  image: `${SITE_URL}/logo-gavicom.png`,
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+57-315-050-9803",
     contactType: "sales",
     email: "gerencia@gavicom.com",
+    areaServed: "CO",
     availableLanguage: ["Spanish"],
   },
   sameAs: [
@@ -109,8 +116,23 @@ const jsonLd = {
     "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía certificadas y señalización industrial.",
   address: {
     "@type": "PostalAddress",
+    addressLocality: "Barranquilla",
+    addressRegion: "Atlántico",
     addressCountry: "CO",
   },
+  areaServed: {
+    "@type": "Country",
+    name: "Colombia",
+  },
+  knowsAbout: [
+    "Suministro de componentes ferroviarios",
+    "Fijaciones pesadas y sistemas elásticos de sujeción",
+    "Herramientas de vía férrea",
+    "Señalización ferroviaria e industrial",
+    "Estudios topográficos con dron",
+    "Consultoría ferroviaria",
+    "Obras civiles para infraestructura de transporte",
+  ],
 };
 
 export default function RootLayout({
