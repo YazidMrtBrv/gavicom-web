@@ -12,8 +12,6 @@ export interface Producto {
   origen: string;
   descripcion: string;
   imagen?: string;
-  /** La imagen es una fotografía a sangre, no un recorte sobre fondo blanco. */
-  imagenCover?: boolean;
   oculto?: boolean;
   especificaciones: Record<string, string>;
   variantes?: ProductoVariante[];
@@ -990,7 +988,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     descripcion:
       "Acompañamiento técnico para operadores, contratistas y entidades del sector férreo: diagnóstico del estado de vía, especificación de materiales según norma, estructuración de planes de mantenimiento y soporte documental en procesos de licitación y contratación.",
     imagen: "consultoria-ferroviaria.webp",
-    imagenCover: true,
     especificaciones: {
       "Líneas de Asesoría":
         "Diagnóstico de vía, especificación técnica y planes de mantenimiento",

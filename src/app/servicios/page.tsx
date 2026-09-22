@@ -132,13 +132,9 @@ function BrutalistServiceCard({ servicio, index }: { servicio: (typeof SERVICIOS
               alt={servicio.nombre}
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
-              className={
-                servicio.imagenCover
-                  ? `object-cover transition-[filter] duration-700 ease-out ${
-                      isHovered ? "grayscale-0" : "grayscale"
-                    }`
-                  : "object-contain p-8 mix-blend-multiply opacity-80"
-              }
+              className={`object-cover object-center transition-[filter] duration-700 ease-out ${
+                isHovered ? "grayscale-0" : "grayscale"
+              }`}
             />
           </motion.div>
           {/* Scanning line effect */}
