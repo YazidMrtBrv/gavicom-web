@@ -58,7 +58,15 @@ function AnimatedCounter({
     return () => clearTimeout(timer);
   }, [inView, to, delay, suffix]);
 
-  return <span ref={ref}>0{suffix}</span>;
+  // Rendered with the final figure so crawlers and assistants, which do not run
+  // the animation, read the real number instead of a zero. The count-up starts
+  // from zero once the element scrolls into view.
+  return (
+    <span ref={ref}>
+      {to}
+      {suffix}
+    </span>
+  );
 }
 
 // ─── Shiny CTA button ────────────────────────────────────────────────────────

@@ -228,7 +228,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     especificaciones: {
       "Tipo": "Abrasivo para acero de riel de alta resistencia",
       Aplicación: "Corte de rieles en mantenimiento y renovación de vía",
-      "Código": "TM-002",
       Compatibilidad: "Cortadoras portátiles y estacionarias",
     },
   },
@@ -239,12 +238,11 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     subcategoria: "Herramientas de Corte",
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
-      "Disco diamantado de alto rendimiento para corte de acero de riel. Ofrece hasta 70 veces más durabilidad que discos abrasivos convencionales, reduciendo significativamente los tiempos de intervención en obra.",
+      "Disco diamantado de alto rendimiento para corte de acero de riel. Su segmento diamantado ofrece una vida útil muy superior a la de los discos abrasivos de resina, lo que reduce los cambios de disco y los tiempos de intervención en obra.",
     imagen: "suministro_pag6.webp",
     especificaciones: {
       "Tipo": "Diamantado para corte en seco/húmedo",
-      "Código": "TM-002",
-      Durabilidad: "Hasta 70x más que discos de resina convencionales",
+      Durabilidad: "Muy superior a la de los discos abrasivos de resina",
       Aplicación: "Corte de riel en mantenimiento de vía",
     },
   },
@@ -258,7 +256,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Mangueras de alta resistencia para sistemas hidráulicos en equipos ferroviarios. Fabricadas para soportar presiones extremas y condiciones ambientales adversas en operaciones de mantenimiento de vía.",
     imagen: "suministro_pag7.webp",
     especificaciones: {
-      "Código": "TM-002",
       "Resistencia": "Alta presión con refuerzo multicapa",
       Aplicación: "Sistemas hidráulicos de equipos ferroviarios",
       "Condiciones": "Resistentes a la intemperie y abrasión",
@@ -274,7 +271,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Acoples hidráulicos de conexión rápida y sellado hermético para maquinaria ferroviaria. Garantizan transferencia segura de fluido hidráulico sin fugas en condiciones operativas exigentes.",
     imagen: "suministro_pag8.webp",
     especificaciones: {
-      "Código": "TM-002",
       "Tipo": "Conexión rápida con sellado hermético",
       Material: "Acero de alta resistencia con recubrimiento anticorrosivo",
       Aplicación: "Conexión de mangueras en equipos ferroviarios",
@@ -290,7 +286,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Maletín modular con ruedas de la línea Einhell E-Case L, diseñado para el transporte y almacenamiento organizado de herramientas y accesorios ferroviarios. Sistema apilable con tapa transparente para identificación rápida del contenido.",
     imagen: "suministro_pag9.webp",
     especificaciones: {
-      "Código": "TM-002",
       "Tipo": "Maletín modular con ruedas",
       Capacidad: "Diseñado para transporte de herramientas pesadas",
       Sistema: "Apilable con tapa transparente",
@@ -322,7 +317,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Llaves de impacto de alto torque diseñadas para operaciones de apriete y extracción de pernos y tuercas en infraestructura ferroviaria. Ideales para mantenimiento de vía, montaje de aparatos de vía y cambio de rieles.",
     imagen: "suministro_pag11.webp",
     especificaciones: {
-      "Código": "TM-002",
       "Tipo": "Llave de impacto industrial de alto torque",
       Aplicación: "Apriete/extracción de pernos ferroviarios",
       Uso: "Mantenimiento de vía y montaje de aparatos de vía",
@@ -443,7 +437,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta diseñada para soportar condiciones exigentes de mantenimiento de vía, garantizando desempeño confiable en intervenciones de balasto en infraestructura férrea. Alta resistencia a impacto y abrasión, diseño ergonómico que reduce fatiga operativa.",
     imagen: "barra-desguarnecedora-manual.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       "Resistencia": "Alta resistencia a impacto y abrasión",
       Diseño: "Ergonómico que reduce fatiga operativa",
       Trazabilidad: "Incluye memoria de datos y trazabilidad de fabricación",
@@ -459,7 +452,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta especializada para la manipulación y ajuste lateral de rieles en labores de montaje, alineación y mantenimiento de vía férrea. Diseñada para soportar altas cargas de palanca, garantizando control, precisión y seguridad en intervenciones sobre infraestructura ferroviaria.",
     imagen: "barra-volcariel.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       "Resistencia": "Alta resistencia a esfuerzos de torsión y flexión",
       Diseño: "Ergonómico que optimiza la aplicación de fuerza",
       Punta: "Reforzada para mayor durabilidad en contacto con el riel",
@@ -475,7 +467,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la limpieza, perfilado y redistribución de balasto en labores de mantenimiento de vía férrea. Su configuración de cuatro dientes permite una óptima penetración y remoción de material, facilitando la extracción de residuos y la correcta conformación de hombros y caja de vía.",
     imagen: "garlanchin-4-dientes.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Dientes: "Cuatro dientes reforzados para mejor penetración en balasto",
       Mango: "Ergonómico para mejor agarre y control",
       Diseño: "Balanceado que reduce la fatiga operativa",
@@ -491,7 +482,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la limpieza, perfilado y redistribución de balasto en labores de mantenimiento de vía férrea. Su configuración de diez dientes permite una óptima penetración y remoción de material, facilitando la extracción de residuos y la correcta conformación de hombros y caja de vía.",
     imagen: "garlanchin-10-dientes.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Dientes: "Diez dientes reforzados para mejor penetración en balasto",
       Mango: "Ergonómico para mejor agarre y control",
       Diseño: "Balanceado que reduce la fatiga operativa",
@@ -507,7 +497,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la remoción y desplazamiento horizontal de balasto en labores de mantenimiento de vía férrea. Su configuración de dientes permite arrastrar y redistribuir el material de forma eficiente, facilitando la limpieza de la caja de vía.",
     imagen: "garlanchin-10-dientes-h.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Diseño: "Optimizado para trabajo horizontal",
       Dientes: "Reforzados para arrastre eficiente de balasto",
       Balance: "Adecuado para mayor eficiencia operativa",
@@ -523,7 +512,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la manipulación, carga y redistribución de balasto en labores de mantenimiento ferroviario. Su geometría rectangular de punta cuadrada permite un mayor control en trabajos de nivelación y conformación de la caja de vía.",
     imagen: "pala-lastre-aislada.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Mango: "Tipo D ergonómico de alto agarre",
       Aislamiento: "Sistema de aislamiento para mayor seguridad operativa",
       Hoja: "Rectangular de punta cuadrada para mayor precisión en nivelación",
@@ -539,7 +527,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la limpieza y conformación de canales de drenaje en infraestructura ferroviaria. Su hoja angosta de 16 pulgadas permite trabajar con precisión en zanjas estrechas, facilitando la evacuación de material y sedimentos.",
     imagen: "pala-drenaje-16.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Hoja: "Angosta de 16\" ideal para zanjas y canales de drenaje",
       Mango: "Ergonómico que mejora el control y reduce la fatiga operativa",
       Balance: "Adecuado para mayor eficiencia en trabajos prolongados",
@@ -555,7 +542,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual especializada para la extracción de clips de fijación tipo Airbus en sistemas de sujeción ferroviaria. Diseñada para permitir un desmontaje seguro, controlado y eficiente de los elementos de anclaje del riel, facilitando las labores de mantenimiento preventivo y correctivo de la vía férrea.",
     imagen: "saca-clip-tipo-a.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Compatibilidad: "Fijaciones tipo Airbus",
       Diseño: "Optimizado para aplicación eficiente de palanca",
       Material: "Acero estructural de alta resistencia",
@@ -571,7 +557,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual especializada para la extracción de clips de fijación tipo Dennis en sistemas ferroviarios. Diseñada para facilitar el desmontaje seguro y eficiente de elementos de sujeción del riel, optimizando los tiempos de intervención en mantenimiento preventivo y correctivo de vía férrea.",
     imagen: "saca-clip-tipo-d.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Compatibilidad: "Fijaciones tipo Dennis",
       Resistencia: "Alta resistencia a torsión y apalancamiento",
       Diseño: "Ergonómico para mayor comodidad y control",
@@ -587,7 +572,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la instalación e impulsión de clips de fijación ferroviaria, fabricada en material de alta resistencia para soportar esfuerzos intensivos de apalancamiento. Permite la correcta inserción del clip en el sistema de sujeción del riel, garantizando estabilidad estructural y seguridad operativa.",
     imagen: "impulsador-manual.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Material: "Acero de alta resistencia mecánica",
       Diseño: "Capaz de soportar altos esfuerzos de apalancamiento",
       Resistencia: "Alta resistencia a torsión y deformación",
@@ -603,7 +587,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la elevación, carga y manipulación segura de rieles ferroviarios durante labores de montaje, mantenimiento y reemplazo de vía férrea. Su sistema de agarre por presión permite una sujeción firme y estable del perfil del riel, garantizando control operativo y reducción de riesgos durante las maniobras.",
     imagen: "tenaza-manual-tipo-c.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Aplicación: "Manipulación y carga de riel ferroviario",
       Sistema: "Agarre seguro por presión",
       Diseño: "Robusto para operación en campo",
@@ -619,7 +602,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la elevación, carga y manipulación segura de rieles ferroviarios durante labores de montaje, mantenimiento y reemplazo de vía férrea. Su sistema de agarre por presión permite una sujeción firme y estable del perfil del riel, garantizando control operativo y reducción de riesgos durante las maniobras.",
     imagen: "pinzas-riel.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Aplicación: "Manipulación y carga de riel ferroviario",
       Sistema: "Agarre seguro por presión",
       Diseño: "Robusto para operación en campo",
@@ -635,7 +617,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la elevación y manipulación de traviesas de madera en labores de montaje, sustitución y mantenimiento de vía férrea. Su diseño tipo tenaza permite un agarre firme y seguro mediante presión mecánica, facilitando el transporte y posicionamiento de elementos pesados por dos operarios.",
     imagen: "tenaza-tipo-madera.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Aplicación: "Manipulación de traviesas de madera",
       Operación: "Manual tipo dos personas",
       Sistema: "Agarre por presión seguro y estable",
@@ -651,7 +632,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Herramienta manual diseñada para la manipulación, levantamiento y posicionamiento de traviesas de madera en labores de mantenimiento y montaje de vía férrea. Su diseño tipo corbata permite un agarre firme mediante presión mecánica, facilitando el traslado seguro del elemento sin deslizamientos durante la operación.",
     imagen: "pinzas-corbata.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Diseño: "Tipo corbata para agarre seguro de traviesas de madera",
       Sistema: "Sujeción por presión mecánica",
       Durabilidad: "Alta durabilidad frente a impacto y desgaste",
@@ -777,7 +757,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Plataforma de acceso diseñada para facilitar la entrada y salida segura de personal a vagones de carga. Diseño liviano para fácil movilización, sistema de ruedas industriales con freno. Ideal para patios de maniobra y centros logísticos ferroviarios.",
     imagen: "plataforma-acceso-vagones.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Diseño: "Liviano para fácil movilización",
       Ruedas: "Sistema de ruedas industriales con freno",
       Aplicación: "Patios de maniobra y centros logísticos ferroviarios",
@@ -793,7 +772,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Plataforma de trabajo diseñada para acceso lateral a locomotoras durante labores de mantenimiento e inspección. Superficie antideslizante de alta adherencia, fácil traslado manual en campo y barandas de protección perimetral para garantizar la seguridad operativa.",
     imagen: "plataforma-trabajo-locomotora.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Superficie: "Antideslizante de alta adherencia",
       Seguridad: "Barandas de protección perimetral",
       Movilidad: "Fácil traslado manual en campo",
@@ -809,7 +787,6 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Escalera portátil diseñada para facilitar la carga y descarga de herramientas, equipos y materiales desde camionetas de apoyo en labores ferroviarias. Fabricada en acero o aluminio de alta resistencia, su diseño compacto y liviano permite fácil transporte e instalación rápida durante operaciones de mantenimiento ferroviario.",
     imagen: "escalera-camioneta.webp",
     especificaciones: {
-      "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Material: "Acero o aluminio de alta resistencia",
       Superficie: "Antideslizante",
       Compatibilidad: "Camionetas de apoyo operativo",
