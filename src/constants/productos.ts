@@ -955,7 +955,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Servicios GAVICOM",
     descripcion:
       "Diseño y elaboración de planos técnicos para cambiavías, cruces de diamante y pasos a nivel ferroviarios. Desarrollo de infraestructura ferroviaria especializada con software CAD profesional.",
-    imagen: "servicios_pag6.webp",
+    imagen: "planos-tecnicos-ferroviarios.webp",
     especificaciones: {
       "Tipo de Planos": "Cambiavías, cruces de diamante, pasos a nivel",
       Software: "CAD profesional para infraestructura ferroviaria",
