@@ -4,7 +4,6 @@ import { useState, useRef, type FormEvent, useEffect } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { COMPANIA_INFO } from "@/constants/productos";
-import PageMetaUpdater from "@/components/seo/PageMetaUpdater";
 import { Hammer, Truck, HardHat, Phone, Mail, Activity, Terminal, ShieldAlert, Zap } from "lucide-react";
 
 type RequestType = "SUMINISTROS" | "SERVICIOS" | "OBRAS";
@@ -88,7 +87,6 @@ export default function ContactoPage() {
 
   return (
     <>
-      <PageMetaUpdater title="Terminal de Contacto - GAVICOM SAS" />
       <div className="flex flex-col min-h-screen bg-[#f8f9fa]" ref={containerRef}>
         
         {/* HERO with parallax */}

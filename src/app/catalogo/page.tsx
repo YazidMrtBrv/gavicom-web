@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { PRODUCTOS_Y_SERVICIOS, COMPANIA_INFO } from "@/constants/productos";
 import ProductCard from "@/components/ui/ProductCard";
-import PageMetaUpdater from "@/components/seo/PageMetaUpdater";
 
 export default function CatalogoPage() {
   const [busqueda, setBusqueda] = useState("");
@@ -52,7 +51,6 @@ export default function CatalogoPage() {
 
   return (
     <>
-      <PageMetaUpdater title="Catálogo Técnico - Componentes y Suministros Ferroviarios" />
       <div className="flex flex-col min-h-screen bg-[#f8f9fa]">
       {/* HEADER */}
       <div className="bg-white border-b border-[#D35400]/10 relative overflow-hidden">

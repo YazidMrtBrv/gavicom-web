@@ -7,7 +7,6 @@ import { motion, useInView } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { COMPANIA_INFO } from "@/constants/productos";
-import PageMetaUpdater from "@/components/seo/PageMetaUpdater";
 import ColombiaMap from "@/components/ui/ColombiaMap";
 import ColombiaProud from "@/components/ui/ColombiaProud";
 
@@ -754,7 +753,6 @@ function MobileView() {
 export default function HomePage() {
   return (
     <>
-      <PageMetaUpdater title="GAVICOM SAS - Suministros Ferroviarios, Fabricación y Obras Civiles" />
 
       {/* Render the complex Desktop view only on medium screens and up */}
       <div className="hidden md:block">

@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { PRODUCTOS_Y_SERVICIOS, COMPANIA_INFO, generarEnlaceWhatsApp } from "@/constants/productos";
-import PageMetaUpdater from "@/components/seo/PageMetaUpdater";
 
 const ICONOS_SERVICIOS: Record<string, React.ReactNode> = {
   "Estudios Topográficos y Captura de Información": (
@@ -222,7 +221,6 @@ export default function ServiciosPage() {
 
   return (
     <>
-      <PageMetaUpdater title="Servicios Ferroviarios - Topografía, Mantenimiento y Diseño" />
       <div className="flex flex-col min-h-screen bg-[#f8f9fa]" ref={containerRef}>
         
         {/* HERO with parallax */}
