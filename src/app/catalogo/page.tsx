@@ -164,8 +164,8 @@ export default function CatalogoPage() {
           <div className="lg:col-span-3">
             {productosFiltrados.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {productosFiltrados.map((prod) => (
-                  <ProductCard key={prod.sku} producto={prod} />
+                {productosFiltrados.map((prod, i) => (
+                  <ProductCard key={prod.sku} producto={prod} eager={i < 4} />
                 ))}
               </div>
             ) : (

@@ -11,7 +11,7 @@ export interface Producto {
   subcategoria: string;
   origen: string;
   descripcion: string;
-  imagen: string;
+  imagen?: string;
   oculto?: boolean;
   especificaciones: Record<string, string>;
   variantes?: ProductoVariante[];
@@ -24,7 +24,7 @@ export const COMPANIA_INFO = {
   directora: "Carol Martinez",
   cargoDirectora: "DIRECTORA EJECUTIVA",
   directoraWhatsapp: "+573017277888",
-  email: "gvtsas01@gmail.com",
+  email: "gerencia@gavicom.com",
   whatsappSales: "+573150509803",
   whatsappBaseUrl: "https://api.whatsapp.com/send",
   disclaimerLegal:
@@ -56,7 +56,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Referencia Industrial",
     descripcion:
       "Pernos mecánicos con cuello ovalado diseñados para el ensamble seguro de sistemas de unión ferroviaria, evitando la rotación del elemento durante el ajuste en campo.",
-    imagen: "pernos-via.jpg",
+    imagen: "pernos-via.webp",
     especificaciones: {
       Dimensiones: "Variedad de diámetros comerciales disponibles",
       "Diseño de Cabeza": "Botón con cuello ovalado estándar",
@@ -72,7 +72,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Suministros de Infraestructura",
     descripcion:
       "Elementos de fijación rígida por percusión empleados para asegurar las placas de asiento y mantener la alineación geométrica de los rieles sobre durmientes de madera.",
-    imagen: "clavos-via.jfif",
+    imagen: "clavos-via.webp",
     especificaciones: {
       Sección: "Cuadrada con punta reforzada para fácil penetración",
       "Diseño de Cabeza": "Cabeza reforzada para resistencia al impacto",
@@ -88,7 +88,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Componentes de Carga",
     descripcion:
       "Placas base de acero diseñadas para distribuir uniformemente el peso del material rodante sobre el durmiente, protegiendo la estructura de madera o concreto y manteniendo la inclinación técnica del riel.",
-    imagen: "placas-asiento.jfif",
+    imagen: "placas-asiento.webp",
     especificaciones: {
       Compatibilidad: "Adaptables a múltiples bases de riel comerciales",
       Perforaciones: "Patrones múltiples para clavos o tirafondos mecánicos",
@@ -104,7 +104,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Control de Desplazamiento",
     descripcion:
       "Dispositivos elásticos de fijación aplicados a la base del riel que se apoyan firmemente contra los durmientes para evitar el movimiento longitudinal (bamboleo o arrastre) causado por el frenado y aceleración de los trenes.",
-    imagen: "anclas-riel.jfif",
+    imagen: "anclas-riel.webp",
     especificaciones: {
       Instalación: "Montaje por presión inferior en la zapata del riel",
       Tipo: "Estructura monobloque tratada térmicamente",
@@ -120,7 +120,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Sujeción Elástica Industrial",
     descripcion:
       "Elemento de sujeción elástica diseñado para mantener una presión constante sobre el riel, amortiguar las vibraciones del paso de carga y mitigar el desplazamiento longitudinal en la estructura de vía.",
-    imagen: "clip-e2055.jfif",
+    imagen: "clip-e2055.webp",
     especificaciones: {
       "Tipo de Componente": "Clip elástico de alta resiliencia mecánica",
       "Aplicación General":
@@ -137,7 +137,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Fijación Elástica Complementaria",
     descripcion:
       "Tornillos de rosca gruesa y alta resistencia para fijar placas base o placas elásticas a los durmientes, ofreciendo un agarre superior en comparación con las fijaciones tradicionales por impacto.",
-    imagen: "tirafondos.jpg",
+    imagen: "tirafondos.webp",
     especificaciones: {
       "Tipo de Rosca": "Diseño paso ancho para anclaje de madera/insertos de concreto",
       Cabeza: "Hexagonal o cuadrada para torque mecánico controlado",
@@ -172,7 +172,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Brocas especializadas para perforación en durmientes de madera, disponibles en diámetros de 5/8\" y 7/8\", incluyendo brocas para correas con diámetro 11/16\" y longitud total hasta 12-1/8\". Ideales para instalación de fijaciones y preparación de infraestructura de vía.",
-    imagen: "suministro_pag2.png",
+    imagen: "suministro_pag2.webp",
     especificaciones: {
       "Diámetros Disponibles": "5/8\", 7/8\", 11/16\"",
       "Longitud Broca Correas": "12-1/8\" (lado único, doble flauta)",
@@ -188,7 +188,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Juego de dados de impacto diseñados para uso con llaves de impacto industriales en instalación y extracción de tornillería ferroviaria. Fabricados en acero de alta resistencia para soportar torsiones extremas en mantenimiento de vía.",
-    imagen: "suministro_pag3.png",
+    imagen: "suministro_pag3.webp",
     especificaciones: {
       "Uso Principal": "Instalación y extracción de tornillería ferroviaria",
       Material: "Acero templado de alta resistencia",
@@ -204,7 +204,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Llaves de trinquete manuales en presentaciones de 18\", 24\", 10\" y 9\", diseñadas para el apriete y ajuste de pernos en infraestructura ferroviaria. Mecanismo de trinquete robusto que permite trabajo continuo sin recolocación.",
-    imagen: "suministro_pag4.png",
+    imagen: "suministro_pag4.webp",
     especificaciones: {
       "Presentaciones": "18\", 24\", 10\", 9\"",
       Mecanismo: "Trinquete de doble dirección con ajuste de torque",
@@ -220,7 +220,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Discos abrasivos especializados para corte de acero de riel de alta resistencia al carbono. Diseñados para uso con cortadoras portátiles y estacionarias en labores de mantenimiento y renovación de vía.",
-    imagen: "suministro_pag5.png",
+    imagen: "suministro_pag5.webp",
     especificaciones: {
       "Tipo": "Abrasivo para acero de riel de alta resistencia",
       Aplicación: "Corte de rieles en mantenimiento y renovación de vía",
@@ -236,7 +236,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Disco diamantado de alto rendimiento para corte de acero de riel. Ofrece hasta 70 veces más durabilidad que discos abrasivos convencionales, reduciendo significativamente los tiempos de intervención en obra.",
-    imagen: "suministro_pag6.png",
+    imagen: "suministro_pag6.webp",
     especificaciones: {
       "Tipo": "Diamantado para corte en seco/húmedo",
       "Código": "TM-002",
@@ -252,7 +252,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Mangueras de alta resistencia para sistemas hidráulicos en equipos ferroviarios. Fabricadas para soportar presiones extremas y condiciones ambientales adversas en operaciones de mantenimiento de vía.",
-    imagen: "suministro_pag7.png",
+    imagen: "suministro_pag7.webp",
     especificaciones: {
       "Código": "TM-002",
       "Resistencia": "Alta presión con refuerzo multicapa",
@@ -268,7 +268,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Acoples hidráulicos de conexión rápida y sellado hermético para maquinaria ferroviaria. Garantizan transferencia segura de fluido hidráulico sin fugas en condiciones operativas exigentes.",
-    imagen: "suministro_pag8.png",
+    imagen: "suministro_pag8.webp",
     especificaciones: {
       "Código": "TM-002",
       "Tipo": "Conexión rápida con sellado hermético",
@@ -284,7 +284,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Maletín modular con ruedas de la línea Einhell E-Case L, diseñado para el transporte y almacenamiento organizado de herramientas y accesorios ferroviarios. Sistema apilable con tapa transparente para identificación rápida del contenido.",
-    imagen: "suministro_pag9.png",
+    imagen: "suministro_pag9.webp",
     especificaciones: {
       "Código": "TM-002",
       "Tipo": "Maletín modular con ruedas",
@@ -300,7 +300,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Juegos de cintas de amarre para sujeción y aseguramiento de carga en transporte ferroviario y logístico. Disponibles en presentaciones de 5m x 25mm y 6m x 35mm, con capacidad de soporte hasta 500kg. Incluye set de correas para equipaje.",
-    imagen: "suministro_pag10.png",
+    imagen: "suministro_pag10.webp",
     especificaciones: {
       "Presentaciones": "5m x 25mm (x2), 6m x 35mm (x2)",
       "Capacidad de Carga": "Hasta 500kg por juego",
@@ -316,7 +316,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Llaves de impacto de alto torque diseñadas para operaciones de apriete y extracción de pernos y tuercas en infraestructura ferroviaria. Ideales para mantenimiento de vía, montaje de aparatos de vía y cambio de rieles.",
-    imagen: "suministro_pag11.png",
+    imagen: "suministro_pag11.webp",
     especificaciones: {
       "Código": "TM-002",
       "Tipo": "Llave de impacto industrial de alto torque",
@@ -332,7 +332,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Pulidoras industriales de alta potencia para esmerilado y acabado de rieles. Modelos DWE4314-B3 (1500W, 11000 RPM) y DWE4579-B3 (2700W, 6500 RPM) con sistema antivibración para trabajo prolongado en mantenimiento de vía.",
-    imagen: "suministro_pag12.png",
+    imagen: "suministro_pag12.webp",
     especificaciones: {
       "Modelo 1": "DWE4314-B3: 1500W, 120V, 11000 RPM, disco 4-1/2\", 2.5kg",
       "Modelo 2": "DWE4579-B3: 2700W, 6500 RPM, disco 9\", 5.2kg, antivibración",
@@ -348,7 +348,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Línea completa de guantes de protección para operaciones ferroviarias e industriales: soldadura (Malki, Kanay, Mayta), guantes de lona amarillo/verde, guantes reforzados corto/largo, guantes Cut y guantes carnaza. Incluye mangas de protección en PVC, Kevlar y Tubicorte.",
-    imagen: "suministro_pag13.png",
+    imagen: "suministro_pag13.webp",
     especificaciones: {
       "Guantes Soldadura": "Malki azul, Kanay, Mayta básico/café",
       "Guantes Lona": "Amarillo y verde",
@@ -364,7 +364,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Equipos de protección personal para trabajos ferroviarios: cascos cubre cuello, pavas antifluido, capuchas para soldador (monja, basic drill, jeans), caretas soldar fotosensibles y polainas en carnaza. Protección integral para operaciones de vía.",
-    imagen: "suministro_pag14.png",
+    imagen: "suministro_pag14.webp",
     especificaciones: {
       "Cascos": "Cubre cuello poliéster, pava antifluido, gorro tipo pava",
       "Capuchas Soldador": "Monja, basic drill, jeans",
@@ -380,7 +380,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Suministros GAVICOM",
     descripcion:
       "Sistemas de protección contra caídas para trabajos en altura en infraestructura ferroviaria: arnés multi-argollas, eslingas en Y de 1.80m, eslingas sencillas, adaptadores de anclaje, líneas de vida de 11mm y 13mm con gancho y kit completo de altura (arnés/eslinga/ancla/maleta).",
-    imagen: "suministro_pag15.png",
+    imagen: "suministro_pag15.webp",
     especificaciones: {
       "Arnés": "Multi-argollas para trabajo en altura",
       "Eslingas": "Y 1.80m, sencilla, sumo eslinga",
@@ -397,7 +397,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Servicios GAVICOM",
     descripcion:
       "Levantamientos fotogramétricos con drones de alta resolución, generación de ortomosaicos y modelos 3D del corredor ferroviario aplicados al diseño, inspección y mantenimiento de infraestructura.",
-    imagen: "servicios_pag2.png",
+    imagen: "servicios_pag2.webp",
     especificaciones: {
       "Tecnología Aplicada":
         "Drones de alta resolución y sistemas RTK",
@@ -416,7 +416,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Importación Especial / Ref. Alta Velocidad",
     descripcion:
       "Abrazadera elástica de alta rigidez diseñada para líneas ferroviarias convencionales y de alta velocidad. Mantiene una fuerza de apriete constante minimizando los requerimientos de mantenimiento ordinario.",
-    imagen: "sistema-skl14.jfif",
+    imagen: "sistema-skl14.webp",
     especificaciones: {
       "Estándar Técnico": "Apto para cargas por eje elevadas",
       Aplicación:
@@ -437,7 +437,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta diseñada para soportar condiciones exigentes de mantenimiento de vía, garantizando desempeño confiable en intervenciones de balasto en infraestructura férrea. Alta resistencia a impacto y abrasión, diseño ergonómico que reduce fatiga operativa.",
-    imagen: "barra-desguarnecedora-manual.png",
+    imagen: "barra-desguarnecedora-manual.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       "Resistencia": "Alta resistencia a impacto y abrasión",
@@ -453,7 +453,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta especializada para la manipulación y ajuste lateral de rieles en labores de montaje, alineación y mantenimiento de vía férrea. Diseñada para soportar altas cargas de palanca, garantizando control, precisión y seguridad en intervenciones sobre infraestructura ferroviaria.",
-    imagen: "barra-volcariel.png",
+    imagen: "barra-volcariel.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       "Resistencia": "Alta resistencia a esfuerzos de torsión y flexión",
@@ -469,7 +469,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la limpieza, perfilado y redistribución de balasto en labores de mantenimiento de vía férrea. Su configuración de cuatro dientes permite una óptima penetración y remoción de material, facilitando la extracción de residuos y la correcta conformación de hombros y caja de vía.",
-    imagen: "garlanchin-4-dientes.png",
+    imagen: "garlanchin-4-dientes.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Dientes: "Cuatro dientes reforzados para mejor penetración en balasto",
@@ -485,7 +485,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la limpieza, perfilado y redistribución de balasto en labores de mantenimiento de vía férrea. Su configuración de diez dientes permite una óptima penetración y remoción de material, facilitando la extracción de residuos y la correcta conformación de hombros y caja de vía.",
-    imagen: "garlanchin-10-dientes.png",
+    imagen: "garlanchin-10-dientes.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Dientes: "Diez dientes reforzados para mejor penetración en balasto",
@@ -501,7 +501,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la remoción y desplazamiento horizontal de balasto en labores de mantenimiento de vía férrea. Su configuración de dientes permite arrastrar y redistribuir el material de forma eficiente, facilitando la limpieza de la caja de vía.",
-    imagen: "garlanchin-10-dientes-h.png",
+    imagen: "garlanchin-10-dientes-h.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Diseño: "Optimizado para trabajo horizontal",
@@ -517,7 +517,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la manipulación, carga y redistribución de balasto en labores de mantenimiento ferroviario. Su geometría rectangular de punta cuadrada permite un mayor control en trabajos de nivelación y conformación de la caja de vía.",
-    imagen: "pala-lastre-aislada.png",
+    imagen: "pala-lastre-aislada.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Mango: "Tipo D ergonómico de alto agarre",
@@ -533,7 +533,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la limpieza y conformación de canales de drenaje en infraestructura ferroviaria. Su hoja angosta de 16 pulgadas permite trabajar con precisión en zanjas estrechas, facilitando la evacuación de material y sedimentos.",
-    imagen: "pala-drenaje-16.png",
+    imagen: "pala-drenaje-16.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Hoja: "Angosta de 16\" ideal para zanjas y canales de drenaje",
@@ -549,7 +549,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual especializada para la extracción de clips de fijación tipo Airbus en sistemas de sujeción ferroviaria. Diseñada para permitir un desmontaje seguro, controlado y eficiente de los elementos de anclaje del riel, facilitando las labores de mantenimiento preventivo y correctivo de la vía férrea.",
-    imagen: "saca-clip-tipo-a.png",
+    imagen: "saca-clip-tipo-a.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Compatibilidad: "Fijaciones tipo Airbus",
@@ -565,7 +565,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual especializada para la extracción de clips de fijación tipo Dennis en sistemas ferroviarios. Diseñada para facilitar el desmontaje seguro y eficiente de elementos de sujeción del riel, optimizando los tiempos de intervención en mantenimiento preventivo y correctivo de vía férrea.",
-    imagen: "saca-clip-tipo-d.png",
+    imagen: "saca-clip-tipo-d.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Compatibilidad: "Fijaciones tipo Dennis",
@@ -581,7 +581,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la instalación e impulsión de clips de fijación ferroviaria, fabricada en material de alta resistencia para soportar esfuerzos intensivos de apalancamiento. Permite la correcta inserción del clip en el sistema de sujeción del riel, garantizando estabilidad estructural y seguridad operativa.",
-    imagen: "impulsador-manual.png",
+    imagen: "impulsador-manual.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Material: "Acero de alta resistencia mecánica",
@@ -597,7 +597,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la elevación, carga y manipulación segura de rieles ferroviarios durante labores de montaje, mantenimiento y reemplazo de vía férrea. Su sistema de agarre por presión permite una sujeción firme y estable del perfil del riel, garantizando control operativo y reducción de riesgos durante las maniobras.",
-    imagen: "tenaza-manual-tipo-c.png",
+    imagen: "tenaza-manual-tipo-c.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Aplicación: "Manipulación y carga de riel ferroviario",
@@ -613,7 +613,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la elevación, carga y manipulación segura de rieles ferroviarios durante labores de montaje, mantenimiento y reemplazo de vía férrea. Su sistema de agarre por presión permite una sujeción firme y estable del perfil del riel, garantizando control operativo y reducción de riesgos durante las maniobras.",
-    imagen: "pinzas-riel.png",
+    imagen: "pinzas-riel.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Aplicación: "Manipulación y carga de riel ferroviario",
@@ -629,7 +629,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la elevación y manipulación de traviesas de madera en labores de montaje, sustitución y mantenimiento de vía férrea. Su diseño tipo tenaza permite un agarre firme y seguro mediante presión mecánica, facilitando el transporte y posicionamiento de elementos pesados por dos operarios.",
-    imagen: "tenaza-tipo-madera.png",
+    imagen: "tenaza-tipo-madera.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Aplicación: "Manipulación de traviesas de madera",
@@ -645,7 +645,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Herramienta manual diseñada para la manipulación, levantamiento y posicionamiento de traviesas de madera en labores de mantenimiento y montaje de vía férrea. Su diseño tipo corbata permite un agarre firme mediante presión mecánica, facilitando el traslado seguro del elemento sin deslizamientos durante la operación.",
-    imagen: "pinzas-corbata.png",
+    imagen: "pinzas-corbata.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Diseño: "Tipo corbata para agarre seguro de traviesas de madera",
@@ -661,7 +661,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Carro manual diseñado para el transporte de herramientas, materiales y equipos sobre vía férrea durante labores de mantenimiento y montaje. Fabricado en aluminio tipo alfajor de alta resistencia, ofrece estructura liviana y gran capacidad de carga, facilitando la operación en campo. Incorpora llantas de nailon con componentes en molibdeno.",
-    imagen: "troely-ferroviario.png",
+    imagen: "troely-ferroviario.webp",
     especificaciones: {
       "Capacidad de Carga": "1.500 kg",
       Material: "Aluminio tipo alfajor de alta resistencia",
@@ -677,7 +677,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Carro manual de alta resistencia diseñado para el transporte de equipos y materiales pesados sobre vía férrea. Diseñado especialmente para labores de soldadura aluminotérmica y trabajos de mantenimiento mayor, donde se requiere estabilidad, capacidad de carga superior y confiabilidad estructural. Fabricado con estructura reforzada.",
-    imagen: "troley-high-load.png",
+    imagen: "troley-high-load.webp",
     especificaciones: {
       "Capacidad de Carga": "2.000 kg",
       Estructura: "Reforzada de alta resistencia",
@@ -693,7 +693,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Estructura portátil diseñada para la protección y control de riesgos durante labores de soldadura en infraestructura ferroviaria. Diseño liviano y plegable permite una instalación rápida en campo, proporcionando aislamiento visual, reducción de proyección de chispas y mayor seguridad operativa durante procesos de soldadura aluminotérmica y trabajos térmicos sobre riel.",
-    imagen: "carpa-portatil-soldadura.png",
+    imagen: "carpa-portatil-soldadura.webp",
     especificaciones: {
       Material: "Resistente al fuego y de alta durabilidad",
       Diseño: "Liviano y plegable para instalación rápida",
@@ -709,7 +709,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Asiento especializado diseñado para brindar estabilidad y confort durante labores de soldadura eléctrica en infraestructura ferroviaria. Permite al operario mantener una posición segura y ergonómica durante trabajos prolongados sobre riel, optimizando la precisión y reduciendo la fatiga física.",
-    imagen: "asiento-soldador.png",
+    imagen: "asiento-soldador.webp",
     especificaciones: {
       Diseño: "Ergonómico para mayor comodidad del operario",
       Durabilidad: "Alta durabilidad en condiciones de trabajo pesado",
@@ -724,7 +724,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Diseñada para la contención de chispas y protección del entorno durante trabajos de soldadura en infraestructura ferroviaria. Actúa como barrera de seguridad, minimizando la proyección de partículas incandescentes y reduciendo riesgos para el personal y los equipos cercanos. Fabricada en lona resistente con estructura reforzada en acero.",
-    imagen: "carpa-portatil-lona-soldadura.png",
+    imagen: "carpa-portatil-lona-soldadura.webp",
     especificaciones: {
       Material: "Lona resistente con estructura reforzada en acero",
       Función: "Contención de chispas y protección del entorno",
@@ -740,7 +740,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Estructura liviana y fácil de transportar con sistema ajustable en altura y ángulo para instalación rápida en campo. Diseñada para proporcionar protección durante labores de soldadura en infraestructura ferroviaria.",
-    imagen: "sombrilla-ajustable-soldadura.png",
+    imagen: "sombrilla-ajustable-soldadura.webp",
     especificaciones: {
       Diseño: "Liviano y fácil de transportar",
       Ajuste: "Sistema ajustable en altura y ángulo",
@@ -755,7 +755,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Diseñada para la contención de chispas y protección del entorno durante trabajos de soldadura en infraestructura ferroviaria. Actúa como barrera de seguridad, minimizando la proyección de partículas incandescentes y reduciendo riesgos para el personal y los equipos cercanos. Fabricada en lona resistente con estructura reforzada en acero.",
-    imagen: "carpa-fija-soldadura.png",
+    imagen: "carpa-fija-soldadura.webp",
     especificaciones: {
       Material: "Lona resistente con estructura reforzada en acero",
       Función: "Contención de chispas y protección del entorno",
@@ -771,7 +771,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Plataforma de acceso diseñada para facilitar la entrada y salida segura de personal a vagones de carga. Diseño liviano para fácil movilización, sistema de ruedas industriales con freno. Ideal para patios de maniobra y centros logísticos ferroviarios.",
-    imagen: "plataforma-acceso-vagones.png",
+    imagen: "plataforma-acceso-vagones.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Diseño: "Liviano para fácil movilización",
@@ -787,7 +787,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Plataforma de trabajo diseñada para acceso lateral a locomotoras durante labores de mantenimiento e inspección. Superficie antideslizante de alta adherencia, fácil traslado manual en campo y barandas de protección perimetral para garantizar la seguridad operativa.",
-    imagen: "plataforma-trabajo-locomotora.png",
+    imagen: "plataforma-trabajo-locomotora.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Superficie: "Antideslizante de alta adherencia",
@@ -803,7 +803,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Técnico GAVICOM",
     descripcion:
       "Escalera portátil diseñada para facilitar la carga y descarga de herramientas, equipos y materiales desde camionetas de apoyo en labores ferroviarias. Fabricada en acero o aluminio de alta resistencia, su diseño compacto y liviano permite fácil transporte e instalación rápida durante operaciones de mantenimiento ferroviario.",
-    imagen: "escalera-camioneta.png",
+    imagen: "escalera-camioneta.webp",
     especificaciones: {
       "Estándar Técnico": "AREMA (Manual for Railway Engineering, Capítulo 5 – Track)",
       Material: "Acero o aluminio de alta resistencia",
@@ -823,34 +823,34 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio de Señalizaciones",
     descripcion:
       "Señalización ferroviaria completa incluyendo soporte de instalación. Diseñada y fabricada por GAVICOM S.A.S con altos estándares de visibilidad y durabilidad para entornos ferroviarios.",
-    imagen: "senializacion-ferroviaria-1.png",
+    imagen: "senializacion-ferroviaria-1.webp",
     especificaciones: {
       Fabricación: "GAVICOM S.A.S - Diseño y Fabricación",
       Incluye: "Señalización y soporte",
       Aplicación: "Entornos ferroviarios",
     },
     variantes: [
-      { imagen: "senializacion-ferroviaria-1.png" },
-      { imagen: "senializacion-ferroviaria-2.png" },
-      { imagen: "senializacion-ferroviaria-3.png" },
-      { imagen: "senializacion-ferroviaria-4.png" },
-      { imagen: "senializacion-ferroviaria-5.png" },
-      { imagen: "senializacion-ferroviaria-6.png" },
-      { imagen: "senializacion-ferroviaria-7.png" },
-      { imagen: "senializacion-ferroviaria-8.png" },
-      { imagen: "senializacion-ferroviaria-9.png" },
-      { imagen: "senializacion-ferroviaria-10.png" },
-      { imagen: "senializacion-ferroviaria-11.png" },
-      { imagen: "senializacion-ferroviaria-12.png" },
-      { imagen: "senializacion-ferroviaria-13.png" },
-      { imagen: "senializacion-ferroviaria-14.png" },
-      { imagen: "senializacion-ferroviaria-15.png" },
-      { imagen: "senializacion-ferroviaria-16.png" },
-      { imagen: "senializacion-ferroviaria-17.png" },
-      { imagen: "senializacion-ferroviaria-18.png" },
-      { imagen: "senializacion-ferroviaria-19.png" },
-      { imagen: "senializacion-ferroviaria-20.png" },
-      { imagen: "senializacion-ferroviaria-21.png" },
+      { imagen: "senializacion-ferroviaria-1.webp" },
+      { imagen: "senializacion-ferroviaria-2.webp" },
+      { imagen: "senializacion-ferroviaria-3.webp" },
+      { imagen: "senializacion-ferroviaria-4.webp" },
+      { imagen: "senializacion-ferroviaria-5.webp" },
+      { imagen: "senializacion-ferroviaria-6.webp" },
+      { imagen: "senializacion-ferroviaria-7.webp" },
+      { imagen: "senializacion-ferroviaria-8.webp" },
+      { imagen: "senializacion-ferroviaria-9.webp" },
+      { imagen: "senializacion-ferroviaria-10.webp" },
+      { imagen: "senializacion-ferroviaria-11.webp" },
+      { imagen: "senializacion-ferroviaria-12.webp" },
+      { imagen: "senializacion-ferroviaria-13.webp" },
+      { imagen: "senializacion-ferroviaria-14.webp" },
+      { imagen: "senializacion-ferroviaria-15.webp" },
+      { imagen: "senializacion-ferroviaria-16.webp" },
+      { imagen: "senializacion-ferroviaria-17.webp" },
+      { imagen: "senializacion-ferroviaria-18.webp" },
+      { imagen: "senializacion-ferroviaria-19.webp" },
+      { imagen: "senializacion-ferroviaria-20.webp" },
+      { imagen: "senializacion-ferroviaria-21.webp" },
     ],
   },
   {
@@ -861,16 +861,16 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio de Señalizaciones",
     descripcion:
       "Cuña de alta resistencia con bandera para riel expuesto. Dispositivo de seguridad diseñado para el bloqueo y señalización visual de carriles ferroviarios durante labores de mantenimiento y operaciones en vía.",
-    imagen: "cunas-rueda-bandera-1.png",
+    imagen: "cunas-rueda-bandera-1.webp",
     especificaciones: {
       Tipo: "Cuña de alta resistencia con bandera",
       Aplicación: "Riel expuesto",
       Función: "Bloqueo y señalización visual de seguridad",
     },
     variantes: [
-      { imagen: "cunas-rueda-bandera-1.png" },
-      { imagen: "cunas-rueda-bandera-2.png" },
-      { imagen: "cunas-rueda-bandera-3.png" },
+      { imagen: "cunas-rueda-bandera-1.webp" },
+      { imagen: "cunas-rueda-bandera-2.webp" },
+      { imagen: "cunas-rueda-bandera-3.webp" },
     ],
   },
   {
@@ -881,7 +881,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio de Señalizaciones",
     descripcion:
       "Señalización vial diseñada y fabricada por GAVICOM S.A.S para entornos viales y ferroviarios. Incluye soporte de instalación y está fabricada con altos estándares de visibilidad reflectiva y durabilidad.",
-    imagen: "senializacion-vial-1.png",
+    imagen: "senializacion-vial-1.webp",
     especificaciones: {
       Fabricación: "GAVICOM S.A.S - Diseño y Fabricación",
       Incluye: "Señalización y soporte",
@@ -889,11 +889,11 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       Visibilidad: "Acabado reflectivo de alta especificación",
     },
     variantes: [
-      { imagen: "senializacion-vial-1.png" },
-      { imagen: "senializacion-vial-2.png" },
-      { imagen: "senializacion-vial-3.png" },
-      { imagen: "senializacion-vial-4.png" },
-      { imagen: "senializacion-vial-5.png" },
+      { imagen: "senializacion-vial-1.webp" },
+      { imagen: "senializacion-vial-2.webp" },
+      { imagen: "senializacion-vial-3.webp" },
+      { imagen: "senializacion-vial-4.webp" },
+      { imagen: "senializacion-vial-5.webp" },
     ],
   },
   // =============================================
@@ -907,7 +907,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Servicios GAVICOM",
     descripcion:
       "Servicio especializado para el mantenimiento, ajuste y optimización de equipos ferroviarios. Incluye mantenimiento preventivo y correctivo de equipos utilizados en infraestructura de vía férrea.",
-    imagen: "servicios_pag3.png",
+    imagen: "servicios_pag3.webp",
     especificaciones: {
       "Tipo de Servicio": "Preventivo y correctivo especializado",
       Equipos: "Maquinaria y herramientas ferroviarias",
@@ -923,7 +923,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Servicios GAVICOM",
     descripcion:
       "Mantenimiento, cambio y reforzamiento de mangueras hidráulicas con acoples estandarizados y recubrimiento en acero galvanizado para equipos ferroviarios.",
-    imagen: "servicios_pag4.png",
+    imagen: "servicios_pag4.webp",
     especificaciones: {
       Servicio: "Cambio y reforzamiento de mangueras hidráulicas",
       Acoples: "Estandarizados para equipos ferroviarios",
@@ -939,7 +939,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Servicios GAVICOM",
     descripcion:
       "Equipos de soldadura de alta calidad marca Lincoln Electric. Equipos tipo motosoldador autónomo ideales para trabajo en campo. Aplicación en soldadura de rieles y estructuras ferroviarias.",
-    imagen: "servicios_pag5.png",
+    imagen: "servicios_pag5.webp",
     especificaciones: {
       Marca: "Lincoln Electric",
       Tipo: "Motosoldador autónomo para campo",
@@ -955,7 +955,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Servicios GAVICOM",
     descripcion:
       "Diseño y elaboración de planos técnicos para cambiavías, cruces de diamante y pasos a nivel ferroviarios. Desarrollo de infraestructura ferroviaria especializada con software CAD profesional.",
-    imagen: "servicios_pag6.png",
+    imagen: "servicios_pag6.webp",
     especificaciones: {
       "Tipo de Planos": "Cambiavías, cruces de diamante, pasos a nivel",
       Software: "CAD profesional para infraestructura ferroviaria",
@@ -971,12 +971,31 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     origen: "Portafolio Servicios GAVICOM",
     descripcion:
       "Modelado y renderizado 3D de vías férreas mediante software especializado para visualización y planificación de proyectos ferroviarios.",
-    imagen: "servicios_pag7.png",
+    imagen: "servicios_pag7.webp",
     especificaciones: {
       Modelado: "Tridimensional de infraestructura ferroviaria",
       Software: "Herramientas especializadas de renderizado",
       Aplicación: "Visualización y planificación de proyectos",
       Beneficio: "Toma de decisiones con representación realista",
+    },
+  },
+  {
+    sku: "GVC-SRV-CON01",
+    nombre: "Servicios de Consultoría Ferroviaria",
+    categoria: "Servicios",
+    subcategoria: "Asesoría Técnica Especializada",
+    origen: "Portafolio Servicios GAVICOM",
+    descripcion:
+      "Acompañamiento técnico para operadores, contratistas y entidades del sector férreo: diagnóstico del estado de vía, especificación de materiales según norma, estructuración de planes de mantenimiento y soporte documental en procesos de licitación y contratación.",
+    especificaciones: {
+      "Líneas de Asesoría":
+        "Diagnóstico de vía, especificación técnica y planes de mantenimiento",
+      "Marco Normativo":
+        "Referencias AREMA y UIC aplicadas a compatibilidad de materiales",
+      "Apoyo Contractual":
+        "Fichas técnicas y soporte documental para licitaciones",
+      Modalidad:
+        "Asesoría puntual por proyecto o acompañamiento continuo",
     },
   },
 ];

@@ -84,7 +84,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Link
               href="/contacto"
-              className="hidden sm:inline-flex items-center text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 bg-[#D35400] hover:bg-[#CC4C00] transition-all active:scale-95 shiny-btn rounded-[4px]"
+              className="hidden sm:inline-flex items-center text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 bg-[#D35400] hover:bg-[#CC4C00] transition-all active:scale-95 shiny-btn spotlight rounded-[4px]"
             >
               Solicitar Cotización
             </Link>

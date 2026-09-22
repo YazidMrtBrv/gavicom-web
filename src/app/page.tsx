@@ -58,7 +58,7 @@ function ShinyButton({
   return (
     <Link
       href={href}
-      className="shiny-btn relative w-full sm:w-auto text-center text-[#030303] text-xs font-mono font-bold uppercase tracking-[0.2em] px-10 py-4 bg-[#CC4C00] hover:bg-[#D95800] border border-[#CC4C00] transition-colors active:scale-[0.97] overflow-hidden inline-block"
+      className="shiny-btn spotlight relative w-full sm:w-auto text-center text-[#030303] text-xs font-mono font-bold uppercase tracking-[0.2em] px-10 py-4 bg-[#CC4C00] hover:bg-[#D95800] border border-[#CC4C00] transition-colors active:scale-[0.97] overflow-hidden inline-block"
     >
       <span className="relative z-10">{children}</span>
     </Link>
@@ -158,12 +158,13 @@ function DesktopView() {
       >
         <div className="absolute inset-0">
           <Image
-            src="/images/gemini-hero.png"
+            src="/images/gemini-hero.webp"
             alt="GAVICOM — Maquinaria ferroviaria en entorno natural"
             fill
             className="object-cover object-center"
             sizes="100vw"
-            priority
+            loading="eager"
+            fetchPriority="high"
           />
           <div
             className="absolute inset-0 pointer-events-none"
@@ -508,11 +509,12 @@ function MobileView() {
         {/* Background Image Optimized for Mobile */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/gemini-hero.png"
+            src="/images/gemini-hero.webp"
             alt="GAVICOM Maquinaria"
             fill
             className="object-cover object-[80%_center]"
-            priority
+            loading="eager"
+            fetchPriority="high"
           />
           {/* Vertical gradient overlay to ensure text contrast */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#f8f9fa] via-[#f8f9fa]/90 to-transparent" />

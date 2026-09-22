@@ -1,12 +1,17 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
+import Image from "next/image";
 import TechnicalTable from "./TechnicalTable";
 import { generarEnlaceWhatsApp } from "@/constants/productos";
 import type { Producto } from "@/constants/productos";
 
+const CARD_SIZES = "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 37vw";
+
 interface ProductCardProps {
   producto: Producto;
+  eager?: boolean;
 }
 
 function VariantStrip({
@@ -48,9 +53,12 @@ function VariantStrip({
               : "border-transparent opacity-50 hover:opacity-80"
           }`}
         >
-          <img
+          <Image
             src={`/images/productos/${v.imagen}`}
             alt=""
+            width={56}
+            height={40}
+            sizes="56px"
             className="w-full h-full object-contain pointer-events-none"
           />
         </button>
@@ -59,10 +67,18 @@ function VariantStrip({
   );
 }
 
-export default function ProductCard({ producto }: ProductCardProps) {
+export default function ProductCard({ producto, eager = false }: ProductCardProps) {
   const [imgError, setImgError] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [varianteIdx, setVarianteIdx] = useState(0);
+
+  useEffect(() => {
+    if (!zoomOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setZoomOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [zoomOpen]);
 
   if (!producto) return null;
 
@@ -74,37 +90,66 @@ export default function ProductCard({ producto }: ProductCardProps) {
 
   return (
     <>
-      {zoomOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 md:p-8"
-          onClick={() => setZoomOpen(false)}
-        >
-          <button
+      {zoomOpen &&
+        varianteActual &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 md:p-8 animate-[fade-in_200ms_ease-out]"
             onClick={() => setZoomOpen(false)}
-            className="absolute top-4 right-4 text-white/70 hover:text-white text-3xl font-bold z-10"
           >
-            &times;
-          </button>
-          <img
-            src={`/images/productos/${varianteActual.imagen}`}
-            alt={nombre}
-            className="max-w-[90vw] max-h-[80vh] object-contain"
-          />
-        </div>
-      )}
+            <button
+              onClick={() => setZoomOpen(false)}
+              aria-label="Cerrar"
+              className="absolute top-5 right-6 text-white/60 hover:text-white text-4xl font-light leading-none transition-colors z-10"
+            >
+              &times;
+            </button>
+            <div
+              className="relative w-[90vw] h-[80vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={`/images/productos/${varianteActual.imagen}`}
+                alt={nombre}
+                fill
+                sizes="(max-width: 1024px) 90vw, 1024px"
+                quality={90}
+                className="object-contain"
+              />
+            </div>
+            <span className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/50 text-[10px] font-mono tracking-[0.2em] uppercase">
+              {sku} — {nombre}
+            </span>
+          </div>,
+          document.body
+        )}
 
-      <div className="flex flex-col bg-white rounded-none border border-zinc-200 overflow-hidden card-hover group transition-all duration-300 hover:border-[#D35400]/50">
+      <div className="reveal-on-scroll flex flex-col bg-white rounded-none border border-zinc-200 overflow-hidden card-hover group transition-all duration-300 hover:border-[#D35400]/50">
         <div
-          className="relative w-full h-48 bg-[#f8f9fa] overflow-hidden border-b border-zinc-200 cursor-zoom-in p-4"
-          onClick={() => !imgError && setZoomOpen(true)}
+          className={`tech-corners relative w-full h-48 bg-[#f8f9fa] overflow-hidden border-b border-zinc-200 p-4 ${
+            varianteActual && !imgError ? "cursor-zoom-in" : ""
+          }`}
+          onClick={() => varianteActual && !imgError && setZoomOpen(true)}
         >
-          {!imgError ? (
-            <img
-              src={`/images/productos/${varianteActual.imagen}`}
-              alt={nombre}
-              className="w-full h-full object-contain pointer-events-none"
-              onError={() => setImgError(true)}
-            />
+          {varianteActual && !imgError ? (
+            <div className="relative w-full h-full">
+              {!imgLoaded && (
+                <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-zinc-100 via-zinc-200/60 to-zinc-100" />
+              )}
+              <Image
+                src={`/images/productos/${varianteActual.imagen}`}
+                alt={nombre}
+                fill
+                sizes={CARD_SIZES}
+                loading={eager ? "eager" : "lazy"}
+                fetchPriority={eager ? "high" : "auto"}
+                onLoad={() => setImgLoaded(true)}
+                onError={() => setImgError(true)}
+                className={`object-contain pointer-events-none transition-all duration-500 ease-out group-hover:scale-[1.03] ${
+                  imgLoaded ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            </div>
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 p-4 text-center">
               <svg
@@ -132,7 +177,7 @@ export default function ProductCard({ producto }: ProductCardProps) {
           <VariantStrip
             variantes={todasLasVariantes}
             selected={varianteIdx}
-            onSelect={(i) => { setVarianteIdx(i); setImgError(false); }}
+            onSelect={(i) => { setVarianteIdx(i); setImgError(false); setImgLoaded(false); }}
           />
         )}
 
@@ -176,7 +221,7 @@ export default function ProductCard({ producto }: ProductCardProps) {
             href={enlaceCotizacion}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center text-[#D35400] text-[10px] font-bold uppercase tracking-[0.2em] border border-[#D35400] px-4 py-2 hover:bg-[#D35400] hover:text-white transition-all active:scale-[0.97]"
+            className="spotlight inline-flex items-center justify-center text-[#D35400] text-[10px] font-bold uppercase tracking-[0.2em] border border-[#D35400] px-4 py-2 hover:bg-[#D35400] hover:text-white transition-all active:scale-[0.97]"
           >
             Cotizar →
           </a>

@@ -95,12 +95,13 @@ export default function ContactoPage() {
         <section className="relative bg-[#f8f9fa] overflow-hidden min-h-[50vh] flex items-center border-b border-zinc-200/60">
           <motion.div style={{ y, opacity }} className="absolute inset-0">
             <Image
-              src="/images/gemini-hero.png"
+              src="/images/gemini-hero.webp"
               alt="Contacto GAVICOM"
               fill
               className="object-cover object-center grayscale opacity-[0.03] mix-blend-multiply"
               sizes="100vw"
-              priority
+              loading="eager"
+              fetchPriority="high"
             />
             {/* Blueprint grid overlay - softer */}
             <div 

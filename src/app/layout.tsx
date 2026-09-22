@@ -8,6 +8,7 @@ import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import IntroWrapper from "@/components/IntroWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import Footer from "@/components/ui/Footer";
+import PointerSpotlight from "@/components/ui/PointerSpotlight";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -98,7 +99,7 @@ const jsonLd = {
     "@type": "ContactPoint",
     telephone: "+57-315-050-9803",
     contactType: "sales",
-    email: "gvtsas01@gmail.com",
+    email: "gerencia@gavicom.com",
     availableLanguage: ["Spanish"],
   },
   sameAs: [
@@ -129,6 +130,8 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-[#f8f9fa] text-[#1a1a2e] font-sans antialiased flex flex-col">
+        <div className="rail-progress" aria-hidden="true" />
+        <PointerSpotlight />
         <IntroWrapper>
           <Navbar />
           <main className="flex-grow"><SmoothScrollProvider><ErrorBoundary><PageTransition>{children}</PageTransition></ErrorBoundary></SmoothScrollProvider></main>

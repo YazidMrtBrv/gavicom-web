@@ -27,7 +27,7 @@ export default function TechnicalTable({
               key={clave}
               className="hover:bg-[#f5f5f7] transition-colors duration-150"
             >
-              <td className="px-3 py-2 font-semibold text-zinc-500 border-r border-zinc-200 text-[10px]">
+              <td className="spec-row px-3 py-2 font-semibold text-zinc-500 border-r border-zinc-200 text-[10px]">
                 {clave}
               </td>
               <td className="px-3 py-2 text-[#1a1a2e] font-medium text-[10px]">

@@ -171,3 +171,148 @@ body {
   border: 1px solid rgba(211, 84, 0, 0.15);
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
 }
+
+/* ============================================================
+   Riel de progreso de scroll
+   ============================================================ */
+@keyframes rail-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.rail-progress { display: none; }
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .rail-progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 3px;
+      z-index: 60;
+      transform-origin: 0 50%;
+      background: repeating-linear-gradient(
+        90deg,
+        #D35400 0px, #D35400 7px,
+        rgba(211, 84, 0, 0.25) 7px, rgba(211, 84, 0, 0.25) 11px
+      );
+      animation: rail-progress auto linear;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+/* ============================================================
+   Entrada de elementos al hacer scroll (mejora progresiva:
+   sin soporte, el elemento simplemente se ve desde el inicio)
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes reveal-rise {
+      from { opacity: 0; transform: translateY(30px); }
+    }
+
+    .reveal-on-scroll {
+      animation: reveal-rise auto var(--apple-ease) backwards;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+  }
+}
+
+/* ============================================================
+   Foco que sigue al puntero sobre botones principales
+   ============================================================ */
+@property --spot-size {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.spotlight {
+  position: relative;
+  overflow: hidden;
+  transition: --spot-size 0.35s var(--apple-ease);
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle var(--spot-size) at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(255, 255, 255, 0.3),
+    transparent 72%
+  );
+}
+
+.spotlight:hover,
+.spotlight:focus-visible {
+  --spot-size: 130px;
+}
+
+/* ============================================================
+   Marcas técnicas que aparecen en las esquinas de una tarjeta
+   ============================================================ */
+.tech-corners::before,
+.tech-corners::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #D35400;
+  opacity: 0;
+  transition: opacity 0.35s var(--apple-ease), transform 0.35s var(--apple-ease);
+  pointer-events: none;
+  z-index: 20;
+}
+.tech-corners::before {
+  top: 8px; left: 8px;
+  border-top: 2px solid; border-left: 2px solid;
+  transform: translate(6px, 6px);
+}
+.tech-corners::after {
+  bottom: 8px; right: 8px;
+  border-bottom: 2px solid; border-right: 2px solid;
+  transform: translate(-6px, -6px);
+}
+.group:hover .tech-corners::before,
+.group:hover .tech-corners::after {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* ============================================================
+   Barra que se desliza al pasar sobre una fila de especificación
+   ============================================================ */
+.spec-row {
+  position: relative;
+  transition: background-color 0.25s var(--apple-ease);
+}
+.spec-row::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: #D35400;
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 0.3s var(--apple-ease);
+}
+.spec-row:hover::before { transform: scaleY(1); }
+
+/* ============================================================
+   Respeto por quien pide menos movimiento
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .anim-hidden { opacity: 1; transform: none; }
+}
