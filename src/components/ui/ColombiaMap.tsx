@@ -15,7 +15,6 @@ type RegionKey = "caribe" | "centro" | "pacifico" | "orinoquia" | "sur";
 interface RegionData {
   label: string;
   departamentos: string[];
-  proyectos: number;
   descripcion: string;
   deptos: string[];
 }
@@ -24,35 +23,30 @@ const REGIONS: Record<RegionKey, RegionData> = {
   caribe: {
     label: "Caribe",
     departamentos: ["Cesar", "Magdalena", "La Guajira", "Córdoba"],
-    proyectos: 4,
-    descripcion: "Carga minera Cerrejón + logística portuaria",
+    descripcion: "Corredor minero y logística portuaria",
     deptos: ["20", "47", "44", "23"],
   },
   centro: {
     label: "Centro",
     departamentos: ["Cundinamarca", "Boyacá", "Santander", "Antioquia"],
-    proyectos: 6,
-    descripcion: "Talleres Facatativá + Corredor Central",
+    descripcion: "Corredor central y zonas de taller",
     deptos: ["25", "15", "68", "05"],
   },
   pacifico: {
     label: "Pacífico",
     departamentos: ["Valle del Cauca", "Cauca", "Chocó"],
-    proyectos: 2,
-    descripcion: "Conexión férrea Buenaventura",
+    descripcion: "Conexión férrea hacia el Pacífico",
     deptos: ["76", "19", "27"],
   },
   orinoquia: {
     label: "Orinoquía",
     departamentos: ["Meta", "Casanare", "Vichada"],
-    proyectos: 1,
-    descripcion: "Plataforma de carga Villavicencio",
+    descripcion: "Plataformas de carga del piedemonte",
     deptos: ["50", "85", "99"],
   },
   sur: {
     label: "Sur",
     departamentos: ["Tolima", "Huila", "Nariño"],
-    proyectos: 2,
     descripcion: "Eje férreo Tolima–Huila–Nariño",
     deptos: ["73", "41", "52"],
   },
@@ -401,7 +395,7 @@ export default function ColombiaMap() {
                   Región {activeData.label}
                 </span>
                 <span className="text-[10px] text-zinc-400 tracking-wider">
-                  {activeData.proyectos} proyectos
+                  Cobertura
                 </span>
               </div>
 

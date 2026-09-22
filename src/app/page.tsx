@@ -6,11 +6,26 @@ import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { COMPANIA_INFO } from "@/constants/productos";
+import { COMPANIA_INFO, PRODUCTOS_Y_SERVICIOS } from "@/constants/productos";
 import ColombiaMap from "@/components/ui/ColombiaMap";
 import ColombiaProud from "@/components/ui/ColombiaProud";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Derived from the catalogue itself so the figures on the homepage can never
+// drift away from what the catalogue actually offers.
+const TOTAL_REFERENCIAS = PRODUCTOS_Y_SERVICIOS.length;
+const TOTAL_LINEAS = new Set(PRODUCTOS_Y_SERVICIOS.map((p) => p.categoria)).size;
+
+// Operating reach, not a client list: naming third parties as customers needs
+// contracts to back it up. Declared once so desktop and mobile cannot diverge.
+const ZONAS_COBERTURA = [
+  { zona: "Caribe", desc: "Corredor minero y logística portuaria" },
+  { zona: "Centro", desc: "Corredor central y zonas de taller" },
+  { zona: "Pacífico", desc: "Conexión férrea hacia el Pacífico" },
+  { zona: "Orinoquía", desc: "Plataformas de carga del piedemonte" },
+  { zona: "Sur", desc: "Eje férreo Tolima–Huila–Nariño" },
+];
 
 // ─── Animated counter ─────────────────────────────────────────────────────────
 function AnimatedCounter({
@@ -273,40 +288,46 @@ function DesktopView() {
           </motion.div>
 
           <div className="grid grid-cols-3 gap-8 md:gap-12 mt-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, ease: [0.65, 0, 0.35, 1] }}
+            >
+              <ColombiaProud />
+            </motion.div>
+
             {[
-              { type: "proud", label: "Orgullo Colombiano" },
-              { to: 100, suffix: "%", label: "Calidad Garantizada", sub: "bajo estándares AREMA/UIC" },
-              { to: 247, suffix: "", label: "Soporte Técnico", sub: "atención continua especializada" },
-            ].map((stat: any, i) => (
+              {
+                to: TOTAL_REFERENCIAS,
+                label: "Referencias en Catálogo",
+                sub: "componentes, herramientas y señalización",
+              },
+              {
+                to: TOTAL_LINEAS,
+                label: "Líneas de Suministro",
+                sub: "especificadas según referencias AREMA y UIC",
+              },
+            ].map((stat, i) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.12, ease: [0.65, 0, 0.35, 1] }}
+                transition={{ duration: 0.5, delay: (i + 1) * 0.12, ease: [0.65, 0, 0.35, 1] }}
               >
-                {stat.type === "proud" ? (
-                  <ColombiaProud />
-                ) : (
-                  <>
-                    <div
-                      className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#1a1a2e]"
-                      style={{ letterSpacing: "-0.05em" }}
-                    >
-                      {stat.to === 247 ? (
-                        <span>24/7</span>
-                      ) : (
-                        <AnimatedCounter to={stat.to} suffix={stat.suffix} delay={i * 120} />
-                      )}
-                    </div>
-                    <div className="mt-2">
-                      <span className="text-xs font-bold text-zinc-600 tracking-wide uppercase">
-                        {stat.label}
-                      </span>
-                      <span className="text-[10px] text-zinc-400 block mt-0.5">{stat.sub}</span>
-                    </div>
-                  </>
-                )}
+                <div
+                  className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#1a1a2e]"
+                  style={{ letterSpacing: "-0.05em" }}
+                >
+                  <AnimatedCounter to={stat.to} delay={(i + 1) * 120} />
+                </div>
+                <div className="mt-2">
+                  <span className="text-xs font-bold text-zinc-600 tracking-wide uppercase">
+                    {stat.label}
+                  </span>
+                  <span className="text-[10px] text-zinc-400 block mt-0.5">{stat.sub}</span>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -430,7 +451,7 @@ function DesktopView() {
               Cobertura Nacional
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-[#1a1a2e] mt-3">
-              Presencia en las Principales Zonas Ferroviarias
+              Cobertura en las Principales Zonas Ferroviarias
             </h2>
           </motion.div>
 
@@ -438,13 +459,7 @@ function DesktopView() {
             <ColombiaMap />
 
             <div className="space-y-5">
-              {[
-                { zona: "Caribe", desc: "Carga minera Cerrejón + logística portuaria", proyectos: 4 },
-                { zona: "Centro", desc: "Talleres Facatativá + Corredor Central", proyectos: 6 },
-                { zona: "Pacífico", desc: "Conexión férrea Buenaventura", proyectos: 2 },
-                { zona: "Orinoquía", desc: "Plataforma de carga Villavicencio", proyectos: 1 },
-                { zona: "Sur", desc: "Eje férreo Tolima–Huila–Nariño", proyectos: 2 },
-              ].map((item, i) => (
+              {ZONAS_COBERTURA.map((item, i) => (
                 <motion.div
                   key={item.zona}
                   initial={{ opacity: 0, x: 20 }}
@@ -458,7 +473,6 @@ function DesktopView() {
                       <span className="text-sm font-bold text-[#1a1a2e] tracking-tight">
                         {item.zona}
                       </span>
-                      <span className="text-[10px] text-[#D35400]/70">{item.proyectos} proyectos</span>
                     </div>
                     <span className="text-[10px] text-zinc-500 mt-0.5 block">{item.desc}</span>
                   </div>
@@ -480,10 +494,10 @@ function DesktopView() {
                 className="mt-6 border border-[#D35400]/20 px-5 py-4 flex items-center justify-between bg-white/50"
               >
                 <span className="text-[10px] text-zinc-600 uppercase tracking-widest">
-                  Total proyectos activos
+                  Cobertura operativa
                 </span>
-                <span className="text-2xl font-black text-[#1a1a2e]" style={{ letterSpacing: "-0.04em" }}>
-                  15
+                <span className="text-sm font-black text-[#1a1a2e] uppercase tracking-tight">
+                  Nacional
                 </span>
               </motion.div>
             </div>
@@ -588,10 +602,10 @@ function MobileView() {
             className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
           >
             <div className="text-6xl font-black text-[#1a1a2e] tracking-tighter">
-              <AnimatedCounter to={100} suffix="%" />
+              <AnimatedCounter to={TOTAL_REFERENCIAS} suffix="" />
             </div>
-            <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Calidad Garantizada</span>
-            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">bajo estándares AREMA/UIC</span>
+            <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Referencias en Catálogo</span>
+            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">componentes, herramientas y señalización</span>
           </motion.div>
 
           <motion.div
@@ -601,10 +615,10 @@ function MobileView() {
             className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
           >
             <div className="text-6xl font-black text-[#1a1a2e] tracking-tighter">
-              24/7
+              <AnimatedCounter to={TOTAL_LINEAS} suffix="" />
             </div>
-            <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Soporte Técnico</span>
-            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">atención continua</span>
+            <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Líneas de Suministro</span>
+            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">especificadas según referencias AREMA y UIC</span>
           </motion.div>
         </div>
       </section>
@@ -693,7 +707,7 @@ function MobileView() {
             Cobertura Nacional
           </span>
           <h2 className="text-3xl font-black tracking-tighter text-[#1a1a2e]">
-            Presencia Activa
+            Cobertura Operativa
           </h2>
         </motion.div>
 
@@ -706,13 +720,7 @@ function MobileView() {
 
         <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100">
           <div className="space-y-5">
-            {[
-              { zona: "Caribe", desc: "Carga minera Cerrejón + logística", proyectos: 4 },
-              { zona: "Centro", desc: "Talleres Facatativá + Corredor Central", proyectos: 6 },
-              { zona: "Pacífico", desc: "Conexión férrea Buenaventura", proyectos: 2 },
-              { zona: "Orinoquía", desc: "Plataforma de carga Villavicencio", proyectos: 1 },
-              { zona: "Sur", desc: "Eje férreo Tolima–Huila–Nariño", proyectos: 2 },
-            ].map((item, i) => (
+            {ZONAS_COBERTURA.map((item, i) => (
               <motion.div
                 key={item.zona}
                 initial={{ opacity: 0, x: -10 }}
@@ -725,9 +733,6 @@ function MobileView() {
                 <div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-sm font-bold text-[#1a1a2e]">{item.zona}</span>
-                    <span className="text-[10px] bg-zinc-200 text-zinc-600 px-2 py-0.5 rounded-full">
-                      {item.proyectos}
-                    </span>
                   </div>
                   <span className="text-[11px] text-zinc-500 mt-1 block leading-tight">{item.desc}</span>
                 </div>
@@ -737,10 +742,10 @@ function MobileView() {
           
           <div className="mt-8 pt-5 border-t border-zinc-200 flex justify-between items-center">
             <span className="text-[10px] text-zinc-600 uppercase tracking-widest font-bold">
-              Total Proyectos
+              Cobertura operativa
             </span>
-            <span className="text-2xl font-black text-[#D35400]">
-              15
+            <span className="text-sm font-black text-[#D35400] uppercase tracking-tight">
+              Nacional
             </span>
           </div>
         </div>
