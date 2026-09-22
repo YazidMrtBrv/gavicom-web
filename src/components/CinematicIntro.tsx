@@ -172,21 +172,20 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
   const triggerExit = () => {
     setExiting(true);
     setTimeout(() => {
-      try { sessionStorage.setItem("gavicom-intro-seen", "1"); } catch {}
+      try { localStorage.setItem("gavicom-intro-seen", "1"); } catch {}
       onComplete();
     }, 600);
   };
 
   useEffect(() => {
-    // Already seen this session → skip immediately (Temporarily disabled for development review)
-    /*
+    // Seen before → straight to the content. Stored per visitor rather than per
+    // session so returning buyers never wait through the animation twice.
     try {
-      if (sessionStorage.getItem("gavicom-intro-seen")) {
+      if (localStorage.getItem("gavicom-intro-seen")) {
         onComplete();
         return;
       }
     } catch {}
-    */
 
     const timers = [
       setTimeout(() => setPhase(1), 100),   // GAVICOM letters start

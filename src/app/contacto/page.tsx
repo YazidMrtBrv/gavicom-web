@@ -72,17 +72,31 @@ export default function ContactoPage() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    const tipo = REQUEST_TYPES[requestType].title;
+
+    // Opened straight from the click: browsers only allow this while the user
+    // gesture is still active, and a delay here gets the window blocked.
+    const texto = encodeURIComponent(
+      `Hola GAVICOM SAS, soy ${formNombre || "Cliente"}. Mi solicitud es para el departamento de *${tipo}*.\n${formEmail ? `\nCorreo: ${formEmail}` : ""}${formTelefono ? `\nTeléfono: ${formTelefono}` : ""}\n\nRequerimiento: ${formMensaje || "Quiero más información."}`
+    );
+    window.open(`${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=${texto}`, "_blank");
+
+    // Second copy by email so the lead survives a blocked window or a visitor
+    // without WhatsApp on this device.
     setIsTransmitting(true);
-    
-    // Simulate transmission delay for epic UX
-    setTimeout(() => {
-      setIsTransmitting(false);
-      const tipo = REQUEST_TYPES[requestType].title;
-      const texto = encodeURIComponent(
-        `Hola GAVICOM SAS, soy ${formNombre || "Cliente"}. Mi solicitud es para el departamento de *${tipo}*.\n${formEmail ? `\nCorreo: ${formEmail}` : ""}${formTelefono ? `\nTeléfono: ${formTelefono}` : ""}\n\nRequerimiento: ${formMensaje || "Quiero más información."}`
-      );
-      window.open(`${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=${texto}`, "_blank");
-    }, 1500);
+    fetch("/api/contacto", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        nombre: formNombre,
+        telefono: formTelefono,
+        email: formEmail,
+        mensaje: formMensaje,
+        tipo,
+      }),
+    })
+      .catch(() => {})
+      .finally(() => setIsTransmitting(false));
   };
 
   return (

@@ -9,6 +9,7 @@ import IntroWrapper from "@/components/IntroWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import Footer from "@/components/ui/Footer";
 import PointerSpotlight from "@/components/ui/PointerSpotlight";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -160,6 +161,7 @@ export default function RootLayout({
           <Footer />
           <WhatsAppFloat />
         </IntroWrapper>
+        <Analytics />
       </body>
     </html>
   );
