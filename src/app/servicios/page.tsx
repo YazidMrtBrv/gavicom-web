@@ -89,41 +89,6 @@ const ICONOS_SERVICIOS: Record<string, React.ReactNode> = {
 
 const SERVICIOS = PRODUCTOS_Y_SERVICIOS.filter((p) => p.categoria === "Servicios");
 
-function BlueprintPanel({ icon, active }: { icon: React.ReactNode; active: boolean }) {
-  return (
-    <div className="absolute inset-0 flex items-center justify-center bg-[#f0f2f5]">
-      <div
-        className="absolute inset-0 opacity-60"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(211,84,0,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(211,84,0,0.12) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-        }}
-      />
-      {[
-        "top-4 left-4 border-t border-l",
-        "top-4 right-4 border-t border-r",
-        "bottom-4 left-4 border-b border-l",
-        "bottom-4 right-4 border-b border-r",
-      ].map((pos) => (
-        <motion.span
-          key={pos}
-          animate={{ opacity: active ? 1 : 0.35, scale: active ? 1.15 : 1 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className={`absolute w-5 h-5 border-[#D35400] ${pos}`}
-        />
-      ))}
-      <motion.div
-        animate={{ rotate: active ? [0, -4, 4, 0] : 0 }}
-        transition={{ duration: 0.7, ease: "easeInOut" }}
-        className="relative w-20 h-20 text-[#1a1a2e]/70"
-      >
-        {icon}
-      </motion.div>
-    </div>
-  );
-}
-
 function BrutalistServiceCard({ servicio, index }: { servicio: (typeof SERVICIOS)[number]; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
   const icon = ICONOS_SERVICIOS[servicio.nombre];
@@ -162,17 +127,19 @@ function BrutalistServiceCard({ servicio, index }: { servicio: (typeof SERVICIOS
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="absolute inset-0"
           >
-            {servicio.imagen ? (
-              <Image
-                src={`/images/productos/${servicio.imagen}`}
-                alt={servicio.nombre}
-                fill
-                className="object-contain p-8 mix-blend-multiply opacity-80"
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
-            ) : (
-              <BlueprintPanel icon={icon} active={isHovered} />
-            )}
+            <Image
+              src={`/images/productos/${servicio.imagen}`}
+              alt={servicio.nombre}
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className={
+                servicio.imagenCover
+                  ? `object-cover transition-[filter] duration-700 ease-out ${
+                      isHovered ? "grayscale-0" : "grayscale"
+                    }`
+                  : "object-contain p-8 mix-blend-multiply opacity-80"
+              }
+            />
           </motion.div>
           {/* Scanning line effect */}
           <motion.div
