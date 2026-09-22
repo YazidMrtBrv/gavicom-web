@@ -127,7 +127,9 @@ export default function Footer() {
                 </span>
               </li>
               <li>
-                <span className="text-xs text-zinc-500">NIT en trámite</span>
+                <span className="text-xs text-zinc-500">
+                  Sociedad por Acciones Simplificada
+                </span>
               </li>
             </ul>
           </div>
