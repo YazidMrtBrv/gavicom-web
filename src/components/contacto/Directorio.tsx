@@ -45,7 +45,6 @@ const PERSONAS: Persona[] = [
   },
 ];
 
-
 /*
  * Localizador de la sede, en líneas como un plano: tres anillos y una cruz
  * que se dibujan al entrar. Sin latido a propósito (ver contacto.module.css).

@@ -51,7 +51,7 @@ export default function HeroContacto() {
             as="h1"
             etiqueta="S.01 — CONTACTO"
             titulo="Hablemos de su próximo proyecto"
-            entradilla="Suministros ferroviarios, servicios técnicos, obras civiles o energía solar: cuéntenos qué necesita y el equipo comercial de GAVICOM le responde por WhatsApp o por correo."
+            entradilla="Suministros ferroviarios, servicios técnicos, obras civiles o energía solar: cuéntenos qué necesita con el formulario, por WhatsApp o por correo."
             acentos={["proyecto"]}
             id="titulo-contacto"
             className="lg:col-span-6"

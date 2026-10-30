@@ -14,7 +14,9 @@ export default function AccesoCotizador() {
 
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-      <p aria-live="polite" className="max-w-md text-sm leading-relaxed text-zinc-300 sm:text-base">
+      {/* Sin aria-live: el cambio llega al hidratar, no por algo que el visitante
+          hizo aquí, y anunciarlo interrumpiría la lectura en otra parte de la página. */}
+      <p className="max-w-md text-sm leading-relaxed text-zinc-300 sm:text-base">
         {conItems ? (
           <>
             Ya tiene{" "}

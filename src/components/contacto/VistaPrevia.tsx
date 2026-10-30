@@ -18,7 +18,6 @@ import estilos from "./contacto.module.css";
 // Negrita como la entiende WhatsApp: asteriscos pegados al texto ("*así*", no "* así *").
 const PATRON = new RegExp(`(\\*[^*\\s](?:[^*\\n]*[^*\\s])?\\*|${HUECO_ABRE}[^${HUECO_CIERRA}]+${HUECO_CIERRA})`, "g");
 
-
 /*
  * Lo que verá GAVICOM en WhatsApp, mientras se escribe. Los *asteriscos* se
  * pintan en negrita como en WhatsApp y los huecos sin llenar, en gris.
@@ -43,8 +42,16 @@ export default function VistaPrevia({ tipo, datos }: { tipo: TipoSolicitud; dato
           </div>
         </div>
 
-        {/* Fondo de conversación: rejilla tenue en lugar del papel tapiz de WhatsApp. */}
-        <div className="max-h-[46vh] overflow-y-auto bg-[linear-gradient(to_right,rgb(255_255_255/0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255/0.04)_1px,transparent_1px)] bg-size-[20px_20px] px-8 py-6">
+        {/* Fondo de conversación: rejilla tenue en lugar del papel tapiz de WhatsApp.
+            Un mensaje largo se recorre aquí dentro: con tabIndex también con el
+            teclado, y data-lenis-prevent devuelve la rueda del ratón a este bloque. */}
+        <div
+          role="region"
+          aria-label="Mensaje"
+          tabIndex={0}
+          data-lenis-prevent=""
+          className="max-h-[46vh] overflow-y-auto bg-[linear-gradient(to_right,rgb(255_255_255/0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255/0.04)_1px,transparent_1px)] bg-size-[20px_20px] px-8 py-6 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+        >
           <div className={cn(estilos.globo, "ml-6 rounded-[6px] rounded-tr-none bg-white px-4 py-3.5 text-ink shadow-sm")}>
             <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">
               {partes.map((parte, i) => {

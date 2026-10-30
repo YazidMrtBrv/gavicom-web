@@ -61,7 +61,11 @@ export default function BotonCopiar({ texto, etiqueta, descripcion, tono = "clar
       </button>
       {/* Fuera del botón: dentro de él, varios lectores no anuncian el cambio. */}
       <span aria-live="polite" className="sr-only">
-        {estado === "copiado" ? `${descripcion} copiado al portapapeles.` : ""}
+        {estado === "copiado"
+          ? `${descripcion} copiado al portapapeles.`
+          : estado === "fallo"
+            ? `No se pudo copiar. ${descripcion}: ${texto}.`
+            : ""}
       </span>
     </>
   );

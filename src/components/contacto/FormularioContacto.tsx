@@ -243,7 +243,9 @@ export default function FormularioContacto() {
                           </motion.span>
                         )}
                         <span className="relative flex items-center justify-between gap-2">
+                          {/* El código es para la vista: el nombre del radio es el tipo. */}
                           <span
+                            aria-hidden="true"
                             className={cn(
                               "text-[11px] font-semibold tracking-[0.2em] tabular-nums",
                               activo ? "text-brand" : "text-zinc-600"
@@ -256,7 +258,7 @@ export default function FormularioContacto() {
                             strokeWidth={1.6}
                             className={cn(
                               "size-5 transition-[color,translate] duration-300 motion-reduce:transition-none",
-                              activo ? "text-brand" : "text-zinc-500 group-hover/tipo:-translate-y-0.5 group-hover/tipo:text-brand"
+                              activo ? "text-brand" : "text-zinc-600 group-hover/tipo:-translate-y-0.5 group-hover/tipo:text-brand"
                             )}
                           />
                         </span>
@@ -358,6 +360,9 @@ export default function FormularioContacto() {
                         enfocarVisible(nodo);
                       }
                     }}
+                    // Lenis se queda con la rueda del ratón: sin esto, un requerimiento
+                    // largo no se puede recorrer dentro del campo.
+                    data-lenis-prevent=""
                     name="mensaje"
                     required
                     rows={5}
