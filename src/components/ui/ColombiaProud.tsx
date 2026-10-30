@@ -1,102 +1,54 @@
-"use client";
+import type { CSSProperties } from "react";
+import Contador from "@/components/portada/Contador";
+import estilos from "@/components/portada/portada.module.css";
+import { cn } from "@/lib/cn";
 
-import { motion } from "framer-motion";
+// Colores oficiales de la bandera. Solo como franjas y subrayados: el amarillo
+// sobre blanco no se lee, así que las letras van siempre en azul de marca.
+const BANDERA = { amarillo: "#FFD100", azul: "#003893", rojo: "#CE1126" } as const;
+const COLORES_LETRA = [BANDERA.amarillo, BANDERA.azul, BANDERA.rojo];
+const PALABRA = "COLOMBIANA";
 
-const FLAG = ["#FFD100", "#003893", "#CE1126"];
+interface ColombiaProudProps {
+  className?: string;
+}
 
-const letterColors = ["#FFD100", "#003893", "#CE1126", "#FFD100", "#003893", "#CE1126", "#FFD100", "#003893", "#CE1126", "#FFD100", "#003893"];
-
-export default function ColombiaProud() {
+export default function ColombiaProud({ className }: ColombiaProudProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="flex flex-col items-center gap-3"
-    >
-      {/* Animated flag waves */}
-      <div className="flex gap-1.5 h-10 w-full max-w-[140px] mx-auto">
-        {FLAG.map((color, i) => (
-          <motion.div
-            key={color}
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: i * 0.15, ease: [0.34, 1.56, 0.64, 1] }}
-            className="flex-1 rounded-sm origin-bottom"
-            style={{ backgroundColor: color }}
-          >
-            <motion.div
-              animate={{
-                opacity: [0.3, 0.8, 0.3],
-                y: [0, -2, 0],
-              }}
-              transition={{
-                duration: 2 + i * 0.3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="h-full w-full rounded-sm"
-              style={{
-                background: `linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)`,
-              }}
-            />
-          </motion.div>
-        ))}
+    <div className={cn("flex flex-col", className)}>
+      {/* Proporción real de la bandera: amarillo la mitad, azul y rojo un cuarto cada uno. */}
+      <div aria-hidden="true" className="relative flex h-9 w-14 flex-col overflow-clip rounded-[2px] ring-1 ring-zinc-200">
+        <span className={cn(estilos.banderaFranja, "h-1/2")} style={{ backgroundColor: BANDERA.amarillo }} />
+        <span className={cn(estilos.banderaFranja, "h-1/4")} style={{ backgroundColor: BANDERA.azul }} />
+        <span className={cn(estilos.banderaFranja, "h-1/4")} style={{ backgroundColor: BANDERA.rojo }} />
+        <span
+          className={cn(
+            estilos.banderaBrillo,
+            "pointer-events-none absolute inset-0 bg-linear-to-r from-transparent via-white/35 to-transparent"
+          )}
+        />
       </div>
 
-      {/* 100% counter */}
-      <div className="text-center">
-        <motion.span
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          className="text-5xl sm:text-6xl font-bold text-brand block"
-          style={{ letterSpacing: "-0.05em" }}
-        >
-          100%
-        </motion.span>
+      <p className="mt-6 flex h-12 items-end font-titulo text-5xl font-semibold leading-none tracking-tight text-brand sm:h-15 sm:text-6xl">
+        <Contador hasta={100} sufijo="%" retardo={360} />
+      </p>
 
-        {/* COLOMBIANOS con letras de colores de la bandera */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.6 }}
-          className="flex justify-center gap-[0.08em] mt-1"
-        >
-          {"COLOMBIANOS".split("").map((letter, i) => (
-            <motion.span
+      <p className="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+        <span className="sr-only">Colombiana</span>
+        {/* Cada letra salta al pasar el cursor y se subraya con un color de la bandera. */}
+        <span aria-hidden="true" className="inline-flex">
+          {Array.from(PALABRA, (letra, i) => (
+            <span
               key={i}
-              initial={{ opacity: 0, y: 8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.25,
-                delay: 0.6 + i * 0.04,
-                ease: [0.34, 1.56, 0.64, 1],
-              }}
-              whileHover={{ scale: 1.3, rotate: [-5, 5, 0] }}
-              className="text-sm sm:text-base font-bold tracking-wide inline-block cursor-default"
-              style={{ color: letterColors[i % letterColors.length] }}
+              style={{ "--color-letra": COLORES_LETRA[i % COLORES_LETRA.length] } as CSSProperties}
+              className="relative inline-block cursor-default transition-transform duration-300 ease-out after:absolute after:inset-x-[0.05em] after:-bottom-1 after:h-0.5 after:origin-left after:scale-x-0 after:bg-(--color-letra) after:transition-transform after:duration-300 hover:-translate-y-0.5 hover:scale-125 hover:after:scale-x-100 motion-reduce:hover:translate-y-0 motion-reduce:hover:scale-100"
             >
-              {letter}
-            </motion.span>
+              {letra}
+            </span>
           ))}
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 1.2 }}
-          className="text-[10px] text-zinc-500 mt-2"
-        >
-          Empresa 100% colombiana
-        </motion.p>
-      </div>
-    </motion.div>
+        </span>
+      </p>
+      <p className="mt-1.5 text-sm text-zinc-600">Orgullo colombiano</p>
+    </div>
   );
 }

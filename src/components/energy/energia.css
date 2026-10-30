@@ -1,0 +1,184 @@
+/* ============================================================
+   GAVICOM Energy (/energy): ilustraciones técnicas y detalles.
+   Misma regla que el kit de movimiento (globals.css): el estado
+   de partida es el visible. Todo lo que anima está dentro de
+   prefers-reduced-motion: no-preference y, si va ligado al
+   scroll, dentro de @supports; sin eso, los dibujos se ven
+   completos y quietos.
+   Clases con prefijo energia- porque este archivo es global.
+   ============================================================ */
+
+/* ---------- Cuadrícula de plano ---------- */
+.energia-cuadricula {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, #000 35%, transparent 100%);
+}
+.energia-cuadricula-clara {
+  background-image:
+    linear-gradient(to right, rgb(20 59 100 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(20 59 100 / 0.07) 1px, transparent 1px);
+  background-size: 16px 16px;
+  background-position: center;
+}
+
+/* ---------- Esquema del hero ---------- */
+.energia-esquema { view-timeline: --energia-esquema block; }
+
+.energia-caja {
+  fill: var(--brand-deep);
+  transition: fill 0.35s var(--apple-ease);
+}
+.energia-pieza {
+  transition: color 0.35s var(--apple-ease), opacity 0.35s var(--apple-ease);
+}
+.energia-chip {
+  transition:
+    background-color 0.3s var(--apple-ease),
+    border-color 0.3s var(--apple-ease),
+    color 0.3s var(--apple-ease);
+}
+
+/* Sol a media mañana cuando no hay animación ligada al scroll. El giro es
+   alrededor del centro de su trayectoria (coordenadas del viewBox). */
+.energia-sol {
+  transform-box: view-box;
+  transform-origin: 320px 392px;
+  rotate: -38deg;
+}
+
+/* El pulso solo existe mientras anima: quieto sería una raya suelta. */
+.energia-flujo { stroke-opacity: 0; }
+
+/* Leyenda del hero → pieza del esquema: al pasar o enfocar un servicio, su
+   pieza se enciende y el resto se atenúa. Solo CSS (:has), sin JS. */
+.energia-hero:has([data-enlace]:is(:hover, :focus-visible)) .energia-pieza { opacity: 0.35; }
+
+.energia-hero:has([data-enlace="cofre"]:is(:hover, :focus-visible)) [data-pieza="cofre"],
+.energia-hero:has([data-enlace="modulos"]:is(:hover, :focus-visible)) [data-pieza="modulos"],
+.energia-hero:has([data-enlace="protecciones"]:is(:hover, :focus-visible)) [data-pieza="protecciones"],
+.energia-hero:has([data-enlace="gabinete"]:is(:hover, :focus-visible)) [data-pieza="gabinete"] {
+  opacity: 1;
+  color: var(--accent-strong);
+}
+
+.energia-hero:has([data-enlace="cofre"]:is(:hover, :focus-visible)) [data-pieza="cofre"] .energia-caja,
+.energia-hero:has([data-enlace="modulos"]:is(:hover, :focus-visible)) [data-pieza="modulos"] .energia-caja,
+.energia-hero:has([data-enlace="protecciones"]:is(:hover, :focus-visible)) [data-pieza="protecciones"] .energia-caja,
+.energia-hero:has([data-enlace="gabinete"]:is(:hover, :focus-visible)) [data-pieza="gabinete"] .energia-caja {
+  fill: color-mix(in srgb, var(--accent) 16%, var(--brand-deep));
+}
+
+.energia-hero:has([data-enlace="cofre"]:is(:hover, :focus-visible)) [data-chip="cofre"],
+.energia-hero:has([data-enlace="modulos"]:is(:hover, :focus-visible)) [data-chip="modulos"],
+.energia-hero:has([data-enlace="protecciones"]:is(:hover, :focus-visible)) [data-chip="protecciones"],
+.energia-hero:has([data-enlace="gabinete"]:is(:hover, :focus-visible)) [data-chip="gabinete"] {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--brand-deep);
+}
+
+/* ---------- Leyenda del hero: barra accent que crece arriba ---------- */
+.energia-enlace::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0 auto 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.45s var(--apple-ease);
+}
+.energia-enlace:hover::before,
+.energia-enlace:focus-visible::before { transform: scaleX(1); }
+
+/* ---------- Lienzos que se dibujan con el scroll (tarjetas, cierre) ---------- */
+.energia-lienzo { view-timeline: --energia-lienzo block; }
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes energia-dibuja {
+    from { stroke-dashoffset: 100; }
+  }
+  @keyframes energia-aparece {
+    from { opacity: 0; }
+  }
+  @keyframes energia-chip-entra {
+    from { clip-path: inset(0 100% 0 0); }
+  }
+  @keyframes energia-fluye {
+    from { stroke-dashoffset: 100; stroke-opacity: 1; }
+    to { stroke-dashoffset: 0; stroke-opacity: 1; }
+  }
+  @keyframes energia-cifra {
+    from { translate: 0 70%; }
+  }
+  @keyframes energia-fluye-continuo {
+    from { stroke-dashoffset: 100; stroke-opacity: 1; }
+    to { stroke-dashoffset: 0; stroke-opacity: 1; }
+  }
+
+  /* Cifra del panel "Su solicitud": entra desde abajo al cambiar (la key la reinicia). */
+  .energia-cifra { animation: energia-cifra 0.45s var(--apple-ease); }
+
+  /* Hero: está en el primer pantallazo, así que se dibuja al cargar (por
+     tiempo), justo después de la cortina de cambio de página. */
+  .energia-esquema .energia-trazo {
+    stroke-dasharray: 100;
+    animation: energia-dibuja 1.1s var(--apple-ease) backwards;
+    animation-delay: calc(0.35s + var(--orden, 0) * 0.09s);
+  }
+  .energia-esquema .energia-aparece {
+    animation: energia-aparece 0.9s ease-out backwards;
+    animation-delay: calc(0.35s + var(--orden, 0) * 0.09s);
+  }
+  .energia-esquema .energia-chip {
+    animation: energia-chip-entra 0.5s var(--apple-ease) backwards;
+    animation-delay: calc(1.9s + var(--orden, 0) * 0.12s);
+  }
+  .energia-esquema .energia-etiqueta {
+    animation: energia-aparece 0.6s ease-out backwards;
+    animation-delay: 1.8s;
+  }
+  /* Tres pasadas del pulso después de dibujarse; con el puntero encima,
+     continuo. Un movimiento perpetuo sin control incomoda (WCAG 2.2.2). */
+  .energia-flujo { animation: energia-fluye 2.6s linear 2.6s 3; }
+  .energia-esquema:hover .energia-flujo { animation: energia-fluye-continuo 2.6s linear infinite; }
+
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    /* El sol sale por la izquierda y cruza el cielo mientras el hero se va. */
+    @keyframes energia-recorrido-sol {
+      from { rotate: -62deg; }
+      to { rotate: 62deg; }
+    }
+    .energia-sol {
+      animation-name: energia-recorrido-sol;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --energia-esquema;
+      animation-range: cover 45% cover 100%;
+    }
+
+    .energia-lienzo .energia-trazo {
+      stroke-dasharray: 100;
+      animation-name: energia-dibuja;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: backwards;
+      animation-timeline: --energia-lienzo;
+      animation-range:
+        entry calc(10% + var(--orden, 0) * 6%)
+        cover calc(36% + var(--orden, 0) * 2.5%);
+    }
+    .energia-lienzo .energia-aparece {
+      animation-name: energia-aparece;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: backwards;
+      animation-timeline: --energia-lienzo;
+      animation-range: entry 60% cover 50%;
+    }
+  }
+}
