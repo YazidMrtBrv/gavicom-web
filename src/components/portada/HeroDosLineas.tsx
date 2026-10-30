@@ -42,12 +42,12 @@ export default function HeroDosLineas() {
               className="mt-6 font-titulo text-[2.1rem] font-semibold leading-[1.04] tracking-tight text-brand sm:text-5xl lg:text-[3.4rem] xl:text-[3.9rem]"
             >
               <span className={estilos.lineaTitular}>
-                <span className={cn(estilos.lineaTitularTexto, "text-balance")} style={retardo(0.3)}>
+                <span className={cn(estilos.lineaTitularTexto, "text-balance")} style={retardo(0.1)}>
                   Suministro ferroviario y energía solar
                 </span>
               </span>{" "}
               <span className={estilos.lineaTitular}>
-                <span className={cn(estilos.lineaTitularTexto, "text-balance text-zinc-500")} style={retardo(0.42)}>
+                <span className={cn(estilos.lineaTitularTexto, "text-balance text-zinc-500")} style={retardo(0.22)}>
                   para la industria colombiana
                 </span>
               </span>
@@ -87,7 +87,7 @@ export default function HeroDosLineas() {
               <div className="flex h-full flex-col justify-between p-6 sm:p-8 lg:p-10">
                 <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                   <ScrambleLabel text="S.01 — RAILWAY" className="text-accent" />
-                  <span className={CHIP}>AREMA / UIC</span>
+                  <span className={CHIP}>Estándares AREMA / UIC</span>
                 </div>
 
                 <div className="max-w-lg">
@@ -135,8 +135,9 @@ export default function HeroDosLineas() {
                   GAVICOM Energy
                 </h2>
                 <p className="mt-4 text-sm leading-relaxed text-zinc-300 sm:text-base">
-                  Fabricación y suministro de cofres fotovoltaicos, montaje e instalación de sistemas solares,
-                  protecciones eléctricas AC y DC, y ensamble de componentes eléctricos.
+                  Fabricación y suministro de cofres fotovoltaicos metálicos rígidos, montaje e instalación de
+                  sistemas solares, instalación de protecciones eléctricas AC y DC, y ensamble e integración de
+                  componentes eléctricos.
                 </p>
                 <span aria-hidden="true" className={cn(estilos.panelBarra, "mt-6 block h-0.5 w-full bg-accent")} />
                 <Boton href="/energy" icono="flecha" className="mt-6">

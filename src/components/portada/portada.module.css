@@ -304,8 +304,10 @@
 
 /* Solo se aplica después del primer cambio: el estado que llega del
    servidor nunca arranca oculto. */
-.entradaCategoria {
-  animation: categoria-entra 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+@media (prefers-reduced-motion: no-preference) {
+  .entradaCategoria {
+    animation: categoria-entra 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 }
 
 /* ---------- Cómo cotizar: escena anclada con GSAP (EscenaCotizar.tsx) ---------- */
@@ -367,6 +369,19 @@
   box-shadow: 0 24px 60px -32px rgb(12 38 66 / 0.35);
 }
 
+/* En pantallas de portátil (1366×768 y similares) las muestras no caben con
+   la escena anclada: el último paso quedaría bajo el borde de la pantalla. */
+@media (max-height: 859px) {
+  .escena[data-anclado="true"] .pasoMuestra {
+    display: none;
+  }
+
+  /* Sin muestra, el texto ocupa todo el ancho de la tarjeta. */
+  .escena[data-anclado="true"] .pasoCuerpo {
+    display: block;
+  }
+}
+
 /* Cursor del campo de ciudad en la muestra del paso 02. */
 .cursorCampo {
   display: inline-block;
@@ -417,7 +432,7 @@
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-timeline: view();
-      animation-range: entry 30% cover 55%;
+      animation-range: entry 20% cover 40%;
     }
   }
 

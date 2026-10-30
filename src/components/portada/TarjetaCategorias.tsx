@@ -134,7 +134,9 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
           </div>
         </div>
 
-        {/* Progreso segmentado: las pasadas en azul, la actual se llena con el tiempo. */}
+        {/* Progreso segmentado: las pasadas en azul, la actual se llena con el tiempo.
+            Cada segmento mide 44 px de alto para el dedo; el margen negativo
+            mantiene fina la barra. */}
         <div className="mt-6 flex gap-1 sm:gap-1.5">
           {categorias.map((categoria, i) => (
             <button
@@ -143,7 +145,7 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
               onClick={() => ir(i)}
               aria-label={`Ver la categoría ${i + 1} de ${total}: ${categoria.nombre}`}
               aria-current={i === indice ? "true" : undefined}
-              className="group/segmento flex h-6 flex-1 items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="group/segmento -my-2.5 flex h-11 min-w-0 flex-1 items-center focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
             >
               <span className="relative block h-0.5 w-full overflow-clip bg-zinc-200 transition-colors group-hover/segmento:bg-zinc-300">
                 {i < indice && <span className="absolute inset-0 bg-brand" />}
@@ -176,7 +178,7 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
               )}
             >
               <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-zinc-600">Categoría</p>
-              <p className="mt-3 font-titulo text-3xl font-semibold leading-[1.08] tracking-tight text-brand text-balance sm:text-4xl">
+              <p className="mt-3 font-titulo text-2xl font-semibold leading-[1.08] tracking-tight text-brand text-balance sm:text-4xl">
                 {categoria.nombre}
               </p>
               <p className="mt-3 text-sm text-zinc-600">
@@ -184,14 +186,21 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
                 {categoria.total === 1 ? "referencia" : "referencias"}
                 {categoria.subcategorias.length > 0 && " en:"}
               </p>
+              {/* En móvil las subcategorías corren como una frase y no como fichas
+                  (una por renglón): la categoría más larga marca el alto de todas. */}
               {categoria.subcategorias.length > 0 && (
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {categoria.subcategorias.map((sub) => (
+                <ul className="mt-2 text-xs leading-relaxed text-zinc-700 sm:mt-3 sm:flex sm:flex-wrap sm:gap-2">
+                  {categoria.subcategorias.map((sub, j) => (
                     <li
                       key={sub}
-                      className="rounded-[2px] border border-zinc-200 bg-surface px-2.5 py-1 text-xs text-zinc-700"
+                      className="inline sm:rounded-[2px] sm:border sm:border-zinc-200 sm:bg-surface sm:px-2.5 sm:py-1"
                     >
                       {sub}
+                      {j < categoria.subcategorias.length - 1 && (
+                        <span aria-hidden="true" className="text-zinc-500 sm:hidden">
+                          {" · "}
+                        </span>
+                      )}
                     </li>
                   ))}
                 </ul>

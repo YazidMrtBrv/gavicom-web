@@ -48,6 +48,12 @@ export default function EscenaCotizar({ encabezado, accion, pasos }: EscenaCotiz
       // Atributo y no estado de React: tiene que estar en el DOM antes de que
       // ScrollTrigger mida la escena, que pasa a ocupar el alto de la pantalla.
       escena.dataset.anclado = "true";
+      // Si anclada no cabe entera en la pantalla (zoom del navegador, textos
+      // más largos), el último paso quedaría fuera de vista: queda como lista.
+      if (escena.offsetHeight > window.innerHeight + 1) {
+        delete escena.dataset.anclado;
+        return;
+      }
       escena.style.setProperty("--progreso", "0");
 
       const disparador = ScrollTrigger.create({
@@ -136,7 +142,7 @@ export default function EscenaCotizar({ encabezado, accion, pasos }: EscenaCotiz
                   "group rounded-[4px] border border-surface bg-surface p-5 sm:p-6"
                 )}
               >
-                <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_13.5rem] xl:items-center xl:gap-6">
+                <div className={cn(estilos.pasoCuerpo, "xl:grid xl:grid-cols-[minmax(0,1fr)_13.5rem] xl:items-center xl:gap-6")}>
                   <div>
                     <h3
                       id={`paso-cotizar-${i}`}

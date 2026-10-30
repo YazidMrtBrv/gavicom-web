@@ -57,7 +57,7 @@ export default function MapaCobertura({ encabezado }: { encabezado: ReactNode })
               aria-hidden="true"
               className="pointer-events-none absolute right-0 top-0 hidden w-40 rounded-[2px] border border-zinc-200 bg-white/90 p-3 text-[11px] leading-snug backdrop-blur-sm sm:block"
             >
-              <div className="flex items-center justify-between gap-2 border-b border-zinc-100 pb-2 text-[10px] font-semibold uppercase tracking-[0.2em]">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5 whitespace-nowrap border-b border-zinc-100 pb-2 text-[10px] font-semibold uppercase tracking-[0.2em]">
                 <span className="text-brand">{zonaActiva ? zonaActiva.zona : "Sede"}</span>
                 <span className="text-zinc-600 tabular-nums">
                   {zonaActiva ? `${dosCifras(zonaActiva.departamentos.length)} dptos.` : "GAVICOM"}
@@ -104,7 +104,7 @@ export default function MapaCobertura({ encabezado }: { encabezado: ReactNode })
                 <circle cx="4" cy="5" r="2.6" fill="#fff" stroke="#0C2642" strokeWidth="1.2" />
                 <circle cx="24" cy="5" r="2.6" fill="#fff" stroke="#0C2642" strokeWidth="1.2" />
               </svg>
-              Corredor de zona
+              Corredor de zona (esquemático)
             </span>
             <span className="flex items-center gap-1.5">
               <span className="size-2.5 border-[1.5px] border-white bg-brand-deep outline outline-1 outline-accent" />

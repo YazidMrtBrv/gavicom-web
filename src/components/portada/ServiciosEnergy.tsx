@@ -87,7 +87,9 @@ export default function ServiciosEnergy() {
                     nombre={servicio.titulo}
                     linea="energy"
                     variante="compacto"
-                    className="border-white/35 bg-transparent text-white hover:border-white hover:bg-white hover:text-brand-deep aria-pressed:border-white aria-pressed:bg-white aria-pressed:text-brand-deep"
+                    // Pulsado va sobre brand y no sobre blanco: la marca ✓ del botón es accent
+                    // y sobre fondo claro no se lee.
+                    className="border-white/35 bg-transparent text-white hover:border-white hover:bg-white/10 hover:text-white aria-pressed:border-accent aria-pressed:bg-brand aria-pressed:hover:bg-brand"
                   />
                 </div>
               </Reveal>
