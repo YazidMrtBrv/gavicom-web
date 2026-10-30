@@ -1,0 +1,131 @@
+/* ============================================================
+   Detalles propios del catálogo (/catalogo). Misma regla que el
+   kit (globals.css): el estado de partida es el visible. Lo que se
+   anima solo corre tras una acción del visitante (abrir el
+   buscador, elegir una referencia) o al entrar en pantalla, y queda
+   dentro de prefers-reduced-motion: no-preference.
+   ============================================================ */
+
+/* ---------- Encabezado: cuadrícula de plano que se desvanece ---------- */
+.cuadricula {
+  background-image:
+    linear-gradient(to right, rgb(20 59 100 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(20 59 100 / 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+  mask-image: linear-gradient(to bottom, #000 10%, transparent 90%);
+}
+
+/* ---------- Placa del catálogo: cifras que ruedan como un odómetro ---------- */
+.odometroVentana {
+  display: inline-block;
+  height: 1.1em;
+  overflow: clip;
+  line-height: 1.1em;
+}
+
+.odometroRueda {
+  display: flex;
+  flex-direction: column;
+  /* Cada dígito ocupa una décima de la rueda: --digito 0..9. */
+  translate: 0 calc(var(--digito, 0) * -10%);
+}
+
+.odometroRueda > span {
+  height: 1.1em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .odometroRodando {
+    transition: translate 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--retardo, 0ms);
+  }
+}
+
+/* ---------- Tarjeta de referencia ---------- */
+.tarjeta {
+  /* El menú fijo mide ~108 px y en móvil se suma la barra de categorías. */
+  scroll-margin-top: 11.5rem;
+  outline: 2px solid transparent;
+  outline-offset: 12px;
+  transition:
+    outline-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    outline-offset 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 64rem) {
+  .tarjeta {
+    scroll-margin-top: 8.5rem;
+  }
+}
+
+/* La que eligió el buscador: un anillo accent que se cierra sobre la tarjeta y,
+   cuando el atributo se retira (~2,4 s), se abre y se apaga. Es una transición y
+   no una animación para no pisar la entrada .reveal-on-scroll de la tarjeta. */
+.tarjeta[data-resaltado="true"] {
+  outline-color: var(--accent);
+  outline-offset: 5px;
+}
+
+/* Regla graduada al pie de la foto: marca menor cada 8 px, mayor cada 40 px. */
+.regla {
+  background-image:
+    repeating-linear-gradient(to right, rgb(20 59 100 / 0.3) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(to right, rgb(20 59 100 / 0.16) 0 1px, transparent 1px 8px);
+  background-size:
+    100% 100%,
+    100% 50%;
+  background-position:
+    left bottom,
+    left bottom;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Diálogos: buscador rápido y visor de imagen ---------- */
+/* Sin estas dos reglas, la rueda del ratón sobre el velo o dentro del diálogo
+   desplaza la página de atrás. */
+.paleta:modal,
+.visor:modal {
+  overscroll-behavior: contain;
+}
+
+.paleta::backdrop,
+.visor::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.paleta::backdrop {
+  background: rgb(12 38 66 / 0.6);
+  backdrop-filter: blur(3px);
+}
+
+.visor::backdrop {
+  background: rgb(0 0 0 / 0.88);
+}
+
+@keyframes dialogo-entra {
+  from {
+    opacity: 0;
+    translate: 0 -10px;
+    scale: 0.985;
+  }
+}
+
+@keyframes velo-entra {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .paleta[open],
+  .visor[open] {
+    animation: dialogo-entra 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .paleta[open]::backdrop,
+  .visor[open]::backdrop {
+    animation: velo-entra 0.3s ease-out;
+  }
+}
