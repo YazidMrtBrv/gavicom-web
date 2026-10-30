@@ -76,8 +76,8 @@ export default function ServiciosLoading() {
               <div className={`h-3 w-2/3 rounded ${BLOQUE}`} />
             </div>
 
-            <div className="mt-14 grid gap-12 sm:mt-20 lg:grid-cols-12 lg:gap-10">
-              <div className="hidden space-y-6 lg:col-span-3 lg:block">
+            <div className="mt-14 grid gap-12 sm:mt-20 xl:grid-cols-12 xl:gap-10">
+              <div className="hidden space-y-6 xl:col-span-3 xl:block">
                 <div className={`h-3 w-32 rounded ${BLOQUE}`} />
                 {[0, 1, 2, 3, 4, 5, 6].map((i) => (
                   <div key={i} className="flex gap-4">
@@ -89,7 +89,7 @@ export default function ServiciosLoading() {
                   </div>
                 ))}
               </div>
-              <div className="flex flex-col gap-8 sm:gap-10 lg:col-span-9">
+              <div className="flex flex-col gap-8 sm:gap-10 xl:col-span-9">
                 <FichaEsqueleto />
                 <FichaEsqueleto />
               </div>

@@ -20,9 +20,10 @@ export default function PortafolioServicios() {
           id="titulo-portafolio"
         />
 
-        <div className="mt-14 grid gap-12 sm:mt-20 lg:grid-cols-12 lg:gap-10">
-          {/* El índice acompaña la lectura en escritorio; en móvil las fichas van seguidas. */}
-          <div className="hidden lg:col-span-3 lg:block">
+        <div className="mt-14 grid gap-12 sm:mt-20 xl:grid-cols-12 xl:gap-10">
+          {/* El índice acompaña la lectura en pantallas anchas; por debajo, las fichas
+              ocupan todo el ancho y van seguidas. */}
+          <div className="hidden xl:col-span-3 xl:block">
             <div className="sticky top-32 -mx-2 flex max-h-[calc(100svh-9rem)] flex-col gap-8 overflow-y-auto px-2 pb-4 pt-1 [scrollbar-width:thin]">
               <IndiceServicios items={ITEMS_INDICE} />
               <div className="border-t border-zinc-300 pt-6">
@@ -36,7 +37,7 @@ export default function PortafolioServicios() {
             </div>
           </div>
 
-          <ol className="flex flex-col gap-8 sm:gap-10 lg:col-span-9">
+          <ol className="flex flex-col gap-8 sm:gap-10 xl:col-span-9">
             {SERVICIOS.map((servicio, i) => (
               <Reveal as="li" key={servicio.sku}>
                 <TarjetaServicio servicio={servicio} indice={i} total={TOTAL_SERVICIOS} />

@@ -26,29 +26,6 @@ export default function EstandaresServicios() {
   return (
     <section aria-labelledby="titulo-estandares" className="bg-white py-24 sm:py-32">
       <div className="mx-auto grid w-full max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-12 lg:items-center lg:gap-16 lg:px-12">
-        <figure className="lg:col-span-5">
-          <Reveal variant="clip">
-            <TechFrame tone="oscuro" className="relative isolate bg-brand-deep p-6 text-white sm:p-8">
-              <div aria-hidden="true" className={cn(estilos.cuadriculaOscura, "pointer-events-none absolute inset-0 -z-10")} />
-              <div className="flex items-center justify-between gap-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-400">
-                <span>Perfil de riel</span>
-                <span>Esquema sin escala</span>
-              </div>
-              <PerfilRiel className="mx-auto mt-4 max-w-[26rem]" />
-              <div className="mt-4 border-t border-white/15 pt-5">
-                <p className="font-titulo text-3xl font-semibold tracking-tight text-accent sm:text-4xl">AREMA / UIC</p>
-                <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-300">
-                  Estándares operativos
-                </p>
-              </div>
-            </TechFrame>
-          </Reveal>
-          <figcaption className="sr-only">
-            Esquema de la sección de un riel, con cabeza, alma y patín, rodeado por un sello con las siglas AREMA y
-            UIC.
-          </figcaption>
-        </figure>
-
         <div className="lg:col-span-7">
           <SectionHeader
             etiqueta="S.03 — ESTÁNDARES"
@@ -90,6 +67,30 @@ export default function EstandaresServicios() {
             )}
           </Reveal>
         </div>
+
+        {/* Después del texto en el HTML (se lee primero el titular); a la izquierda en escritorio. */}
+        <figure className="lg:order-first lg:col-span-5">
+          <Reveal variant="clip">
+            <TechFrame tone="oscuro" className="relative isolate bg-brand-deep p-6 text-white sm:p-8">
+              <div aria-hidden="true" className={cn(estilos.cuadriculaOscura, "pointer-events-none absolute inset-0 -z-10")} />
+              <div className="flex items-center justify-between gap-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-400">
+                <span>Perfil de riel</span>
+                <span>Esquema sin escala</span>
+              </div>
+              <PerfilRiel className="mx-auto mt-4 max-w-[26rem]" />
+              <div className="mt-4 border-t border-white/15 pt-5">
+                <p className="font-titulo text-3xl font-semibold tracking-tight text-accent sm:text-4xl">AREMA / UIC</p>
+                <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-300">
+                  Estándares operativos
+                </p>
+              </div>
+            </TechFrame>
+          </Reveal>
+          <figcaption className="sr-only">
+            Esquema de la sección de un riel, con cabeza, alma y patín, rodeado por un sello con las siglas AREMA y
+            UIC.
+          </figcaption>
+        </figure>
       </div>
     </section>
   );

@@ -16,8 +16,9 @@ interface TarjetaServicioProps {
 }
 
 // La foto ocupa 5/12 de la tarjeta cuando esta pasa de ~672 px (contenedor
-// @2xl); por debajo va arriba a todo el ancho.
-const SIZES_FOTO = "(min-width: 1280px) 370px, (min-width: 1024px) 290px, (min-width: 720px) 40vw, 100vw";
+// @2xl); por debajo va arriba a todo el ancho. Desde xl la tarjeta comparte
+// fila con el índice.
+const SIZES_FOTO = "(min-width: 1280px) 370px, (min-width: 720px) 40vw, 100vw";
 
 /*
  * Ficha técnica de un servicio. Es de servidor: las interacciones son CSS
@@ -43,7 +44,8 @@ export default function TarjetaServicio({ servicio, indice, total }: TarjetaServ
       />
 
       <TechFrame className="relative border border-zinc-200 bg-white transition-colors duration-300 group-hover:border-brand/40">
-        <header className="flex items-center justify-between gap-4 border-b border-zinc-200 bg-surface px-5 py-3 transition-colors duration-300 group-hover:bg-brand sm:px-6">
+        {/* pr-10: deja libre la marca superior derecha del marco. */}
+        <header className="flex items-center justify-between gap-4 border-b border-zinc-200 bg-surface py-3 pl-5 pr-10 transition-colors duration-300 group-hover:bg-brand sm:pl-6">
           <div className="flex min-w-0 items-center gap-3">
             {/* Placa de referencia, igual que el SKU del catálogo. */}
             <span className="shrink-0 rounded-[2px] bg-brand-deep px-2.5 py-1.5 text-[11px] font-semibold leading-none tracking-[0.18em] text-accent tabular-nums">
@@ -87,7 +89,7 @@ export default function TarjetaServicio({ servicio, indice, total }: TarjetaServ
             <span aria-hidden="true" className={estilos.escaner} />
             <span
               aria-hidden="true"
-              className="absolute bottom-3 left-3 rounded-[2px] bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand backdrop-blur-sm"
+              className="absolute bottom-3 right-3 rounded-[2px] bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand backdrop-blur-sm"
             >
               Fig. {dosCifras(indice + 1)}
             </span>
@@ -101,16 +103,17 @@ export default function TarjetaServicio({ servicio, indice, total }: TarjetaServ
 
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-600">Especificaciones</p>
-              <dl className="mt-3 border-t border-zinc-200">
+              {/* gap-px sobre fondo zinc dibuja las líneas de la tabla en una o dos columnas. */}
+              <dl className="mt-3 grid gap-px border-y border-zinc-200 bg-zinc-200 @min-[22rem]/ficha:grid-cols-2">
                 {Object.entries(especificaciones).map(([termino, valor]) => (
                   <div
                     key={termino}
-                    className="spec-row grid gap-1 border-b border-zinc-200 py-3 pl-4 pr-2 hover:bg-surface @md/ficha:grid-cols-[9rem_minmax(0,1fr)] @md/ficha:gap-6"
+                    className="spec-row bg-white py-3 pl-4 pr-3 hover:bg-surface @min-[22rem]/ficha:[&:last-child:nth-child(odd)]:col-span-2"
                   >
                     <dt className="text-[11px] font-semibold uppercase leading-5 tracking-[0.14em] text-brand">
                       {termino}
                     </dt>
-                    <dd className="text-sm leading-5 text-ink">{valor}</dd>
+                    <dd className="mt-1 text-sm leading-5 text-ink">{valor}</dd>
                   </div>
                 ))}
               </dl>
