@@ -75,7 +75,9 @@ export default function FranjaCifras({ totalReferencias, totalLineas }: FranjaCi
             </svg>
             <p className={`${VALOR} text-3xl sm:text-4xl lg:text-[2rem] xl:text-4xl`}>{COMPANIA_INFO.ciudad}</p>
             <p className={ROTULO}>Sede · cobertura nacional</p>
-            <p className={`${DETALLE} tabular-nums`}>10°58′ N · 74°48′ O</p>
+            <p className={DETALLE}>
+              {COMPANIA_INFO.departamento}, {COMPANIA_INFO.pais}
+            </p>
           </Celda>
 
           <Celda indice={3} unidad="CO">

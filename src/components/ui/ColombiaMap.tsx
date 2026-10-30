@@ -1,481 +1,266 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  DEPTO_PATHS,
-  DEPTO_ELEVACION,
-  CONTOUR_LINES,
-  type ElevationBand,
-} from "@/data/colombia-paths";
+import type { CSSProperties, PointerEvent } from "react";
+import { CONTOUR_LINES, DEPTO_ELEVACION, DEPTO_PATHS, type ElevationBand } from "@/data/colombia-paths";
+import { ZONAS_COBERTURA, type ClaveZona } from "@/components/portada/zonasCobertura";
+import estilos from "@/components/portada/portada.module.css";
+import { cn } from "@/lib/cn";
 
-// ─── Region definitions ────────────────────────────────────────────────
-type RegionKey = "caribe" | "centro" | "pacifico" | "orinoquia" | "sur";
+type Punto = [x: number, y: number];
+type ConVariables = CSSProperties & Record<`--${string}`, string | number>;
 
-interface RegionData {
-  label: string;
-  departamentos: string[];
-  descripcion: string;
-  deptos: string[];
+// Tintes del azul de marca por altitud: conservan la lectura topográfica del
+// mapa anterior sin salirse de la paleta del manual.
+const BRAND = "20 59 100";
+const RELLENO_ALTITUD: Record<ElevationBand, string> = {
+  baja: `rgb(${BRAND} / 0.10)`,
+  media: `rgb(${BRAND} / 0.25)`,
+  alta: `rgb(${BRAND} / 0.45)`,
+};
+const RELLENO_ATENUADO = `rgb(${BRAND} / 0.08)`;
+// En hex y no var(--brand): no todos los navegadores resuelven var() en los
+// atributos de presentación de SVG.
+const COLOR = { brand: "#143B64", brandDeep: "#0C2642", accent: "#E8920C", blanco: "#ffffff" } as const;
+const RELLENO_SIN_COBERTURA = COLOR.blanco;
+const CONTORNO = "#d4d4d8";
+
+export const LEYENDA_ALTITUD: { banda: ElevationBand; rotulo: string; relleno: string }[] = [
+  { banda: "baja", rotulo: "0–500 m", relleno: RELLENO_ALTITUD.baja },
+  { banda: "media", rotulo: "500–2.000 m", relleno: RELLENO_ALTITUD.media },
+  { banda: "alta", rotulo: "+2.000 m", relleno: RELLENO_ALTITUD.alta },
+];
+
+// Centroide del anillo más grande de cada departamento. Los trazados son
+// polilíneas absolutas (M/L/Z), así que basta la fórmula del polígono.
+function centroide(d: string): Punto {
+  let mejor = { area: 0, x: 0, y: 0 };
+  for (const anillo of d.split("M")) {
+    const puntos = Array.from(anillo.matchAll(/(-?[\d.]+),(-?[\d.]+)/g), (m) => [Number(m[1]), Number(m[2])]);
+    if (puntos.length < 3) continue;
+    let area = 0;
+    let cx = 0;
+    let cy = 0;
+    for (let i = 0; i < puntos.length; i++) {
+      const [x1, y1] = puntos[i];
+      const [x2, y2] = puntos[(i + 1) % puntos.length];
+      const cruz = x1 * y2 - x2 * y1;
+      area += cruz;
+      cx += (x1 + x2) * cruz;
+      cy += (y1 + y2) * cruz;
+    }
+    if (Math.abs(area) > Math.abs(mejor.area)) mejor = { area, x: cx / (3 * area), y: cy / (3 * area) };
+  }
+  return [mejor.x, mejor.y];
 }
 
-const REGIONS: Record<RegionKey, RegionData> = {
-  caribe: {
-    label: "Caribe",
-    departamentos: ["Cesar", "Magdalena", "La Guajira", "Córdoba"],
-    descripcion: "Corredor minero y logística portuaria",
-    deptos: ["20", "47", "44", "23"],
-  },
-  centro: {
-    label: "Centro",
-    departamentos: ["Cundinamarca", "Boyacá", "Santander", "Antioquia"],
-    descripcion: "Corredor central y zonas de taller",
-    deptos: ["25", "15", "68", "05"],
-  },
-  pacifico: {
-    label: "Pacífico",
-    departamentos: ["Valle del Cauca", "Cauca", "Chocó"],
-    descripcion: "Conexión férrea hacia el Pacífico",
-    deptos: ["76", "19", "27"],
-  },
-  orinoquia: {
-    label: "Orinoquía",
-    departamentos: ["Meta", "Casanare", "Vichada"],
-    descripcion: "Plataformas de carga del piedemonte",
-    deptos: ["50", "85", "99"],
-  },
-  sur: {
-    label: "Sur",
-    departamentos: ["Tolima", "Huila", "Nariño"],
-    descripcion: "Eje férreo Tolima–Huila–Nariño",
-    deptos: ["73", "41", "52"],
-  },
-};
+const CENTROIDES: Record<string, Punto> = Object.fromEntries(
+  DEPTO_PATHS.map((depto) => [depto.codigo, centroide(depto.d)])
+);
 
-const DEPTO_TO_REGION: Record<string, RegionKey> = {};
-(Object.keys(REGIONS) as RegionKey[]).forEach((rk) => {
-  REGIONS[rk].deptos.forEach((code) => {
-    DEPTO_TO_REGION[code] = rk;
+const ZONA_DE_DEPTO: Record<string, ClaveZona> = Object.fromEntries(
+  ZONAS_COBERTURA.flatMap((zona) => zona.codigos.map((codigo) => [codigo, zona.clave]))
+);
+
+function fijo(n: number): string {
+  return n.toFixed(1);
+}
+
+interface Corredor {
+  clave: ClaveZona;
+  zona: string;
+  d: string;
+  nodos: { codigo: string; punto: Punto; fraccion: number }[];
+  etiqueta: Punto;
+}
+
+// Cada corredor une los departamentos de su zona en el orden de
+// ZONAS_COBERTURA. La fracción de cada nodo (por longitud) sirve para que
+// aparezca justo cuando el trazo llega a él.
+const CORREDORES: Corredor[] = ZONAS_COBERTURA.map((zona) => {
+  const puntos = zona.codigos.map((codigo) => CENTROIDES[codigo]);
+  const tramos = puntos.slice(1).map((p, i) => Math.hypot(p[0] - puntos[i][0], p[1] - puntos[i][1]));
+  const largo = tramos.reduce((suma, tramo) => suma + tramo, 0) || 1;
+  let recorrido = 0;
+  const nodos = zona.codigos.map((codigo, i) => {
+    if (i > 0) recorrido += tramos[i - 1];
+    return { codigo, punto: puntos[i], fraccion: recorrido / largo };
   });
+  const cx = puntos.reduce((s, p) => s + p[0], 0) / puntos.length;
+  const cy = puntos.reduce((s, p) => s + p[1], 0) / puntos.length;
+  return {
+    clave: zona.clave,
+    zona: zona.zona,
+    d: `M${puntos.map(([x, y]) => `${fijo(x)},${fijo(y)}`).join("L")}`,
+    nodos,
+    etiqueta: [cx + zona.etiqueta.dx, cy + zona.etiqueta.dy],
+  };
 });
 
-// ─── Palette by elevation (natural topographic) ─────────────────────────
-const ELEV_FILL: Record<ElevationBand, string> = {
-  baja: "#e8edd0",
-  media: "#a8bf80",
-  alta: "#6a8050",
-};
+// Atlántico: la sede está en Barranquilla.
+const SEDE = CENTROIDES["08"];
 
-const ELEV_FILL_ACTIVE: Record<ElevationBand, string> = {
-  baja: "#c8d8a8",
-  media: "#8aac60",
-  alta: "#4a6840",
-};
+interface ColombiaMapProps {
+  /** Zona resaltada (vista previa o fijada); null para ninguna. */
+  activa: ClaveZona | null;
+  /** Al pasar el cursor por un departamento (null al salir del mapa o de la cobertura). */
+  alPrevisualizar: (zona: ClaveZona | null) => void;
+  /** Al tocar o hacer clic en un departamento con cobertura. */
+  alFijar: (zona: ClaveZona | null) => void;
+  className?: string;
+}
 
-const ELEV_STROKE: Record<ElevationBand, string> = {
-  baja: "#c8d0b0",
-  media: "#8aa86a",
-  alta: "#506040",
-};
-
-const ELEV_LABEL: Record<ElevationBand, string> = {
-  baja: "0–500 m",
-  media: "500–2000 m",
-  alta: "2000+ m",
-};
-
-// ─── Component ────────────────────────────────────────────────────────
-export default function ColombiaMap() {
-  const [activeRegion, setActiveRegion] = useState<RegionKey | null>(null);
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
-
-  const handleMouseEnter = useCallback(
-    (code: string, e: React.MouseEvent<SVGPathElement>) => {
-      const region = DEPTO_TO_REGION[code];
-      if (region) {
-        setActiveRegion(region);
-        const rect = (e.currentTarget.ownerSVGElement as SVGSVGElement)
-          .getBoundingClientRect();
-        setTooltipPos({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
-      }
-    },
-    []
-  );
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<SVGSVGElement>) => {
-      if (!activeRegion) return;
-      const rect = e.currentTarget.getBoundingClientRect();
-      setTooltipPos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-    },
-    [activeRegion]
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    setActiveRegion(null);
-  }, []);
-
-  const activeData = activeRegion ? REGIONS[activeRegion] : null;
+/*
+ * Mapa de cobertura operativa (no de clientes ni proyectos). Es controlado:
+ * la lista de zonas que lo acompaña y el propio mapa comparten la zona activa.
+ * Los departamentos no reciben foco (serían 33 paradas de tabulador): el
+ * teclado y los lectores de pantalla usan la lista, que dice lo mismo.
+ */
+export default function ColombiaMap({ activa, alPrevisualizar, alFijar, className }: ColombiaMapProps) {
+  const alEntrar = (codigo: string) => (evento: PointerEvent<SVGPathElement>) => {
+    if (evento.pointerType !== "mouse") return;
+    alPrevisualizar(ZONA_DE_DEPTO[codigo] ?? null);
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -30 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-      className="relative w-full max-w-[480px] mx-auto select-none"
+    <svg
+      viewBox="0 0 400 550"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+      className={cn(estilos.mapa, "block h-auto w-full select-none", className)}
+      onPointerLeave={(evento) => evento.pointerType === "mouse" && alPrevisualizar(null)}
     >
-      {/* Subtle topographic grid */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(74,104,64,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(74,104,64,0.5) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-        }}
-      />
+      {DEPTO_PATHS.map((depto) => {
+        const zona = ZONA_DE_DEPTO[depto.codigo];
+        const elevacion = DEPTO_ELEVACION[depto.codigo] as ElevationBand | undefined;
+        const enZonaActiva = zona !== undefined && zona === activa;
 
-      {/* SVG Map */}
-      <svg
-        viewBox="0 0 400 550"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-auto relative z-10"
-        style={{
-          filter: "drop-shadow(0 4px 32px rgba(124,179,66,0.08))",
-          minHeight: 300,
-        }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        <defs>
-          <filter id="neon-glow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feColorMatrix
-              in="blur"
-              type="matrix"
-              values="0 0 0 0 0.49   0.6 0 0 0 0   0.2 0 0 0 0   0 0 0 1 0"
-              result="glow"
-            />
-            <feMerge>
-              <feMergeNode in="glow" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
+        let relleno: string = RELLENO_SIN_COBERTURA;
+        if (zona && enZonaActiva) relleno = COLOR.brand;
+        else if (zona && activa) relleno = RELLENO_ATENUADO;
+        else if (zona) relleno = RELLENO_ALTITUD[elevacion ?? "baja"];
 
-          {/* 3D terrain bevel — emboss effect for topographic depth */}
-          <filter id="terrain-bevel" x="-5%" y="-5%" width="110%" height="110%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="blur" />
-            <feSpecularLighting
-              in="blur"
-              surfaceScale="4"
-              specularConstant="0.6"
-              specularExponent="16"
-              result="spec"
-            >
-              <fePointLight x="200" y="100" z="200" />
-            </feSpecularLighting>
-            <feComposite
-              operator="in"
-              in="spec"
-              in2="SourceAlpha"
-              result="spec-in"
-            />
-            <feComposite
-              operator="arithmetic"
-              k1="0"
-              k2="1"
-              k3="1"
-              k4="0"
-              in="SourceGraphic"
-              in2="spec-in"
-              result="lit"
-            />
-          </filter>
+        return (
+          <path
+            key={depto.codigo}
+            d={depto.d}
+            style={{ fill: relleno }}
+            stroke={CONTORNO}
+            strokeWidth={0.6}
+            strokeLinejoin="round"
+            className={cn(
+              "transition-[fill] duration-300 ease-out",
+              zona ? "cursor-pointer" : "cursor-default"
+            )}
+            onPointerEnter={alEntrar(depto.codigo)}
+            onClick={() => alFijar(zona ?? null)}
+          />
+        );
+      })}
 
-          {/* Drop shadow for high elevation departments */}
-          <filter id="drop-high" x="-8%" y="-8%" width="120%" height="120%">
-            <feDropShadow dx="2" dy="3" stdDeviation="3" floodColor="#2a4020" floodOpacity="0.25" />
-            <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur2" />
-            <feSpecularLighting
-              in="blur2"
-              surfaceScale="3"
-              specularConstant="0.3"
-              specularExponent="12"
-              result="spec2"
-            >
-              <fePointLight x="200" y="100" z="200" />
-            </feSpecularLighting>
-            <feComposite
-              operator="in"
-              in="spec2"
-              in2="SourceAlpha"
-              result="spec-in2"
-            />
-            <feComposite
-              operator="arithmetic"
-              k1="0"
-              k2="1"
-              k3="1"
-              k4="0"
-              in="SourceGraphic"
-              in2="spec-in2"
-              result="lit2"
-            />
-          </filter>
+      {/* Borde accent de la zona activa, encima de sus vecinos para que no lo tapen. */}
+      {activa &&
+        DEPTO_PATHS.filter((depto) => ZONA_DE_DEPTO[depto.codigo] === activa).map((depto) => (
+          <path
+            key={`borde-${depto.codigo}`}
+            d={depto.d}
+            stroke={COLOR.accent}
+            strokeWidth={1.2}
+            strokeLinejoin="round"
+            className="pointer-events-none"
+          />
+        ))}
 
-          {/* Medium terrain bevel */}
-          <filter id="terrain-mid" x="-5%" y="-5%" width="110%" height="110%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur" />
-            <feSpecularLighting
-              in="blur"
-              surfaceScale="2.5"
-              specularConstant="0.4"
-              specularExponent="14"
-              result="spec"
-            >
-              <fePointLight x="200" y="150" z="180" />
-            </feSpecularLighting>
-            <feComposite
-              operator="in"
-              in="spec"
-              in2="SourceAlpha"
-              result="spec-in"
-            />
-            <feComposite
-              operator="arithmetic"
-              k1="0"
-              k2="1"
-              k3="1"
-              k4="0"
-              in="SourceGraphic"
-              in2="spec-in"
-              result="lit"
-            />
-          </filter>
+      {/* Curvas de nivel: textura de plano, sin interacción. */}
+      <g className="pointer-events-none" stroke={COLOR.brand} strokeLinecap="round">
+        {CONTOUR_LINES.map((d, i) => (
+          <path key={i} d={d} strokeWidth={i < 72 ? 0.5 : 0.4} strokeOpacity={i < 72 ? 0.14 : 0.08} />
+        ))}
+      </g>
 
-          {/* Low terrain bevel */}
-          <filter id="terrain-low" x="-5%" y="-5%" width="110%" height="110%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="blur" />
-            <feSpecularLighting
-              in="blur"
-              surfaceScale="1.5"
-              specularConstant="0.3"
-              specularExponent="10"
-              result="spec"
-            >
-              <fePointLight x="200" y="150" z="200" />
-            </feSpecularLighting>
-            <feComposite
-              operator="in"
-              in="spec"
-              in2="SourceAlpha"
-              result="spec-in"
-            />
-            <feComposite
-              operator="arithmetic"
-              k1="0"
-              k2="1"
-              k3="1"
-              k4="0"
-              in="SourceGraphic"
-              in2="spec-in"
-              result="lit"
-            />
-          </filter>
-        </defs>
-
-        {/* Contour lines – dense topographic curves */}
-        <g className="pointer-events-none">
-          {CONTOUR_LINES.map((d, i) => {
-            const isMountain = i < 72;
-            return (
-              <path
-                key={`contour-${i}`}
-                d={d}
-                fill="none"
-                stroke={isMountain ? "#3a5a30" : "#5a7a50"}
-                strokeWidth={isMountain ? 0.55 : 0.4}
-                strokeLinecap="round"
-                opacity={isMountain ? 0.25 : 0.12}
-              />
-            );
-          })}
-        </g>
-
-        {/* Department paths */}
-        {DEPTO_PATHS.map((depto) => {
-          const regionKey = DEPTO_TO_REGION[depto.codigo] as
-            | RegionKey
-            | undefined;
-          const isCovered = !!regionKey;
-          const isActiveRegion =
-            activeRegion && regionKey === activeRegion;
-          const elev = DEPTO_ELEVACION[depto.codigo] as
-            | ElevationBand
-            | undefined;
-
-          let fill: string;
-          let stroke: string;
-          let strokeW: number;
-          let filterAttr: string | undefined;
-
-          if (isCovered && elev) {
-            if (isActiveRegion) {
-              fill = "#7CB342";
-              stroke = "#9CCC65";
-              strokeW = 1.2;
-              filterAttr = "url(#neon-glow)";
-            } else if (activeRegion) {
-              fill = ELEV_FILL_ACTIVE[elev];
-              stroke = ELEV_STROKE[elev];
-              strokeW = 0.6;
-              filterAttr = undefined;
-            } else {
-              fill = ELEV_FILL[elev];
-              stroke = ELEV_STROKE[elev];
-              strokeW = 0.5;
-              filterAttr =
-                elev === "alta"
-                  ? "url(#drop-high)"
-                  : elev === "media"
-                    ? "url(#terrain-mid)"
-                    : "url(#terrain-low)";
-            }
-          } else {
-            fill = activeRegion ? "#d4d4d4" : "#e8e8e8";
-            stroke = "#d0d0d0";
-            strokeW = 0.5;
-            filterAttr = undefined;
-          }
-
+      {/* Corredores de las cinco zonas: se dibujan uno tras otro al entrar en pantalla. */}
+      <g className="pointer-events-none">
+        {CORREDORES.map((corredor, i) => {
+          const resaltado = corredor.clave === activa;
+          const atenuado = activa !== null && !resaltado;
           return (
-            <path
-              key={depto.codigo}
-              d={depto.d}
-              fill={fill}
-              stroke={stroke}
-              strokeWidth={strokeW}
-              strokeLinejoin="round"
-              filter={filterAttr}
-              className={`transition-all duration-200 ${isCovered ? "cursor-pointer" : "cursor-default"}`}
-              onMouseEnter={(e) => handleMouseEnter(depto.codigo, e)}
-            />
+            <g
+              key={corredor.clave}
+              style={{ "--i": i } as ConVariables}
+              className={cn("transition-opacity duration-300", atenuado && "opacity-35")}
+            >
+              <path
+                d={corredor.d}
+                pathLength={1}
+                style={{ stroke: resaltado ? COLOR.accent : COLOR.brandDeep, strokeWidth: resaltado ? 2.4 : 1.5 }}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={cn(estilos.corredor, "transition-[stroke,stroke-width] duration-300")}
+              />
+              {corredor.nodos.map((nodo) => (
+                <circle
+                  key={nodo.codigo}
+                  cx={fijo(nodo.punto[0])}
+                  cy={fijo(nodo.punto[1])}
+                  r={resaltado ? 4 : 3.2}
+                  fill={resaltado ? COLOR.accent : COLOR.blanco}
+                  stroke={COLOR.brandDeep}
+                  strokeWidth={1.4}
+                  style={{ "--f": nodo.fraccion.toFixed(3) } as ConVariables}
+                  className={estilos.nodoCorredor}
+                />
+              ))}
+              <text
+                x={fijo(corredor.etiqueta[0])}
+                y={fijo(corredor.etiqueta[1])}
+                textAnchor="middle"
+                fontSize={8.5}
+                fontWeight={600}
+                letterSpacing={1.4}
+                fill={COLOR.brandDeep}
+                stroke={COLOR.blanco}
+                strokeWidth={3}
+                strokeLinejoin="round"
+                paintOrder="stroke"
+                style={{ "--f": 1 } as ConVariables}
+                className={cn(estilos.nodoCorredor, "hidden uppercase sm:inline")}
+              >
+                {corredor.zona}
+              </text>
+            </g>
           );
         })}
-      </svg>
+      </g>
 
-      {/* Floating tooltip */}
-      <AnimatePresence>
-        {activeData && (
-          <motion.div
-            key={activeRegion}
-            initial={{ opacity: 0, scale: 0.88, y: 6 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.88, y: 6 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute z-20 pointer-events-none"
-            style={{
-              left: Math.min(tooltipPos.x + 16, 300),
-              top: Math.max(tooltipPos.y - 120, 8),
-            }}
-          >
-            <div
-              className="bg-white/95 border border-[#7CB342]/20 px-4 py-3 min-w-[200px] shadow-lg"
-              style={{ backdropFilter: "blur(12px)" }}
-            >
-              <div className="flex items-center justify-between mb-2 pb-2 border-b border-brand/10">
-                <span className="text-[10px] font-semibold text-[#7CB342] tracking-[0.25em] uppercase">
-                  Región {activeData.label}
-                </span>
-                <span className="text-[10px] text-zinc-500 tracking-wider">
-                  Cobertura
-                </span>
-              </div>
-
-              <div className="space-y-1 mb-2">
-                {activeData.departamentos.map((dep) => (
-                  <div key={dep} className="flex items-center gap-1.5">
-                    <span className="w-1 h-1 rounded-full bg-[#7CB342] shrink-0" />
-                    <span className="text-[10px] text-zinc-600">{dep}</span>
-                  </div>
-                ))}
-              </div>
-
-              <p className="text-[9px] text-zinc-500 mt-2 pt-2 border-t border-zinc-100 leading-relaxed">
-                {activeData.descripcion}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Elevation legend */}
-      <div className="mt-5 flex items-center justify-center gap-5 text-[10px] text-zinc-500">
-        {(["baja", "media", "alta"] as ElevationBand[]).map((elev) => (
-          <span key={elev} className="flex items-center gap-2">
-            <span
-              className="w-3 h-3 border inline-block"
-              style={{
-                backgroundColor: ELEV_FILL[elev],
-                borderColor: ELEV_STROKE[elev],
-              }}
-            />
-            {ELEV_LABEL[elev]}
-          </span>
-        ))}
-      </div>
-
-      {/* Region indicators row */}
-      <div className="mt-4 grid grid-cols-5 gap-1">
-        {(Object.keys(REGIONS) as RegionKey[]).map((rk) => (
-          <button
-            key={rk}
-            onMouseEnter={() => setActiveRegion(rk)}
-            onMouseLeave={() => setActiveRegion(null)}
-            className={`text-[8px] py-1 px-1 text-center tracking-wider uppercase transition-all duration-200 border ${
-              activeRegion === rk
-                ? "border-[#7CB342] text-[#7CB342] bg-[#7CB342]/10"
-                : "border-zinc-200 text-zinc-500 hover:border-zinc-400"
-            }`}
-          >
-            {REGIONS[rk].label}
-          </button>
-        ))}
-      </div>
-
-      {/* 100% Colombiano badge */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="mt-6 text-center"
-      >
-        <div className="inline-flex items-center gap-3 px-4 py-2 border border-zinc-200 rounded-full bg-white/60">
-          <div className="flex gap-0.5 h-4">
-            <div className="w-3 rounded-l-sm" style={{ backgroundColor: "#FFD100" }} />
-            <div className="w-3" style={{ backgroundColor: "#003893" }} />
-            <div className="w-3 rounded-r-sm" style={{ backgroundColor: "#CE1126" }} />
-          </div>
-          <span className="text-[10px] font-bold text-zinc-700 tracking-wider">
-            100% COLOMBIANOS
-          </span>
-          <motion.span
-            animate={{ rotate: [0, -10, 10, -10, 0] }}
-            transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 4 }}
-            className="text-sm"
-          >
-            🇨🇴
-          </motion.span>
-        </div>
-      </motion.div>
-    </motion.div>
+      {/* Sede en Barranquilla. */}
+      <g className="pointer-events-none">
+        <circle cx={fijo(SEDE[0])} cy={fijo(SEDE[1])} r={10} stroke={COLOR.accent} strokeWidth={1.2} className={estilos.sedePulso} />
+        <rect
+          x={fijo(SEDE[0] - 4.5)}
+          y={fijo(SEDE[1] - 4.5)}
+          width={9}
+          height={9}
+          fill={COLOR.brandDeep}
+          stroke={COLOR.blanco}
+          strokeWidth={1.5}
+        />
+        <text
+          x={fijo(SEDE[0] - 14)}
+          y={fijo(SEDE[1] - 10)}
+          textAnchor="end"
+          fontSize={8}
+          fontWeight={600}
+          letterSpacing={1.2}
+          fill={COLOR.brandDeep}
+          stroke={COLOR.blanco}
+          strokeWidth={3}
+          strokeLinejoin="round"
+          paintOrder="stroke"
+          className="hidden uppercase sm:inline"
+        >
+          Sede
+        </text>
+      </g>
+    </svg>
   );
 }

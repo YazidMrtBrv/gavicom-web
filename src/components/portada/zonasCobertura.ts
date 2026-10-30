@@ -22,7 +22,7 @@ export const ZONAS_COBERTURA: ZonaCobertura[] = [
     desc: "Corredor minero y logística portuaria",
     departamentos: ["Córdoba", "Magdalena", "Cesar", "La Guajira"],
     codigos: ["23", "47", "20", "44"],
-    etiqueta: { dx: 26, dy: 18 },
+    etiqueta: { dx: 57, dy: 19 },
   },
   {
     clave: "centro",
@@ -54,6 +54,6 @@ export const ZONAS_COBERTURA: ZonaCobertura[] = [
     desc: "Eje férreo Tolima–Huila–Nariño",
     departamentos: ["Tolima", "Huila", "Nariño"],
     codigos: ["73", "41", "52"],
-    etiqueta: { dx: -4, dy: 30 },
+    etiqueta: { dx: 18, dy: 52 },
   },
 ];

@@ -36,7 +36,8 @@ function construirMensaje(
   return lineas.join("\n");
 }
 
-const NUMERO = "pt-1 text-[11px] font-semibold tracking-[0.2em] text-zinc-500 tabular-nums";
+// zinc-600 y no 500: la lista va sobre surface, donde zinc-500 no llega a 4,5:1.
+const NUMERO = "pt-1 text-[11px] font-semibold tracking-[0.2em] text-zinc-600 tabular-nums";
 const TITULO = "block text-lg font-semibold leading-snug text-brand sm:text-xl";
 const DETALLE = "mt-1.5 block text-sm leading-relaxed text-zinc-600";
 // Barra accent fija mientras el dato está marcado (la de .spec-row solo sale en hover).
@@ -136,7 +137,7 @@ export default function DatosParaCotizar({ encabezado }: { encabezado: ReactNode
                     {dato.detalle}
                   </span>
                 </span>
-                <span className="flex w-14 shrink-0 flex-col items-center gap-2 pt-0.5">
+                <span className="flex w-16 shrink-0 flex-col items-center gap-2 pt-0.5">
                   <input
                     type="checkbox"
                     checked={marcado}
@@ -153,7 +154,7 @@ export default function DatosParaCotizar({ encabezado }: { encabezado: ReactNode
                   </span>
                   <span
                     id={idLoTengo}
-                    className="text-[10px] font-semibold uppercase leading-none tracking-[0.14em] text-zinc-500"
+                    className="whitespace-nowrap text-[10px] font-semibold uppercase leading-none tracking-[0.12em] text-zinc-600"
                   >
                     Lo tengo
                   </span>

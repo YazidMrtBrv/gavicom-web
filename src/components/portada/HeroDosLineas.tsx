@@ -85,7 +85,7 @@ export default function HeroDosLineas() {
               className="absolute inset-0"
             >
               <div className="flex h-full flex-col justify-between p-6 sm:p-8 lg:p-10">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                   <ScrambleLabel text="S.01 — RAILWAY" className="text-accent" />
                   <span className={CHIP}>AREMA / UIC</span>
                 </div>
@@ -118,7 +118,7 @@ export default function HeroDosLineas() {
                 className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgb(255_255_255/0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255/0.035)_1px,transparent_1px)] bg-size-[32px_32px]"
               />
 
-              <div className="relative z-10 flex items-start justify-between gap-4 p-6 pb-0 sm:p-8 sm:pb-0 lg:p-10 lg:pb-0">
+              <div className="relative z-10 flex flex-wrap items-start justify-between gap-x-4 gap-y-3 p-6 pb-0 sm:p-8 sm:pb-0 lg:p-10 lg:pb-0">
                 <ScrambleLabel text="S.02 — ENERGY" className="text-accent" />
                 <span className={CHIP}>Fotovoltaica · AC / DC</span>
               </div>

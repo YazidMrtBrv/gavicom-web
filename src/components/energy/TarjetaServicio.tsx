@@ -40,7 +40,7 @@ export default function TarjetaServicio({ servicio, indice, total }: TarjetaServ
             </div>
             <span
               aria-hidden="true"
-              className="absolute left-3 top-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500 tabular-nums"
+              className="absolute left-3 top-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600 tabular-nums"
             >
               Fig. {dosCifras(indice + 1)}
             </span>

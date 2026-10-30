@@ -103,10 +103,10 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
         onBlur={alSalirFoco}
         className="p-6 sm:p-8 lg:p-10"
       >
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-5">
           <p className="font-titulo leading-none text-brand tabular-nums">
-            <span className="text-5xl font-semibold tracking-tight sm:text-6xl">{dosCifras(indice + 1)}</span>
-            <span className="ml-2 text-lg font-medium text-zinc-500">/ {dosCifras(total)}</span>
+            <span className="text-4xl font-semibold tracking-tight sm:text-6xl">{dosCifras(indice + 1)}</span>
+            <span className="ml-2 text-base font-medium text-zinc-500 sm:text-lg">/ {dosCifras(total)}</span>
             <span className="sr-only"> categorías</span>
           </p>
 
@@ -135,7 +135,7 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
         </div>
 
         {/* Progreso segmentado: las pasadas en azul, la actual se llena con el tiempo. */}
-        <div className="mt-6 flex gap-1.5">
+        <div className="mt-6 flex gap-1 sm:gap-1.5">
           {categorias.map((categoria, i) => (
             <button
               key={categoria.nombre}
@@ -163,30 +163,41 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
           ))}
         </div>
 
-        <div aria-live={avanza ? "off" : "polite"} aria-atomic="true">
-          <div key={indice} className={cn("mt-8 min-h-48 sm:min-h-40", haCambiado && estilos.entradaCategoria)}>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-zinc-600">Categoría</p>
-            <p className="mt-3 font-titulo text-3xl font-semibold leading-[1.08] tracking-tight text-brand text-balance sm:text-4xl">
-              {actual.nombre}
-            </p>
-            <p className="mt-3 text-sm text-zinc-600">
-              <span className="font-semibold text-brand tabular-nums">{actual.total}</span>{" "}
-              {actual.total === 1 ? "referencia" : "referencias"}
-              {actual.subcategorias.length > 0 && " en:"}
-            </p>
-            {actual.subcategorias.length > 0 && (
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {actual.subcategorias.map((sub) => (
-                  <li
-                    key={sub}
-                    className="rounded-[2px] border border-zinc-200 bg-surface px-2.5 py-1 text-xs text-zinc-700"
-                  >
-                    {sub}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+        {/* Todas las categorías ocupan la misma celda de la rejilla y solo se ve
+            la actual: el bloque mide siempre lo que la más alta y el cambio no
+            mueve la página (la sección anclada de más abajo mide su posición). */}
+        <div aria-live={avanza ? "off" : "polite"} aria-atomic="true" className="mt-8 grid">
+          {categorias.map((categoria, i) => (
+            <div
+              key={categoria.nombre}
+              className={cn(
+                "[grid-area:1/1]",
+                i === indice ? haCambiado && estilos.entradaCategoria : "invisible"
+              )}
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-zinc-600">Categoría</p>
+              <p className="mt-3 font-titulo text-3xl font-semibold leading-[1.08] tracking-tight text-brand text-balance sm:text-4xl">
+                {categoria.nombre}
+              </p>
+              <p className="mt-3 text-sm text-zinc-600">
+                <span className="font-semibold text-brand tabular-nums">{categoria.total}</span>{" "}
+                {categoria.total === 1 ? "referencia" : "referencias"}
+                {categoria.subcategorias.length > 0 && " en:"}
+              </p>
+              {categoria.subcategorias.length > 0 && (
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {categoria.subcategorias.map((sub) => (
+                    <li
+                      key={sub}
+                      className="rounded-[2px] border border-zinc-200 bg-surface px-2.5 py-1 text-xs text-zinc-700"
+                    >
+                      {sub}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
         </div>
 
         {/* El catálogo entero en una tira: cada marca es una referencia y se

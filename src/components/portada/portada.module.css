@@ -70,7 +70,7 @@
   inset: 0;
   z-index: 30;
   border-radius: inherit;
-  background: rgb(12 38 66 / 0.42);
+  background: rgb(12 38 66 / 0.3);
   opacity: 0;
   pointer-events: none;
   transition: opacity 600ms ease;
@@ -308,59 +308,99 @@
   animation: categoria-entra 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ---------- Cómo cotizar: estado de los pasos mientras la sección está anclada ---------- */
-.rielRelleno {
-  transform-origin: 0 50%;
-  transform: scaleX(var(--progreso, 1));
+/* ---------- Cómo cotizar: escena anclada con GSAP (EscenaCotizar.tsx) ---------- */
+/* data-anclado lo pone el componente solo cuando ancla la sección (escritorio,
+   pantalla alta y sin movimiento reducido): ocupa la pantalla y deja libre la
+   franja del menú fijo. */
+.escena[data-anclado="true"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  padding-top: 8rem;
+  padding-bottom: 3rem;
 }
 
-/* Sin anclar (móvil, movimiento reducido o sin JS) todos los pasos se ven
-   activos. Anclada, los que faltan pasan a gris hasta que les llega el turno. */
-.paso {
+/* Tramo del riel entre estaciones. --progreso (0..1) lo escribe el componente
+   y --n es el número de pasos: el tramo i se llena mientras el progreso va de
+   i/n a (i+1)/n. Sin anclar no hay --progreso y el riel se ve completo. */
+.tramoRelleno {
+  transform-origin: 50% 0;
+  transform: scaleY(clamp(0, calc(var(--progreso, 1) * var(--n, 3) - var(--i, 0)), 1));
+}
+
+.pasoTarjeta,
+.pasoNumero,
+.pasoTitulo,
+.pasoMuestra {
   transition:
     background-color 0.5s ease,
     border-color 0.5s ease,
+    color 0.5s ease,
+    opacity 0.5s ease,
+    filter 0.5s ease,
     box-shadow 0.5s ease;
 }
 
-.pasoTitulo,
-.pasoNumero {
-  transition:
-    color 0.5s ease,
-    background-color 0.5s ease,
-    border-color 0.5s ease;
-}
-
-.anclado .paso[data-activo="false"] {
+/* Anclada, los pasos que faltan quedan en gris hasta que les llega el turno. */
+.escena[data-anclado="true"] .paso[data-activo="false"] .pasoTarjeta {
   background-color: transparent;
-  border-color: rgb(212 212 216);
-  box-shadow: none;
+  border-color: rgb(228 228 231);
 }
 
-.anclado .paso[data-activo="false"] .pasoTitulo {
+.escena[data-anclado="true"] .paso[data-activo="false"] .pasoTitulo {
   color: rgb(113 113 122);
 }
 
-.anclado .paso[data-activo="false"] .pasoNumero {
-  background-color: transparent;
+.escena[data-anclado="true"] .paso[data-activo="false"] .pasoNumero {
+  background-color: #ffffff;
   border-color: rgb(161 161 170);
   color: rgb(113 113 122);
 }
 
-.anclado .paso[data-actual="true"] {
+.escena[data-anclado="true"] .paso[data-activo="false"] .pasoMuestra {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+
+.escena[data-anclado="true"] .paso[data-actual="true"] .pasoTarjeta {
   box-shadow: 0 24px 60px -32px rgb(12 38 66 / 0.35);
 }
 
+/* Cursor del campo de ciudad en la muestra del paso 02. */
+.cursorCampo {
+  display: inline-block;
+  width: 1px;
+  height: 1.1em;
+  background: currentColor;
+  vertical-align: -0.2em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes cursor-parpadea {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .cursorCampo {
+    animation: cursor-parpadea 1.1s steps(1) infinite;
+  }
+}
+
 /* ---------- Mapa de cobertura: corredores que se dibujan al entrar ---------- */
-/* --avance va de 0 a 1 con el scroll; cada corredor (índice --i) se dibuja en
-   su propio tramo, uno detrás de otro. */
+/* --avance va de 0 a 1 con el scroll. Cada corredor (índice --i) se dibuja en
+   su propio tramo, uno detrás de otro; t es la fracción ya dibujada. Cada nodo
+   (fracción --f del recorrido) aparece cuando el trazo está por llegar a él.
+   Con --avance en 1 (sin animación) todo queda dibujado. */
 .corredor {
   stroke-dasharray: 1;
   stroke-dashoffset: clamp(0, calc(1 - (var(--avance) * 1.8 - var(--i, 0) * 0.2)), 1);
 }
 
 .nodoCorredor {
-  opacity: clamp(0, calc((var(--avance) * 1.8 - var(--i, 0) * 0.2 - 0.85) * 8), 1);
+  opacity: clamp(0, calc((var(--avance) * 1.8 - var(--i, 0) * 0.2 - var(--f, 1)) * 10 + 1), 1);
+  transition: fill 0.3s ease, r 0.3s ease;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -378,6 +418,47 @@
       animation-fill-mode: both;
       animation-timeline: view();
       animation-range: entry 30% cover 55%;
+    }
+  }
+
+  /* La sede late despacio: es el único punto fijo del mapa. */
+  @keyframes sede-late {
+    0% {
+      scale: 0.6;
+      opacity: 0.9;
+    }
+    70%,
+    100% {
+      scale: 1.6;
+      opacity: 0;
+    }
+  }
+
+  .sedePulso {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: sede-late 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+}
+
+/* ---------- Cierre: la vía se tiende al entrar en pantalla ---------- */
+.viaRiel {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes via-tiende {
+      from {
+        stroke-dashoffset: 1;
+      }
+    }
+
+    .viaRiel {
+      animation: via-tiende auto cubic-bezier(0.65, 0, 0.35, 1) both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 55%;
     }
   }
 }

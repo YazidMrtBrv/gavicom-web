@@ -153,8 +153,9 @@ type Llamada = { pieza: string; codigo: string; punto: Punto; chip: Punto };
 const LLAMADAS: Llamada[] = [
   { pieza: PIEZA_SERVICIO["GVC-ENR-02"], codigo: "ENR-02", punto: [150, 322], chip: [150, 246] },
   { pieza: PIEZA_SERVICIO["GVC-ENR-01"], codigo: "ENR-01", punto: [420, COFRE.y - 4], chip: [420, 244] },
-  { pieza: PIEZA_SERVICIO["GVC-ENR-03"], codigo: "ENR-03", punto: [GAB.x + 22, RIEL_DC - 4], chip: [GAB.x + 22, 206] },
-  { pieza: PIEZA_SERVICIO["GVC-ENR-04"], codigo: "ENR-04", punto: [gabDer + 5, GAB.y - 4], chip: [gabDer + 5, 206] },
+  // Las dos del gabinete van a distinta altura para que sus códigos no se toquen.
+  { pieza: PIEZA_SERVICIO["GVC-ENR-03"], codigo: "ENR-03", punto: [GAB.x + 22, RIEL_DC - 4], chip: [GAB.x + 22, 214] },
+  { pieza: PIEZA_SERVICIO["GVC-ENR-04"], codigo: "ENR-04", punto: [gabDer + 5, GAB.y - 4], chip: [gabDer + 5, 182] },
 ];
 
 const ETIQUETAS: { texto: string; punto: Punto }[] = [
