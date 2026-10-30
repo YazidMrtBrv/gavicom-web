@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: "GAVICOM SAS",
     locale: "es_CO",
     type: "website",
-    images: [{ url: "/logo-gavicom.png", width: 512, height: 512, alt: "GAVICOM SAS" }],
+    images: [{ url: "/logo-gavicom.png", width: 652, height: 383, alt: "GAVICOM SAS" }],
   },
   twitter: {
     card: "summary",

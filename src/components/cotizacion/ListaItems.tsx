@@ -131,7 +131,7 @@ function NotaItem({ item, onCambiar }: { item: ItemCotizacion; onCambiar: (nota:
           // El visitante acaba de pedir la nota: el foco va directo al campo.
           requestAnimationFrame(() => campoRef.current?.focus());
         }}
-        className="boton mt-3 inline-flex min-h-9 items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className="boton mt-1 inline-flex min-h-11 items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         <PencilLine aria-hidden="true" className="size-3.5" />
         <span className="boton-enlace-texto">Añadir nota técnica</span>

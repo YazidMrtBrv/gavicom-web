@@ -69,7 +69,8 @@ export default function RielPasos({ paso, alcanzado, enviado, onIr }: RielPasosP
               </span>
               <span className="mt-4 block text-[11px] font-semibold tracking-[0.22em] text-zinc-600 tabular-nums">
                 {dosCifras(numero)}
-                <span className="text-zinc-400"> / {dosCifras(PASOS.length)}</span>
+                {/* Sobre surface, zinc-600 es el más claro que se lee bien: la jerarquía la da el peso. */}
+                <span className="font-normal"> / {dosCifras(PASOS.length)}</span>
               </span>
               <span
                 className={cn(

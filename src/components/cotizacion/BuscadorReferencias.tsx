@@ -254,7 +254,7 @@ export default function BuscadorReferencias({
                 }}
                 className="peer sr-only"
               />
-              <span className="inline-flex min-h-9 items-center gap-1.5 rounded-[3px] border border-transparent px-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-600 transition-colors duration-200 hover:text-brand peer-checked:border-brand/25 peer-checked:bg-brand/5 peer-checked:text-brand peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent">
+              <span className="inline-flex min-h-11 items-center gap-1.5 rounded-[3px] border border-transparent px-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-600 transition-colors duration-200 hover:text-brand peer-checked:border-brand/25 peer-checked:bg-brand/5 peer-checked:text-brand peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent">
                 {rotulo}
                 <span className="font-medium text-zinc-600 tabular-nums">{conteo[valor]}</span>
               </span>
@@ -281,7 +281,7 @@ export default function BuscadorReferencias({
           autoCapitalize="off"
           spellCheck={false}
           enterKeyHint="search"
-          placeholder="Referencia (GVC-…), nombre o categoría"
+          placeholder="Referencia o nombre"
           value={consulta}
           onChange={(evento) => {
             setConsulta(evento.target.value);
@@ -417,7 +417,7 @@ export default function BuscadorReferencias({
         </div>
       </div>
       <p id={idAyuda} className="mt-2 text-sm leading-snug text-zinc-600">
-        Escriba al menos una palabra; con las flechas y Enter también se agrega.
+        Busque por referencia (GVC-…), nombre o categoría. Con las flechas y Enter también se agrega.
       </p>
 
       <p aria-live="polite" className="sr-only">

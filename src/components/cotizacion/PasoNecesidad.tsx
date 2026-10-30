@@ -110,7 +110,7 @@ export default function PasoNecesidad({
           <p id={`${base}-titulo-energy`} className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-600">
             Servicios de GAVICOM Energy
           </p>
-          <Boton href="/catalogo" variante="enlace" icono="flecha" className="min-h-9 py-0 text-[11px]">
+          <Boton href="/catalogo" variante="enlace" icono="flecha" className="text-[11px]">
             Ver catálogo Railway
           </Boton>
         </div>
@@ -152,7 +152,8 @@ export default function PasoNecesidad({
                       {servicio.nombreCorto ?? servicio.nombre}
                     </span>
                   </span>
-                  <span className="sr-only">{enLista ? ", en su cotización" : ", agregar a su cotización"}</span>
+                  {/* Nombre fijo: el estado lo dice aria-pressed (un conmutador no cambia de nombre). */}
+                  <span className="sr-only">, incluir en la cotización</span>
                 </button>
               </li>
             );
@@ -179,16 +180,16 @@ export default function PasoNecesidad({
                       setConfirmarVaciado(false);
                       onVaciar();
                     }}
-                    className={cn(BOTON_TEXTO, "min-h-9 text-red-700")}
+                    className={cn(BOTON_TEXTO, "text-red-700")}
                   >
                     Sí, vaciar
                   </button>
-                  <button type="button" onClick={() => setConfirmarVaciado(false)} className={cn(BOTON_TEXTO, "min-h-9")}>
+                  <button type="button" onClick={() => setConfirmarVaciado(false)} className={BOTON_TEXTO}>
                     Cancelar
                   </button>
                 </span>
               ) : (
-                <button type="button" onClick={() => setConfirmarVaciado(true)} className={cn(BOTON_TEXTO, "min-h-9")}>
+                <button type="button" onClick={() => setConfirmarVaciado(true)} className={BOTON_TEXTO}>
                   <span className="boton-enlace-texto">Vaciar lista</span>
                 </button>
               )}
@@ -201,7 +202,7 @@ export default function PasoNecesidad({
             <p className="text-sm text-zinc-700">
               Quitó <span className="font-semibold text-brand">{ultimoQuitado.sku}</span> de su lista.
             </p>
-            <button id={idDeshacer(base)} type="button" onClick={onDeshacer} className={cn(BOTON_TEXTO, "min-h-9")}>
+            <button id={idDeshacer(base)} type="button" onClick={onDeshacer} className={BOTON_TEXTO}>
               <RotateCcw aria-hidden="true" className="size-3.5" />
               <span className="boton-enlace-texto">Deshacer</span>
             </button>

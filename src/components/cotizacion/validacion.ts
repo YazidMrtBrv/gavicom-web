@@ -73,18 +73,3 @@ export function validarCampo(
         : "Para enviar la solicitud necesitamos su autorización de tratamiento de datos.";
   }
 }
-
-export function validarPaso(paso: Paso, borrador: BorradorCotizacion, totalItems: number): Errores {
-  const errores: Errores = {};
-  for (const campo of CAMPOS_POR_PASO[paso]) {
-    const error = validarCampo(campo, borrador, totalItems);
-    if (error) errores[campo] = error;
-  }
-  return errores;
-}
-
-export function pasoDelCampo(campo: CampoValidable): Paso {
-  if (CAMPOS_POR_PASO[1].includes(campo)) return 1;
-  if (CAMPOS_POR_PASO[2].includes(campo)) return 2;
-  return 3;
-}

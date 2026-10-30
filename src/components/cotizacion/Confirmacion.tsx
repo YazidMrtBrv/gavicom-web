@@ -119,9 +119,9 @@ export default function Confirmacion({ envio, tituloRef, onModificar, onNuevaSol
         </button>
       </div>
 
-      <details className="group/vista mt-6 border-y border-zinc-200 sm:ml-24">
+      <details open className="group/vista mt-6 border-y border-zinc-200 sm:ml-24">
         <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent [&::-webkit-details-marker]:hidden">
-          Ver el resumen enviado
+          Resumen de su solicitud
           <ChevronDown
             aria-hidden="true"
             className="size-4 transition-transform duration-300 group-open/vista:rotate-180 motion-reduce:transition-none"

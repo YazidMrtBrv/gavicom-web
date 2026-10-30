@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
+import { AnimatePresence, motion, useIsPresent, useReducedMotion, type Variants } from "framer-motion";
 import {
   construirUrlCorreo,
   construirUrlWhatsApp,
@@ -85,6 +85,10 @@ function PanelPaso({
   onMontado: () => void;
   children: ReactNode;
 }) {
+  // Mientras sale, el panel viejo sigue en pantalla un instante: inerte, para
+  // que un doble clic en «Continuar» o «Enviar» no actúe dos veces.
+  const presente = useIsPresent();
+
   useEffect(() => {
     onMontado();
   }, [onMontado]);
@@ -96,6 +100,7 @@ function PanelPaso({
       initial="entra"
       animate="visible"
       exit="sale"
+      inert={!presente}
     >
       {children}
     </motion.div>
@@ -104,6 +109,15 @@ function PanelPaso({
 
 function idCampo(base: string, campo: CampoValidable): string {
   return campo === "lista" ? idBuscador(base) : `${base}-${campo}`;
+}
+
+// Centrado y luego enfocado: focus() solo desplaza si el campo está fuera de la
+// ventana, y uno que quedó bajo el menú fijo cuenta como visible.
+function enfocarCampo(id: string) {
+  const campo = document.getElementById(id);
+  if (!campo) return;
+  campo.scrollIntoView({ block: "center" });
+  campo.focus({ preventScroll: true });
 }
 
 /*
@@ -155,13 +169,13 @@ export default function Cotizador({ referencias }: { referencias: ReferenciaCoti
     // Si el comienzo del cotizador quedó arriba (bajo el menú fijo, ~110 px), se vuelve a él.
     if (seccion && seccion.getBoundingClientRect().top < 110) seccion.scrollIntoView({ block: "start" });
     if (objetivo === "titulo") tituloRef.current?.focus({ preventScroll: true });
-    else document.getElementById(objetivo)?.focus();
+    else enfocarCampo(objetivo);
   }, []);
 
   const irA = (destino: Paso, enfocar: string = "titulo") => {
     if (destino === paso && !envio) {
       if (enfocar === "titulo") tituloRef.current?.focus();
-      else document.getElementById(enfocar)?.focus();
+      else enfocarCampo(enfocar);
       return;
     }
     // Desde la confirmación siempre es volver atrás.
@@ -170,6 +184,8 @@ export default function Cotizador({ referencias }: { referencias: ReferenciaCoti
     setAlcanzado((previo) => (destino > previo ? destino : previo));
     setEnvio(null);
     setUltimoQuitado(null);
+    // Al volver al paso 1 la lista se monta de nuevo: sin esto el resaltado se repetiría.
+    setRecienAgregado(null);
     enfoquePendiente.current = enfocar;
   };
 
@@ -199,7 +215,7 @@ export default function Cotizador({ referencias }: { referencias: ReferenciaCoti
       if (!conError) continue;
       marcar(campos);
       const objetivo = idCampo(base, conError);
-      if (revisado === paso) requestAnimationFrame(() => document.getElementById(objetivo)?.focus());
+      if (revisado === paso) requestAnimationFrame(() => enfocarCampo(objetivo));
       else irA(revisado, objetivo);
       return false;
     }
@@ -250,6 +266,8 @@ export default function Cotizador({ referencias }: { referencias: ReferenciaCoti
 
   const alEnviarFormulario = (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
+    // Ya enviada: un segundo envío abriría otra pestaña de WhatsApp y otra copia por correo.
+    if (envio) return;
     if (paso === 3) {
       enviar();
       return;

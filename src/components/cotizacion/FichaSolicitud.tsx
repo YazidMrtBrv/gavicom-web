@@ -79,7 +79,7 @@ export default function FichaSolicitud({
           </div>
           <p className="shrink-0 pt-0.5 text-right text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-300 tabular-nums">
             {enviado ? (
-              <span className="text-accent">Enviada</span>
+              <span className="text-accent">En WhatsApp</span>
             ) : (
               <>
                 Paso {dosCifras(paso)}

@@ -20,7 +20,7 @@ function formatearTelefono(telefono: string): string {
   return `+57 ${digitos.slice(2, 5)} ${digitos.slice(5, 8)} ${digitos.slice(8)}`;
 }
 
-const GARANTIAS_DEL_FLUJO = [
+const AFIRMACIONES_DEL_FLUJO = [
   "Railway y Energy en una misma solicitud",
   "Sin registro ni pagos en el sitio",
   "Su lista se guarda en este navegador",
@@ -96,7 +96,7 @@ export default function CotizarPage() {
                 id="titulo-cotizar"
               />
               <ul className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-x-7">
-                {GARANTIAS_DEL_FLUJO.map((texto) => (
+                {AFIRMACIONES_DEL_FLUJO.map((texto) => (
                   <li key={texto} className="flex items-center gap-2.5 text-sm font-medium text-zinc-700">
                     <Check aria-hidden="true" className="size-4 shrink-0 text-brand" strokeWidth={2.5} />
                     {texto}
@@ -177,12 +177,12 @@ export default function CotizarPage() {
               >
                 <dt className="text-[10px] font-semibold uppercase tracking-[0.24em] text-accent">{cargo}</dt>
                 <dd className="text-base font-semibold leading-snug text-white">{nombre}</dd>
-                <dd className="mt-auto pt-3 text-sm text-zinc-300">
+                <dd className="mt-auto pt-1 text-sm text-zinc-300">
                   {enlace ? (
                     <a
                       href={enlace}
                       {...(whatsapp ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                      className="break-all underline decoration-white/25 underline-offset-4 transition-colors duration-200 hover:text-white hover:decoration-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                      className="inline-flex min-h-11 items-center [overflow-wrap:anywhere] underline decoration-white/25 underline-offset-4 transition-colors duration-200 hover:text-white hover:decoration-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                     >
                       {detalle}
                       {whatsapp && <span className="sr-only"> (WhatsApp, se abre en una pestaña nueva)</span>}

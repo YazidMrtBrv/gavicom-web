@@ -33,9 +33,11 @@
   --riel: var(--brand);
   --traviesa: var(--accent);
   clip-path: inset(0 calc(100% - var(--avance, 0) * (100% - var(--cola, 0px))) 0 0);
-  transition: clip-path 0.8s var(--apple-ease);
 }
 .viaCompleta { clip-path: inset(0 0 0 0); }
+@media (prefers-reduced-motion: no-preference) {
+  .viaRecorrida { transition: clip-path 0.8s var(--apple-ease); }
+}
 
 /* Tope de vía al final del recorrido. */
 .tope {
