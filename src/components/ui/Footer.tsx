@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Mail, MapPin } from "lucide-react";
 import FinDeVia from "@/components/commons/FinDeVia";
+import { textoReferencias } from "@/components/commons/navegacion";
 import { formatearTelefono, MENSAJE_GENERAL } from "@/components/commons/whatsapp";
 import { anclaServicio, esCodigoServicio, NOMBRE_CORTO } from "@/components/energy/datos";
 import Logo from "@/components/marca/Logo";
@@ -9,6 +10,7 @@ import ScrambleLabel from "@/components/motion/ScrambleLabel";
 import Boton from "@/components/ui/Boton";
 import { SERVICIOS_ENERGY } from "@/constants/energy";
 import { COMPANIA_INFO, PRODUCTOS_Y_SERVICIOS } from "@/constants/productos";
+import { cn } from "@/lib/cn";
 import { construirUrlWhatsApp } from "@/lib/cotizacion";
 
 /*
@@ -32,8 +34,12 @@ interface EnlacePie {
 }
 
 const ENLACES_RAILWAY: EnlacePie[] = [
-  { href: "/catalogo", texto: "Catálogo Railway", dato: `${TOTAL_REFERENCIAS} referencias` },
-  { href: "/servicios", texto: "Servicios técnicos", dato: `${TOTAL_SERVICIOS} servicios` },
+  { href: "/catalogo", texto: "Catálogo Railway", dato: textoReferencias(TOTAL_REFERENCIAS) },
+  {
+    href: "/servicios",
+    texto: "Servicios técnicos",
+    dato: `${TOTAL_SERVICIOS} ${TOTAL_SERVICIOS === 1 ? "servicio" : "servicios"}`,
+  },
 ];
 
 const ENLACES_ENERGY: EnlacePie[] = SERVICIOS_ENERGY.map((servicio) => ({
@@ -78,7 +84,12 @@ function FilaEnlace({ href, texto, dato }: EnlacePie) {
     <li className="border-b border-zinc-300">
       <Link
         href={href}
-        className={`spec-row group/fila flex min-h-11 items-center justify-between gap-4 py-2.5 pl-4 pr-1 text-sm text-zinc-700 hover:bg-white/70 hover:text-brand focus-visible:-outline-offset-2 ${FOCO}`}
+        // El contorno va hacia dentro: la fila llega al borde de la columna.
+        className={cn(
+          "spec-row group/fila flex min-h-11 items-center justify-between gap-4 py-2.5 pl-4 pr-1 text-sm text-zinc-700 hover:bg-white/70 hover:text-brand",
+          FOCO,
+          "focus-visible:-outline-offset-2"
+        )}
       >
         <span className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/fila:translate-x-1 motion-reduce:transition-none">
           {texto}
@@ -91,7 +102,7 @@ function FilaEnlace({ href, texto, dato }: EnlacePie) {
           <ArrowUpRight
             aria-hidden="true"
             strokeWidth={1.75}
-            className="size-4 shrink-0 text-zinc-500 transition-colors group-hover/fila:text-brand"
+            className="size-4 shrink-0 text-zinc-600 transition-colors group-hover/fila:text-brand"
           />
         )}
       </Link>
@@ -163,9 +174,13 @@ export default function Footer() {
             <p className="mt-7 max-w-xs text-base leading-relaxed text-zinc-700">
               Suministro ferroviario y energía solar fotovoltaica para la industria colombiana.
             </p>
-            <p className="mt-5 flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand">
+            {/* Parte entre la sede y la cobertura, no a media frase: a 360 px no cabe en una línea. */}
+            <p className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand">
               <MapPin aria-hidden="true" className="size-4 shrink-0" />
-              {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento} · Cobertura nacional
+              <span className="whitespace-nowrap">
+                {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento}
+              </span>
+              <span className="whitespace-nowrap">· Cobertura nacional</span>
             </p>
             <div className="mt-7 flex items-center gap-3">
               <a
@@ -204,7 +219,7 @@ export default function Footer() {
               etiqueta="LÍNEA 02 — ENERGY"
               titulo="GAVICOM Energy"
               href="/energy"
-              resumen="Cofres fotovoltaicos, montaje e instalación de sistemas solares, protecciones eléctricas AC y DC y ensamble de componentes eléctricos."
+              resumen="Fabricación y suministro de cofres fotovoltaicos, montaje e instalación de sistemas solares, instalación de protecciones eléctricas AC y DC, y ensamble e integración de componentes eléctricos."
               enlaces={ENLACES_ENERGY}
             />
           </div>

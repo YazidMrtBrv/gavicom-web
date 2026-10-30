@@ -29,7 +29,7 @@ export default function BotonCotizar({
       aria-current={activo ? "page" : undefined}
       aria-label={total > 0 ? `${etiqueta}, ${textoReferencias(total)}` : undefined}
       onClick={onClick}
-      className={cn("min-h-10 px-4 sm:px-5", activo && "bg-accent-strong", className)}
+      className={cn("px-4 sm:px-5", activo && "bg-accent-strong", className)}
     >
       {etiqueta}
       {total > 0 && (

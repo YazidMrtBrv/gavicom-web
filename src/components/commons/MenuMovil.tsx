@@ -106,6 +106,9 @@ export default function MenuMovil({
       },
       () => {}
     );
+    // Si se vuelve a abrir antes de que termine de recogerse, la salida se
+    // cancela (su promesa se rechaza) y el diálogo sigue abierto.
+    return () => salida.cancel();
   }, [abierto]);
 
   return (
@@ -129,10 +132,15 @@ export default function MenuMovil({
         <div className="relative mx-auto max-w-6xl px-4 pt-4 sm:px-6">
           {/* Mismo alto que la tarjeta del menú fijo (incluido su borde de 1 px). */}
           <div className="border border-transparent">
+            {/* La fila mide 28 px fijos: a 360 px la frase completa partiría en
+                dos líneas y se saldría; "Cobertura nacional" entra desde sm. */}
             {!barraOculta && (
-              <p className="flex h-7 items-center justify-center gap-2 border-b border-white/10 px-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-300 sm:px-5">
-                <span aria-hidden="true" className="size-1.5 bg-accent" />
-                {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento} · Cobertura nacional
+              <p className="flex h-7 items-center justify-center gap-2 whitespace-nowrap border-b border-white/10 px-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-300 sm:px-5">
+                <span aria-hidden="true" className="size-1.5 shrink-0 bg-accent" />
+                <span className="truncate">
+                  {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento}
+                  <span className="hidden sm:inline"> · Cobertura nacional</span>
+                </span>
               </p>
             )}
             <div className="flex h-14 items-center justify-between gap-3 px-3 sm:h-16 sm:px-5">

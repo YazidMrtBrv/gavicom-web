@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MotionConfig, motion } from "framer-motion";
@@ -66,6 +66,11 @@ function useEstadoDesplazamiento(): EstadoDesplazamiento {
   return estado;
 }
 
+// Los enlaces ocupan todo el alto de la barra: con texto de 10 px, el área
+// táctil sería de apenas 15 px.
+const ENLACE_BARRA =
+  "flex h-full items-center decoration-accent decoration-2 underline-offset-2 transition-colors hover:underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent";
+
 function BarraContacto({ urlWhatsApp }: { urlWhatsApp: string }) {
   return (
     <div className="flex h-7 items-center justify-center gap-3 border-b border-brand/10 px-4 text-[10px] sm:px-5 lg:justify-between">
@@ -73,13 +78,13 @@ function BarraContacto({ urlWhatsApp }: { urlWhatsApp: string }) {
         <span aria-hidden="true" className="size-1.5 bg-accent" />
         {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento} · Cobertura nacional
       </p>
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex h-full min-w-0 items-center gap-3">
         <span className="hidden font-semibold uppercase tracking-widest text-brand sm:inline">Contacto directo:</span>
         <a
           href={urlWhatsApp}
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 font-semibold text-brand decoration-accent decoration-2 underline-offset-2 transition-colors hover:text-brand-deep hover:underline"
+          className={cn(ENLACE_BARRA, "shrink-0 font-semibold text-brand hover:text-brand-deep")}
         >
           WhatsApp
           <span className="sr-only"> (se abre en una pestaña nueva)</span>
@@ -89,12 +94,47 @@ function BarraContacto({ urlWhatsApp }: { urlWhatsApp: string }) {
         </span>
         <a
           href={`mailto:${COMPANIA_INFO.email}`}
-          className="truncate text-zinc-600 decoration-accent decoration-2 underline-offset-2 transition-colors hover:text-brand hover:underline"
+          className={cn(ENLACE_BARRA, "min-w-0 text-zinc-600 hover:text-brand")}
         >
-          {COMPANIA_INFO.email}
+          <span className="truncate">{COMPANIA_INFO.email}</span>
         </a>
       </div>
     </div>
+  );
+}
+
+/*
+ * Quien navega con teclado se salta de un tabulador el logo, los cinco enlaces
+ * y Cotizar. <main> lo monta el layout sin id, así que el foco se lleva a mano;
+ * el tabindex y el contorno temporales se retiran en cuanto el foco sigue.
+ */
+function SaltarAlContenido() {
+  const saltar = (evento: MouseEvent<HTMLAnchorElement>) => {
+    const principal = document.querySelector<HTMLElement>("main");
+    if (!principal) return;
+    evento.preventDefault();
+    const teniaTabindex = principal.hasAttribute("tabindex");
+    if (!teniaTabindex) principal.tabIndex = -1;
+    principal.style.outline = "none";
+    principal.addEventListener(
+      "blur",
+      () => {
+        if (!teniaTabindex) principal.removeAttribute("tabindex");
+        principal.style.removeProperty("outline");
+      },
+      { once: true }
+    );
+    principal.focus();
+  };
+
+  return (
+    <a
+      href="#contenido"
+      onClick={saltar}
+      className="not-focus:sr-only fixed left-4 top-4 z-60 rounded-[4px] bg-brand-deep px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-white outline-2 outline-offset-2 outline-accent"
+    >
+      Saltar al contenido
+    </a>
   );
 }
 
@@ -144,7 +184,12 @@ export default function Navbar() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-55 px-4 pt-4 sm:px-6">
+      <SaltarAlContenido />
+
+      {/* layoutRoot: el subrayado activo se mide contra el menú fijo y no contra
+          la página. Sin él, al navegar desde media página (Next vuelve arriba)
+          el subrayado "volaría" desde donde estaba el scroll. */}
+      <motion.header layoutRoot className="pointer-events-none fixed inset-x-0 top-0 z-55 px-4 pt-4 sm:px-6">
         <div
           className={cn(
             "pointer-events-auto mx-auto max-w-6xl rounded-[4px] transition-[background-color,box-shadow,border-color] duration-500",
@@ -175,7 +220,7 @@ export default function Navbar() {
               <Logo ancho={56} />
               <span
                 aria-hidden="true"
-                className="hidden border-l border-zinc-200 pl-3 text-[9px] font-semibold uppercase leading-[1.7] tracking-[0.22em] text-zinc-500 xl:block"
+                className="hidden border-l border-zinc-200 pl-3 text-[9px] font-semibold uppercase leading-[1.7] tracking-[0.22em] text-zinc-600 xl:block"
               >
                 Railway Solutions &amp; Supply
                 <br />
@@ -245,7 +290,7 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       <MenuMovil
         abierto={menuAbierto}
