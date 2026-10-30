@@ -16,6 +16,16 @@
   mask-image: linear-gradient(to bottom, #000 10%, transparent 90%);
 }
 
+/* La misma cuadrícula sobre brand-deep, encendida hacia la derecha. */
+.cuadriculaOscura {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+  mask-image: radial-gradient(ellipse 70% 90% at 85% 50%, #000 20%, transparent 100%);
+}
+
 /* ---------- Placa del catálogo: cifras que ruedan como un odómetro ---------- */
 .odometroVentana {
   display: inline-block;
@@ -46,11 +56,6 @@
 .tarjeta {
   /* El menú fijo mide ~108 px y en móvil se suma la barra de categorías. */
   scroll-margin-top: 11.5rem;
-  outline: 2px solid transparent;
-  outline-offset: 12px;
-  transition:
-    outline-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    outline-offset 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (min-width: 64rem) {
@@ -60,11 +65,26 @@
 }
 
 /* La que eligió el buscador: un anillo accent que se cierra sobre la tarjeta y,
-   cuando el atributo se retira (~2,4 s), se abre y se apaga. Es una transición y
-   no una animación para no pisar la entrada .reveal-on-scroll de la tarjeta. */
-.tarjeta[data-resaltado="true"] {
-  outline-color: var(--accent);
-  outline-offset: 5px;
+   cuando el atributo se retira (~2,4 s), se abre y se apaga. Va en un elemento
+   aparte para no pisar la transición de .card-hover ni la entrada
+   .reveal-on-scroll de la propia tarjeta. */
+.anillo {
+  position: absolute;
+  inset: -7px;
+  z-index: 30;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  scale: 1.025;
+  transition:
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    scale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tarjeta[data-resaltado="true"] > .anillo {
+  opacity: 1;
+  scale: 1;
 }
 
 /* Regla graduada al pie de la foto: marca menor cada 8 px, mayor cada 40 px. */

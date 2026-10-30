@@ -1,0 +1,117 @@
+/* ============================================================
+   /servicios. Misma regla que el kit de movimiento (globals.css):
+   el estado de partida es el visible. Lo que se mueve solo existe
+   con prefers-reduced-motion: no-preference y, si va ligado al
+   scroll, dentro de @supports; sin eso, todo queda quieto y
+   dibujado por completo.
+   ============================================================ */
+
+@keyframes cinta-avanza {
+  to { translate: -50% 0; }
+}
+@keyframes escanear {
+  from { translate: 0 -100%; }
+  to { translate: 0 100%; }
+}
+@keyframes girar {
+  to { rotate: 360deg; }
+}
+@keyframes trazar {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes aparecer {
+  from { opacity: 0; }
+}
+
+/* ---------- Papel de plano detrás del titular ---------- */
+.cuadricula {
+  background-image:
+    linear-gradient(to right, rgb(20 59 100 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(20 59 100 / 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 75% 85% at 15% 0%, #000 25%, transparent 75%);
+}
+.cuadriculaOscura {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: center;
+  mask-image: radial-gradient(circle at 50% 45%, #000 40%, transparent 78%);
+}
+
+/* Rayado a 45° del cierre (el de la página anterior, más tenue). */
+.rayado {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgb(232 146 12 / 0.05) 0 2px,
+    transparent 2px 20px
+  );
+  mask-image: linear-gradient(to bottom, #000, transparent 80%);
+}
+
+/* ---------- Cinta de disciplinas ---------- */
+.cintaPista {
+  display: flex;
+  width: max-content;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cintaPista { animation: cinta-avanza 48s linear infinite; }
+  .cinta:hover .cintaPista,
+  .cinta[data-pausada="true"] .cintaPista { animation-play-state: paused; }
+}
+
+/* ---------- Tarjeta de servicio: barrido de escáner sobre la foto ---------- */
+/* La raya va en el borde inferior de una capa del alto de la foto; trasladar
+   la capa la lleva de arriba abajo sin animar top (fuera del compositor). */
+.escaner {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent calc(100% - 40px),
+    rgb(232 146 12 / 0.18) calc(100% - 2px),
+    var(--accent) calc(100% - 2px)
+  );
+  translate: 0 -100%;
+  opacity: 0;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .tarjeta:hover .escaner {
+    opacity: 1;
+    animation: escanear 2.4s linear infinite;
+  }
+}
+
+/* ---------- Diagramas (perfil de riel, cambiavía) ---------- */
+.anillo {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .anilloHorario { animation: girar 90s linear infinite; }
+  .anilloAntihorario { animation: girar 120s linear infinite reverse; }
+}
+
+.dibujo { view-timeline: --servicios-dibujo block; }
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    /* Con pathLength={1} en el trazado: un guion del largo total que se corre. */
+    .trazo {
+      stroke-dasharray: 1;
+      animation: trazar auto linear both;
+      animation-timeline: --servicios-dibujo;
+      animation-range: entry 10% cover 45%;
+    }
+    .trazoTarde { animation-range: entry 40% cover 55%; }
+
+    .aparece {
+      animation: aparecer auto linear both;
+      animation-timeline: --servicios-dibujo;
+      animation-range: cover 30% cover 50%;
+    }
+  }
+}

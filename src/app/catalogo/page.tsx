@@ -1,199 +1,60 @@
-"use client";
+import SectionHeader from "@/components/ui/SectionHeader";
+import Boton from "@/components/ui/Boton";
+import ProveedorCatalogo from "@/components/catalogo/ProveedorCatalogo";
+import BotonBuscador from "@/components/catalogo/BotonBuscador";
+import BuscadorRapido from "@/components/catalogo/BuscadorRapido";
+import ExploradorCatalogo from "@/components/catalogo/ExploradorCatalogo";
+import PlacaCatalogo from "@/components/catalogo/PlacaCatalogo";
+import CierreCatalogo from "@/components/catalogo/CierreCatalogo";
+import estilos from "@/components/catalogo/catalogo.module.css";
+import { construirUrlWhatsApp } from "@/lib/cotizacion";
+import { cn } from "@/lib/cn";
 
-import { useState, useMemo } from "react";
-import { PRODUCTOS_Y_SERVICIOS, COMPANIA_INFO } from "@/constants/productos";
-import ProductCard from "@/components/ui/ProductCard";
+const MENSAJE_COTIZACION_RAPIDA =
+  "Hola GAVICOM SAS, estoy navegando en su sitio web y me gustaría solicitar una cotización formal para suministros ferroviarios.";
 
+/*
+ * El encabezado, la placa y el cierre se renderizan en el servidor; el listado
+ * (filtros, buscador rápido, tarjetas) es cliente y comparte estado por
+ * ProveedorCatalogo. Todas las tarjetas llegan en el HTML con su texto.
+ */
 export default function CatalogoPage() {
-  const [busqueda, setBusqueda] = useState("");
-  const [categoriaSeleccionada, setCategoriaSeleccionada] =
-    useState("Todos");
-
-  const mensajeGlobal = encodeURIComponent(
-    "Hola GAVICOM SAS, estoy navegando en su sitio web y me gustaría solicitar una cotización formal para suministros ferroviarios."
-  );
-  const enlaceWhatsAppGlobal = `${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=${mensajeGlobal}`;
-
-  const categorias = useMemo(() => {
-    const lista = PRODUCTOS_Y_SERVICIOS.map((p) => p.categoria);
-    return ["Todos", ...new Set(lista)];
-  }, []);
-
-  const productosFiltrados = useMemo(() => {
-    return PRODUCTOS_Y_SERVICIOS.filter((producto) => {
-      const normalizarTexto = (txt: string) =>
-        txt
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "");
-      const query = normalizarTexto(busqueda.trim());
-
-      if (producto.oculto && query === "") {
-        return false;
-      }
-
-      const cumpleCategoria =
-        categoriaSeleccionada === "Todos" ||
-        producto.categoria === categoriaSeleccionada;
-
-      const cumpleBusqueda =
-        query === "" ||
-        normalizarTexto(producto.nombre).includes(query) ||
-        normalizarTexto(producto.sku).includes(query) ||
-        normalizarTexto(producto.descripcion).includes(query) ||
-        Object.values(producto.especificaciones).some((val) =>
-          normalizarTexto(val).includes(query)
-        );
-
-      return cumpleCategoria && cumpleBusqueda;
-    });
-  }, [busqueda, categoriaSeleccionada]);
-
   return (
-    <>
-      <div className="flex flex-col min-h-screen bg-background">
-      {/* HEADER */}
-      <div className="bg-white border-b border-brand/10 relative overflow-hidden">
-        {/* Subtle grid background */}
-        <div 
-          className="absolute inset-0 opacity-[0.02] pointer-events-none" 
-          style={{ backgroundImage: 'linear-gradient(var(--brand) 1px, transparent 1px), linear-gradient(90deg, var(--brand) 1px, transparent 1px)', backgroundSize: '32px 32px' }} 
-        />
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-32 pb-16 lg:pt-36 lg:pb-20 relative z-10">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
+    <ProveedorCatalogo>
+      <section aria-labelledby="titulo-catalogo" className="relative isolate border-b border-zinc-200 bg-white">
+        <div aria-hidden="true" className={cn(estilos.cuadricula, "pointer-events-none absolute inset-0 -z-10")} />
+        <div className="mx-auto max-w-7xl px-4 pt-36 pb-14 sm:px-8 lg:px-12 lg:pt-44 lg:pb-20">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,23rem)] lg:items-end lg:gap-16 xl:grid-cols-[minmax(0,1fr)_minmax(0,25rem)]">
             <div>
-              <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-brand uppercase border border-accent/60 px-3 py-1.5 inline-block mb-6">
-                Catálogo Técnico
-              </span>
-              <h1 
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand leading-none"
-                style={{ letterSpacing: "-0.05em" }}
-              >
-                Componentes y<br />
-                <span className="text-zinc-500">Suministros</span>
-              </h1>
-            </div>
-            <a
-              href={enlaceWhatsAppGlobal}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center text-brand text-xs font-bold uppercase tracking-[0.2em] border border-zinc-300 px-10 py-4 hover:border-accent transition-all active:scale-[0.97] bg-white group self-start sm:self-end"
-            >
-              Cotización Rápida
-              <span className="ml-2 text-brand group-hover:translate-x-1 transition-transform">→</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* SEARCH */}
-      <div className="bg-white border-b border-zinc-200 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-4">
-          <div className="flex items-center relative bg-surface border border-zinc-200 focus-within:border-accent focus-within:ring-1 focus-within:ring-accent transition-all">
-            <div className="pl-4 pr-2 flex items-center justify-center text-brand font-mono text-[10px] sm:text-xs font-bold pointer-events-none whitespace-nowrap shrink-0">
-              <span className="hidden sm:inline">&gt; BUSCAR_REF:</span>
-              <span className="sm:hidden">&gt; ref:</span>
-            </div>
-            <input
-              type="text"
-              placeholder="Ingresa SKU, nombre o especificación..."
-              className="w-full py-3.5 pr-4 bg-transparent text-sm font-mono text-ink placeholder-zinc-400 focus:outline-none"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* CONTENT */}
-      <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 py-12 flex-grow">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-          {/* Desktop: vertical sidebar */}
-          <aside className="hidden lg:block bg-white border border-zinc-200 rounded-none h-fit shadow-sm">
-            <div className="p-5 border-b border-zinc-200 bg-brand">
-              <h3 className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white flex items-center gap-2">
-                <span className="w-2 h-2 bg-accent inline-block animate-pulse"></span>
-                Índice de Categorías
-              </h3>
-            </div>
-            <div className="p-3 space-y-1">
-              {categorias.map((cat, index) => {
-                const isActive = categoriaSeleccionada === cat;
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setCategoriaSeleccionada(cat)}
-                    className={`w-full flex items-center text-left px-4 py-3 text-xs font-mono transition-all rounded-none border-l-2 ${
-                      isActive
-                        ? "border-accent bg-surface text-brand font-bold"
-                        : "border-transparent text-zinc-500 hover:bg-surface hover:text-brand"
-                    }`}
-                  >
-                    <span className="text-zinc-400 mr-3 w-5 opacity-50">{String(index).padStart(2, "0")}.</span>
-                    <span className="uppercase tracking-widest leading-relaxed">{cat}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </aside>
-
-          {/* Mobile: horizontal scroll pills */}
-          <div className="lg:hidden -mx-6 sm:-mx-8 lg:-mx-12 px-6 sm:px-8 lg:px-12">
-            <div className="flex gap-2 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-none">
-              {categorias.map((cat, index) => {
-                const isActive = categoriaSeleccionada === cat;
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setCategoriaSeleccionada(cat)}
-                    className={`shrink-0 snap-start text-[11px] font-bold uppercase tracking-wider px-5 py-2.5 border transition-all whitespace-nowrap rounded-full ${
-                      isActive
-                        ? "bg-accent text-brand-deep border-accent"
-                        : "bg-white text-zinc-500 border-zinc-200 hover:border-accent/50 hover:text-brand"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="lg:col-span-3">
-            {productosFiltrados.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {productosFiltrados.map((prod, i) => (
-                  <ProductCard key={prod.sku} producto={prod} eager={i < 4} />
-                ))}
-              </div>
-            ) : (
-              <div className="bg-white border border-zinc-200 rounded-none p-16 text-center max-w-xl mx-auto">
-                <div className="w-16 h-16 flex items-center justify-center mx-auto mb-6 border border-zinc-200 bg-surface">
-                  <span className="text-brand text-2xl font-mono">!</span>
-                </div>
-                <h4 className="text-base font-bold tracking-tight text-brand mb-3 uppercase">
-                  Referencia No Localizada
-                </h4>
-                <p className="text-xs font-mono text-zinc-500 leading-relaxed mb-8 max-w-sm mx-auto">
-                  Algunas especificaciones restringidas no se muestran públicamente. 
-                  Consúltenos directamente por estándares AREMA/UIC.
-                </p>
-                <a
-                  href={`${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=Hola%20GAVICOM%20SAS,%20busco%20un%20suministro%20especifico%20que%20no%20aparece%20en%20el%20catalogo.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-xs font-bold uppercase tracking-[0.2em] text-brand border border-accent px-8 py-3 hover:bg-accent hover:text-brand-deep transition-all active:scale-[0.97]"
+              <SectionHeader
+                as="h1"
+                id="titulo-catalogo"
+                etiqueta="S.01 — RAILWAY SOLUTIONS & SUPPLY"
+                titulo="Componentes y suministros ferroviarios"
+                acentos={["ferroviarios"]}
+                entradilla="Catálogo técnico de fijaciones, sistemas elásticos, herramientas de vía, señalización y servicios técnicos bajo estándares AREMA/UIC. Cada referencia trae su ficha de especificaciones: agréguela a su cotización o consúltela por WhatsApp."
+              />
+              <div className="mt-10 flex max-w-2xl flex-col gap-3 sm:flex-row sm:items-center">
+                <BotonBuscador className="sm:min-w-0 sm:flex-1" />
+                <Boton
+                  href={construirUrlWhatsApp(MENSAJE_COTIZACION_RAPIDA)}
+                  externo
+                  icono="whatsapp"
+                  variante="secundario"
+                  className="shrink-0"
                 >
-                  Consultar Bodega
-                </a>
+                  Cotización rápida
+                </Boton>
               </div>
-            )}
+            </div>
+            <PlacaCatalogo />
           </div>
         </div>
-      </main>
+      </section>
 
-    </div>
-    </>
+      <ExploradorCatalogo />
+      <CierreCatalogo />
+      <BuscadorRapido />
+    </ProveedorCatalogo>
   );
 }
-

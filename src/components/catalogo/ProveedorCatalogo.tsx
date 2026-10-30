@@ -1,6 +1,15 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { PRODUCTOS_Y_SERVICIOS } from "@/constants/productos";
 import { TODAS_LAS_CATEGORIAS, filtrarProductos } from "./datos";
 
@@ -50,6 +59,13 @@ export default function ProveedorCatalogo({ children }: { children: ReactNode })
     subirAlListadoSiQuedoAtras();
   }, []);
 
+  // Al filtrar desde el índice lateral con el listado ya recorrido, la lista
+  // encoge: se sube al inicio para ver el resultado en lugar del pie de página.
+  const cambiarBusqueda = useCallback((texto: string) => {
+    setBusqueda(texto);
+    subirAlListadoSiQuedoAtras();
+  }, []);
+
   const limpiarFiltros = useCallback(() => {
     setCategoria(TODAS_LAS_CATEGORIAS);
     setBusqueda("");
@@ -72,6 +88,24 @@ export default function ProveedorCatalogo({ children }: { children: ReactNode })
     },
     [busqueda, categoria]
   );
+
+  // Un enlace a /catalogo#GVC-AK-JB115 lleva a esa tarjeta aunque haya filtros,
+  // y la resalta. Va en un cuadro aparte porque el cambio de página sube el
+  // scroll a cero después de montar.
+  const irAlHash = useEffectEvent(() => {
+    const sku = decodeURIComponent(window.location.hash.slice(1));
+    if (sku && PRODUCTOS_Y_SERVICIOS.some((producto) => producto.sku === sku)) irAReferencia(sku);
+  });
+
+  useEffect(() => {
+    const cuadro = requestAnimationFrame(() => irAlHash());
+    const alCambiarHash = () => irAlHash();
+    window.addEventListener("hashchange", alCambiarHash);
+    return () => {
+      cancelAnimationFrame(cuadro);
+      window.removeEventListener("hashchange", alCambiarHash);
+    };
+  }, []);
 
   // Corre después de pintar el listado ya sin filtros, cuando la tarjeta existe.
   useEffect(() => {
@@ -97,7 +131,7 @@ export default function ProveedorCatalogo({ children }: { children: ReactNode })
       categoria,
       busqueda,
       elegirCategoria,
-      cambiarBusqueda: setBusqueda,
+      cambiarBusqueda,
       limpiarFiltros,
       buscadorAbierto,
       abrirBuscador,
@@ -109,6 +143,7 @@ export default function ProveedorCatalogo({ children }: { children: ReactNode })
       categoria,
       busqueda,
       elegirCategoria,
+      cambiarBusqueda,
       limpiarFiltros,
       buscadorAbierto,
       abrirBuscador,

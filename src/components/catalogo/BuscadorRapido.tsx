@@ -8,7 +8,6 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
-  type PointerEvent,
 } from "react";
 import { ArrowDown, ArrowUp, CornerDownLeft, Search, X } from "lucide-react";
 import type { Producto } from "@/constants/productos";
@@ -17,6 +16,7 @@ import { cn } from "@/lib/cn";
 import Boton from "@/components/ui/Boton";
 import { useCatalogo } from "./ProveedorCatalogo";
 import { AtajoTeclado } from "./BotonBuscador";
+import { useCierreAlPulsarFuera } from "./dialogo";
 import {
   REFERENCIAS_VISIBLES,
   TOTAL_REFERENCIAS,
@@ -69,7 +69,7 @@ function Opcion({ producto, id, activa, consulta, conCategoria, alElegir, alApun
       onClick={alElegir}
       onPointerMove={alApuntar}
       className={cn(
-        "group/opcion relative flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors sm:px-5",
+        "relative flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors sm:px-5",
         activa ? "bg-surface" : "bg-white"
       )}
     >
@@ -105,20 +105,11 @@ function Opcion({ producto, id, activa, consulta, conCategoria, alElegir, alApun
   );
 }
 
-// closedby="any" cierra al pulsar fuera; Safari aún no lo soporta y ahí se
-// replica: la pulsación y la liberación tienen que caer fuera del diálogo.
-function fueraDelDialogo(evento: PointerEvent<HTMLDialogElement>): boolean {
-  const caja = evento.currentTarget.getBoundingClientRect();
-  return (
-    evento.clientX < caja.left || evento.clientX > caja.right || evento.clientY < caja.top || evento.clientY > caja.bottom
-  );
-}
-
 export default function BuscadorRapido() {
   const { buscadorAbierto, abrirBuscador, cerrarBuscador, irAReferencia } = useCatalogo();
   const dialogoRef = useRef<HTMLDialogElement>(null);
   const entradaRef = useRef<HTMLInputElement>(null);
-  const pulsoFueraRef = useRef(false);
+  const cierreFuera = useCierreAlPulsarFuera();
   const [consulta, setConsulta] = useState("");
   const [activo, setActivo] = useState(0);
   const base = useId();
@@ -224,13 +215,7 @@ export default function BuscadorRapido() {
       // Lenis maneja la rueda en toda la página; aquí la lista debe desplazarse sola.
       data-lenis-prevent=""
       onClose={alCerrar}
-      onPointerDown={(evento) => {
-        pulsoFueraRef.current = fueraDelDialogo(evento);
-      }}
-      onPointerUp={(evento) => {
-        if ("closedBy" in HTMLDialogElement.prototype) return;
-        if (pulsoFueraRef.current && fueraDelDialogo(evento)) evento.currentTarget.close();
-      }}
+      {...cierreFuera}
       className={cn(
         estilos.paleta,
         "m-0 mx-auto mt-[9svh] max-h-[82svh] w-[min(44rem,calc(100%-2rem))] max-w-none rounded-[6px] border border-zinc-200 bg-white p-0 text-ink shadow-[0_30px_80px_-20px_rgb(12_38_66/0.45)]",
