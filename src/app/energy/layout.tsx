@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     "cofres fotovoltaicos",
     "cofres fotovoltaicos metálicos",
     "instalación de sistemas solares",
-    "paneles solares Barranquilla",
+    "energía solar Barranquilla",
     "protecciones eléctricas AC y DC",
     "gabinetes eléctricos",
     "RETIE",

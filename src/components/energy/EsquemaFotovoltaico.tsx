@@ -166,9 +166,18 @@ const ETIQUETAS: { texto: string; punto: Punto }[] = [
 
 const estiloOrden = (orden: number) => ({ "--orden": orden }) as CSSProperties;
 
+// Lo que un lector de pantalla oye en lugar del dibujo (el SVG y los códigos van ocultos).
+const DESCRIPCION =
+  "Esquema en líneas de un sistema fotovoltaico: arreglo de módulos (ENR-02) conectado en corriente continua a un cofre fotovoltaico (ENR-01) y a un gabinete eléctrico (ENR-04) con protecciones DC y AC (ENR-03), del que sale la corriente alterna.";
+
 export default function EsquemaFotovoltaico({ className }: { className?: string }) {
   return (
-    <div className={cn("energia-esquema relative w-full", className)} style={{ aspectRatio: `${ANCHO} / ${ALTO}` }}>
+    <div
+      role="img"
+      aria-label={DESCRIPCION}
+      className={cn("energia-esquema relative w-full", className)}
+      style={{ aspectRatio: `${ANCHO} / ${ALTO}` }}
+    >
       <svg
         viewBox={`0 0 ${ANCHO} ${ALTO}`}
         aria-hidden="true"

@@ -141,9 +141,10 @@
     animation: energia-aparece 0.6s ease-out backwards;
     animation-delay: 1.8s;
   }
-  /* Tres pasadas del pulso después de dibujarse; con el puntero encima,
-     continuo. Un movimiento perpetuo sin control incomoda (WCAG 2.2.2). */
-  .energia-flujo { animation: energia-fluye 2.6s linear 2.6s 3; }
+  /* Una sola pasada del pulso al terminar el dibujo; con el puntero encima,
+     continuo. Todo el movimiento automático acaba antes de 5 s: si durara
+     más, WCAG 2.2.2 exigiría un control para pausarlo. */
+  .energia-flujo { animation: energia-fluye 2.2s linear 2.5s 1; }
   .energia-esquema:hover .energia-flujo { animation: energia-fluye-continuo 2.6s linear infinite; }
 
   @supports ((animation-timeline: view()) and (animation-range: entry)) {
@@ -179,6 +180,43 @@
       animation-fill-mode: backwards;
       animation-timeline: --energia-lienzo;
       animation-range: entry 60% cover 50%;
+    }
+
+    /* Bajo lg el esquema queda debajo del texto, fuera del primer pantallazo:
+       dibujado por tiempo, terminaría antes de que nadie llegara a verlo. Ahí
+       se dibuja con el scroll, como los pictogramas, y el pulso recorre el
+       cableado mientras el esquema cruza la pantalla. Mismas animaciones y
+       relleno que arriba; solo cambia la línea de tiempo. */
+    @media (max-width: 1023.98px) {
+      .energia-esquema .energia-trazo,
+      .energia-esquema .energia-aparece,
+      .energia-esquema .energia-chip,
+      .energia-esquema .energia-etiqueta,
+      .energia-esquema .energia-flujo {
+        animation-duration: auto;
+        animation-delay: 0s;
+        animation-iteration-count: 1;
+        animation-timing-function: linear;
+        animation-timeline: --energia-esquema;
+      }
+      .energia-esquema .energia-trazo {
+        animation-range:
+          entry calc(5% + var(--orden, 0) * 4%)
+          cover calc(28% + var(--orden, 0) * 1.5%);
+      }
+      .energia-esquema .energia-aparece,
+      .energia-esquema .energia-etiqueta {
+        animation-range: entry 40% cover 45%;
+      }
+      .energia-esquema .energia-chip {
+        animation-range:
+          cover calc(40% + var(--orden, 0) * 2%)
+          cover calc(48% + var(--orden, 0) * 2%);
+      }
+      .energia-esquema .energia-flujo {
+        animation-fill-mode: none;
+        animation-range: cover 40% cover 75%;
+      }
     }
   }
 }

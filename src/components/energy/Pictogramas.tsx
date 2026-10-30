@@ -33,7 +33,7 @@ function Lienzo({ children, etiquetas = [] }: { children: ReactNode; etiquetas?:
         <span
           key={texto}
           aria-hidden="true"
-          className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[10px] font-semibold uppercase leading-none tracking-[0.18em] text-zinc-600"
+          className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[9px] font-semibold uppercase leading-none tracking-[0.12em] text-zinc-600 sm:text-[10px] sm:tracking-[0.18em]"
           style={{ left: pct(punto[0], ANCHO), top: pct(punto[1], ALTO) }}
         >
           {texto}
@@ -181,22 +181,24 @@ function PictogramaProtecciones() {
   const cables = (x: number, polos: number) =>
     Array.from({ length: polos }, (_, p) => {
       const cx = x + 9 + p * 18;
-      return linea([cx, arriba + 4], [cx, 44]) + linea([cx, arriba + alto - 4], [cx, 166]);
+      return linea([cx, arriba + 4], [cx, 44]) + linea([cx, arriba + alto - 4], [cx, 150]);
     }).join("");
   const todos = [...dc, ...ac];
   const rielDin =
     rect(16, riel - 4, 288, 8) +
     Array.from({ length: 17 }, (_, i) => linea([22 + i * 17, riel - 1], [30 + i * 17, riel - 1])).join("");
-  // Símbolos de corriente: + y − sobre DC, onda sobre AC (dibujo, no texto).
+  // Símbolos de corriente bajo cada grupo: + y − en DC, onda en AC (dibujo,
+  // no texto). Van abajo porque la esquina superior izquierda es de "Fig. 03".
+  const FILA = 166;
   const simbolos =
-    linea([45, 30], [53, 30]) + linea([49, 26], [49, 34]) + linea([99, 30], [107, 30]) +
-    "M200 30c4-7 8-7 12 0s8 7 12 0";
+    linea([45, FILA], [53, FILA]) + linea([49, FILA - 4], [49, FILA + 4]) + linea([99, FILA], [107, FILA]) +
+    `M200 ${FILA}c4-7 8-7 12 0s8 7 12 0`;
 
   return (
     <Lienzo
       etiquetas={[
-        { texto: "DC", punto: [76, 30] },
-        { texto: "AC", punto: [254, 30] },
+        { texto: "DC", punto: [76, FILA] },
+        { texto: "AC", punto: [254, FILA] },
       ]}
     >
       <Trazo d={cables(dc[0][0], 2) + cables(dc[1][0], 2)} orden={4} className="stroke-accent" strokeWidth={1.4} />

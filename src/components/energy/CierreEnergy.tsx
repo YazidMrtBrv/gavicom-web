@@ -32,8 +32,9 @@ const MARCAS_HORIZONTE = Array.from({ length: 11 }, (_, i) => {
 }).join("");
 
 const DATO = "text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-400";
+// py-3 + -my-3: 44 px de área táctil sin mover el texto ni el horizonte del dibujo.
 const ENLACE =
-  "font-medium text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+  "-my-3 inline-block py-3 font-medium text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 export default function CierreEnergy() {
   return (
@@ -44,7 +45,7 @@ export default function CierreEnergy() {
         <div className="relative pb-16 sm:pb-20">
           <div
             aria-hidden="true"
-            className="energia-lienzo pointer-events-none absolute bottom-0 right-0 hidden w-[52%] max-w-[42rem] lg:block"
+            className="energia-lienzo pointer-events-none absolute bottom-0 right-0 -z-10 hidden w-[52%] max-w-[42rem] xl:block"
           >
             <svg
               viewBox={`0 0 ${ANCHO} ${ALTO}`}
