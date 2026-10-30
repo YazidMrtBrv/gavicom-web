@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import estilos from "@/components/catalogo/catalogo.module.css";
 
 interface TechnicalTableProps {
   especificaciones?: Record<string, string>;
@@ -9,9 +10,10 @@ interface TechnicalTableProps {
 
 /*
  * Ficha técnica en filas parámetro / valor. El rótulo de cada fila es un <th>
- * de fila para que el lector de pantalla diga "Perforaciones: Disponibles…".
- * .spec-row pinta la barra accent; aquí se enciende con toda la fila, no solo
- * con el rótulo.
+ * de fila para que el lector de pantalla diga "Perforaciones: Disponibles…";
+ * con eso y el <caption> no hace falta fila de encabezados (un <thead> sr-only
+ * pasa a ser bloque al posicionarse y deja de formar parte de la tabla).
+ * .spec-row pinta la barra accent; .filaFicha la enciende con toda la fila.
  */
 export default function TechnicalTable({
   especificaciones,
@@ -25,21 +27,18 @@ export default function TechnicalTable({
       <caption className="pb-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-600">
         {titulo}
       </caption>
-      <thead className="sr-only">
-        <tr>
-          <th scope="col">Parámetro</th>
-          <th scope="col">Especificación</th>
-        </tr>
-      </thead>
       <tbody className="border-y border-zinc-200">
         {Object.entries(especificaciones).map(([clave, valor]) => (
           <tr
             key={clave}
-            className="group/fila border-t border-zinc-200 transition-colors duration-200 first:border-t-0 hover:bg-surface"
+            className={cn(
+              estilos.filaFicha,
+              "border-t border-zinc-200 transition-colors duration-200 first:border-t-0 hover:bg-surface"
+            )}
           >
             <th
               scope="row"
-              className="spec-row w-[42%] py-2.5 pr-4 pl-3 align-top text-[11px] font-semibold uppercase leading-snug tracking-[0.06em] text-zinc-600 group-hover/fila:before:[transform:scaleY(1)]"
+              className="spec-row w-[42%] py-2.5 pr-4 pl-3 align-top text-[11px] font-semibold uppercase leading-snug tracking-[0.06em] text-zinc-600"
             >
               {clave}
             </th>

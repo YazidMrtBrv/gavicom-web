@@ -87,6 +87,27 @@
   scale: 1;
 }
 
+/* La tarjeta recibe el foco al elegirla en el buscador: cuando el anillo se
+   apaga, queda este contorno en el mismo sitio para que el foco siga a la
+   vista (brand sobre blanco, 11:1). */
+.tarjeta:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 5px;
+}
+
+.tarjeta[data-resaltado="true"]:focus-visible {
+  outline-color: transparent;
+}
+
+/* .spec-row (globals.css) está fuera de las capas de Tailwind y le gana a
+   cualquier utilidad: para que su barra se encienda con toda la fila de la
+   ficha hace falta una regla también fuera de capas y más específica. */
+@media (hover: hover) {
+  .filaFicha:hover > :global(.spec-row)::before {
+    transform: scaleY(1);
+  }
+}
+
 /* Regla graduada al pie de la foto: marca menor cada 8 px, mayor cada 40 px. */
 .regla {
   background-image:

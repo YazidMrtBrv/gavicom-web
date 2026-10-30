@@ -141,7 +141,7 @@ export default function ProductCard({ producto, eager = false, indice = 0, resal
       delay={(indice % 2) as PasoReveal}
       className={cn(
         estilos.tarjeta,
-        "card-hover group relative flex flex-col rounded-[4px] border border-zinc-200 bg-white hover:border-brand/30 focus:outline-none"
+        "card-hover group relative flex flex-col rounded-[4px] border border-zinc-200 bg-white hover:border-brand/30"
       )}
     >
       <span aria-hidden="true" className={estilos.anillo} />
@@ -220,9 +220,10 @@ export default function ProductCard({ producto, eager = false, indice = 0, resal
         <TechnicalTable especificaciones={specsActual} titulo="Especificaciones" className="mt-6" />
 
         <div className="mt-auto pt-6">
-          <p className="text-xs leading-relaxed text-zinc-500">
-            <span className="font-semibold uppercase tracking-[0.14em] text-zinc-600">Origen</span>
-            <span aria-hidden="true" className="mx-2 inline-block size-1 bg-accent align-middle" />
+          {/* Sin rótulo "Origen": el campo trae la línea del portafolio ("Sistemas
+              de Atenuación", "Portafolio Técnico GAVICOM"), no un país de origen. */}
+          <p className="flex items-start gap-2 text-xs leading-relaxed text-zinc-600">
+            <span aria-hidden="true" className="mt-[0.5lh] size-1 shrink-0 -translate-y-1/2 bg-accent" />
             {origen}
           </p>
 

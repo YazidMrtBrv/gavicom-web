@@ -69,7 +69,8 @@ function Opcion({ producto, id, activa, consulta, conCategoria, alElegir, alApun
       onClick={alElegir}
       onPointerMove={alApuntar}
       className={cn(
-        "relative flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors sm:px-5",
+        // scroll-mt: al subir con las flechas, el rótulo fijo del grupo taparía la opción.
+        "relative flex cursor-pointer scroll-mt-10 items-center gap-3 px-4 py-3 transition-colors sm:px-5",
         activa ? "bg-surface" : "bg-white"
       )}
     >
@@ -138,12 +139,17 @@ export default function BuscadorRapido() {
 
   useEffect(() => {
     const alPulsar = (evento: globalThis.KeyboardEvent) => {
-      if (evento.key.toLowerCase() !== "k" || !(evento.ctrlKey || evento.metaKey) || evento.altKey || evento.shiftKey) {
-        return;
-      }
+      // El autocompletado de Chrome dispara keydown sin `key`.
+      const tecla = typeof evento.key === "string" ? evento.key.toLowerCase() : "";
+      if (tecla !== "k" || !(evento.ctrlKey || evento.metaKey) || evento.altKey || evento.shiftKey) return;
+      const dialogo = dialogoRef.current;
+      // Con el visor de una imagen abierto, el buscador se abriría encima y al
+      // elegir dejaría el visor tapando la tarjeta.
+      const otroModal = [...document.querySelectorAll("dialog[open]")].some((abierto) => abierto !== dialogo);
+      if (otroModal) return;
       // Sin esto, Ctrl+K lleva el foco a la barra de búsqueda del navegador.
       evento.preventDefault();
-      if (dialogoRef.current?.open) dialogoRef.current.close();
+      if (dialogo?.open) dialogo.close();
       else abrirBuscador();
     };
     window.addEventListener("keydown", alPulsar);
@@ -273,7 +279,7 @@ export default function BuscadorRapido() {
               setActivo(0);
               entradaRef.current?.focus();
             }}
-            className="shrink-0 rounded-[3px] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-600 hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="-mr-2 inline-flex min-h-11 shrink-0 items-center rounded-[3px] px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-600 hover:text-brand focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
           >
             Borrar
           </button>

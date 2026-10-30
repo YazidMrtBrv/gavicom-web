@@ -206,7 +206,7 @@ export function segmentosResaltados(texto: string, consulta: string): Segmento[]
   for (let i = 0; i < texto.length; i++) {
     const letra = texto[i]
       .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "")
+      .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
     for (const caracter of letra) {
       normal += caracter;

@@ -21,7 +21,10 @@ const MENSAJE_COTIZACION_RAPIDA =
 export default function CatalogoPage() {
   return (
     <ProveedorCatalogo>
-      <section aria-labelledby="titulo-catalogo" className="relative isolate border-b border-zinc-200 bg-white">
+      {/* overflow-x-clip (no hidden: no rompe la animación del titular): la etiqueta
+          S.01 no parte línea y a 360 px le sobran solo 2 px; más estrecho, se
+          recorta en vez de desplazar la página en horizontal. */}
+      <section aria-labelledby="titulo-catalogo" className="relative isolate overflow-x-clip border-b border-zinc-200 bg-white">
         <div aria-hidden="true" className={cn(estilos.cuadricula, "pointer-events-none absolute inset-0 -z-10")} />
         <div className="mx-auto max-w-7xl px-4 pt-36 pb-14 sm:px-8 lg:px-12 lg:pt-44 lg:pb-20">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,23rem)] lg:items-end lg:gap-16 xl:grid-cols-[minmax(0,1fr)_minmax(0,25rem)]">
@@ -32,7 +35,7 @@ export default function CatalogoPage() {
                 etiqueta="S.01 — RAILWAY SOLUTIONS & SUPPLY"
                 titulo="Componentes y suministros ferroviarios"
                 acentos={["ferroviarios"]}
-                entradilla="Catálogo técnico de fijaciones, sistemas elásticos, herramientas de vía, señalización y servicios técnicos bajo estándares AREMA/UIC. Cada referencia trae su ficha de especificaciones: agréguela a su cotización o consúltela por WhatsApp."
+                entradilla="Catálogo técnico de fijaciones, sistemas elásticos, herramientas de vía, señalización y servicios técnicos bajo estándares AREMA/UIC. Cada referencia muestra sus especificaciones: agréguela a su cotización o consúltela por WhatsApp."
               />
               <div className="mt-10 flex max-w-2xl flex-col gap-3 sm:flex-row sm:items-center">
                 <BotonBuscador className="sm:min-w-0 sm:flex-1" />

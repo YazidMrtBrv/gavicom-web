@@ -93,7 +93,12 @@ export default function ProveedorCatalogo({ children }: { children: ReactNode })
   // y la resalta. Va en un cuadro aparte porque el cambio de página sube el
   // scroll a cero después de montar.
   const irAlHash = useEffectEvent(() => {
-    const sku = decodeURIComponent(window.location.hash.slice(1));
+    let sku: string;
+    try {
+      sku = decodeURIComponent(window.location.hash.slice(1));
+    } catch {
+      return; // Un hash mal codificado ("#%E0%A4") no es un SKU.
+    }
     if (sku && PRODUCTOS_Y_SERVICIOS.some((producto) => producto.sku === sku)) irAReferencia(sku);
   });
 

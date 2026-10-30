@@ -46,14 +46,15 @@ function CampoFiltro({ className }: { className?: string }) {
           placeholder="Palabra, medida o especificación"
           autoComplete="off"
           enterKeyHint="search"
-          className="h-11 min-w-0 flex-1 bg-transparent px-3 text-sm text-ink placeholder:text-zinc-500 focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+          // 16 px en móvil: con menos, Safari de iOS amplía la página al enfocar el campo.
+          className="h-11 min-w-0 flex-1 bg-transparent px-3 text-base text-ink placeholder:text-zinc-500 focus:outline-none lg:text-sm [&::-webkit-search-cancel-button]:hidden"
         />
         {busqueda && (
           <button
             type="button"
             onClick={() => cambiarBusqueda("")}
             aria-label="Borrar el filtro"
-            className="mr-1 flex size-9 shrink-0 items-center justify-center rounded-[3px] text-zinc-600 hover:bg-surface hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent"
+            className="flex size-11 shrink-0 items-center justify-center rounded-[3px] text-zinc-600 hover:bg-surface hover:text-brand focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
           >
             <X aria-hidden="true" className="size-4" />
           </button>
@@ -123,7 +124,8 @@ function ChipsCategorias({ conteo, totalConFiltro }: { conteo: Map<string, numbe
     <div
       role="group"
       aria-label="Categorías del catálogo"
-      className="flex min-w-0 flex-1 snap-x gap-2 overflow-x-auto pr-4 [mask-image:linear-gradient(to_right,#000_86%,transparent)] [scrollbar-width:none] sm:pr-8 [&::-webkit-scrollbar]:hidden"
+      // El relleno deja sitio al contorno de foco de los chips: la franja desplazable lo recortaría.
+      className="flex min-w-0 flex-1 snap-x scroll-px-1 gap-2 overflow-x-auto py-1 pr-4 pl-1 [mask-image:linear-gradient(to_right,#000_86%,transparent)] [scrollbar-width:none] sm:pr-8 [&::-webkit-scrollbar]:hidden"
     >
       {OPCIONES.map((opcion) => {
         const activa = categoria === opcion;
@@ -188,6 +190,12 @@ function EstadoVacio() {
           Ver todo el catálogo
         </button>
       </div>
+      <p className="mt-6 text-sm text-zinc-600">
+        ¿Son varias referencias?{" "}
+        <Boton href="/cotizar" variante="enlace" icono="flecha" className="align-middle">
+          Pídalas en el cotizador
+        </Boton>
+      </p>
     </TechFrame>
   );
 }
@@ -213,7 +221,9 @@ export default function ExploradorCatalogo() {
       <div className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-8 lg:px-12 lg:pt-14 lg:pb-32">
         <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[16.5rem_minmax(0,1fr)] xl:gap-14">
           <aside aria-label="Filtros del catálogo" className="hidden lg:block">
-            <div className="sticky top-32 flex max-h-[calc(100svh-9rem)] flex-col gap-7 overflow-y-auto pb-6 [scrollbar-width:thin]">
+            {/* -mx-2 px-2: la columna desplazable recorta lo que sobresale, y los
+                contornos de foco sobresalen unos píxeles. */}
+            <div className="sticky top-32 -mx-2 flex max-h-[calc(100svh-9rem)] flex-col gap-7 overflow-y-auto px-2 pt-1 pb-6 [scrollbar-width:thin]">
               <div>
                 <CampoFiltro />
                 <button
@@ -239,8 +249,9 @@ export default function ExploradorCatalogo() {
             <CampoFiltro className="lg:hidden" />
 
             {/* En móvil el índice va en una barra fija bajo el menú: el listado es largo. */}
-            <div className="sticky top-[7.25rem] z-30 -mx-4 mt-5 border-y border-zinc-200 bg-white/90 backdrop-blur-md sm:-mx-8 lg:hidden">
-              <div className="flex items-center gap-2 py-2 pl-4 sm:pl-8">
+            {/* z-40: el anillo de resalte de las tarjetas (z-30) no debe pintarse encima. */}
+            <div className="sticky top-[7.25rem] z-40 -mx-4 mt-5 border-y border-zinc-200 bg-white/90 backdrop-blur-md sm:-mx-8 lg:hidden">
+              <div className="flex items-center gap-1 py-1 pl-4 sm:pl-8">
                 <BotonBuscador variante="icono" />
                 <ChipsCategorias conteo={conteo} totalConFiltro={totalConFiltro} />
               </div>
