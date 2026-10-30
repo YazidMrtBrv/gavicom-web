@@ -100,16 +100,24 @@
 @media (prefers-reduced-motion: no-preference) {
   @supports ((animation-timeline: view()) and (animation-range: entry)) {
     /* Con pathLength={1} en el trazado: un guion del largo total que se corre. */
+    /* En longhands: el minificador quita el "auto" del shorthand y la
+       duración quedaría al valor inicial de cada navegador. */
     .trazo {
       stroke-dasharray: 1;
-      animation: trazar auto linear both;
+      animation-name: trazar;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: --servicios-dibujo;
       animation-range: entry 10% cover 45%;
     }
     .trazoTarde { animation-range: entry 40% cover 55%; }
 
     .aparece {
-      animation: aparecer auto linear both;
+      animation-name: aparecer;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: --servicios-dibujo;
       animation-range: cover 30% cover 50%;
     }

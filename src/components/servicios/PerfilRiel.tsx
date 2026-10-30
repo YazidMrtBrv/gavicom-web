@@ -32,7 +32,7 @@ const LIMBO = Array.from({ length: 36 }, (_, i) => {
 }).join(" ");
 
 // Guías hacia los rótulos (coordenadas del lienzo de 240).
-const GUIAS = "M147,72 L170,58 H186 M126,129 H186 M160,168 L172,180 H186";
+const GUIAS = ["M147,72 L170,58 H186", "M126,129 H186", "M160,168 L172,180 H186"];
 
 /** Rótulos en HTML sobre el dibujo: posición en % del lienzo cuadrado. */
 const ROTULOS: { texto: string; y: number }[] = [
@@ -101,14 +101,17 @@ export default function PerfilRiel({ className }: { className?: string }) {
           />
         </g>
 
-        <path
-          d={GUIAS}
-          pathLength={1}
-          stroke="currentColor"
-          strokeOpacity={0.55}
-          strokeWidth={0.8}
-          className={cn(estilos.trazo, estilos.trazoTarde)}
-        />
+        {GUIAS.map((guia) => (
+          <path
+            key={guia}
+            d={guia}
+            pathLength={1}
+            stroke="currentColor"
+            strokeOpacity={0.55}
+            strokeWidth={0.8}
+            className={cn(estilos.trazo, estilos.trazoTarde)}
+          />
+        ))}
         <g className={estilos.aparece} fill="currentColor">
           <circle cx={147} cy={72} r={1.6} />
           <circle cx={126} cy={129} r={1.6} />
