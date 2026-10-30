@@ -59,10 +59,10 @@ export default function CatalogoPage() {
           className="absolute inset-0 opacity-[0.02] pointer-events-none" 
           style={{ backgroundImage: 'linear-gradient(var(--brand) 1px, transparent 1px), linear-gradient(90deg, var(--brand) 1px, transparent 1px)', backgroundSize: '32px 32px' }} 
         />
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16 lg:py-20 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-32 pb-16 lg:pt-36 lg:pb-20 relative z-10">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
             <div>
-              <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-brand uppercase border border-accent/30 px-3 py-1.5 inline-block mb-6">
+              <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-brand uppercase border border-accent/60 px-3 py-1.5 inline-block mb-6">
                 Catálogo Técnico
               </span>
               <h1 
@@ -90,7 +90,7 @@ export default function CatalogoPage() {
       <div className="bg-white border-b border-zinc-200 sticky top-0 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-4">
           <div className="flex items-center relative bg-surface border border-zinc-200 focus-within:border-accent focus-within:ring-1 focus-within:ring-accent transition-all">
-            <div className="pl-4 pr-2 flex items-center justify-center text-brand font-mono text-[10px] sm:text-xs font-bold pointer-events-none">
+            <div className="pl-4 pr-2 flex items-center justify-center text-brand font-mono text-[10px] sm:text-xs font-bold pointer-events-none whitespace-nowrap shrink-0">
               <span className="hidden sm:inline">&gt; BUSCAR_REF:</span>
               <span className="sm:hidden">&gt; ref:</span>
             </div>

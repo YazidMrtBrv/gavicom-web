@@ -15,13 +15,15 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="space-y-4">
-            <Image
-              src="/logo-gavicom.png"
-              alt="GAVICOM SAS"
-              width={40}
-              height={40}
-              className="opacity-60"
-            />
+            <div className="inline-flex bg-brand p-1.5 rounded-lg">
+              <Image
+                src="/logo-gavicom.png"
+                alt="GAVICOM SAS"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+            </div>
             <p className="text-[10px] text-zinc-600 leading-relaxed">
               {COMPANIA_INFO.disclaimerLegal}
             </p>
@@ -76,12 +78,12 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <span className="text-xs text-zinc-600 block">
+                <span className="text-xs text-ink block">
                   <span className="text-zinc-600">Gerente:</span> {COMPANIA_INFO.gerente}
                 </span>
               </li>
               <li>
-                <span className="text-xs text-zinc-600 block">
+                <span className="text-xs text-ink block">
                   <span className="text-zinc-600">Directora:</span> {COMPANIA_INFO.directora}
                 </span>
               </li>

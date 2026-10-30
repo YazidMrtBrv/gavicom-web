@@ -217,7 +217,7 @@ function DesktopView() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
-                className="text-[10px] font-mono font-bold tracking-[0.3em] text-brand uppercase border border-accent/30 px-3 py-1.5 inline-block"
+                className="text-[10px] font-mono font-bold tracking-[0.3em] text-brand uppercase border border-accent/60 px-3 py-1.5 inline-block"
               >
                 Suministros · Fabricación · Obras Civiles
               </motion.span>
@@ -400,24 +400,24 @@ function DesktopView() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.12, ease: [0.65, 0, 0.35, 1] }}
-                className="neon-chase bg-white p-8 hover:bg-[#f0f2f5] transition-colors group"
+                className="neon-chase bg-white p-8 hover:bg-zinc-50 transition-colors group flex flex-col"
               >
                 <span className="text-[10px] font-bold text-brand tracking-widest uppercase">
                   {`0${i + 1}`}
                 </span>
                 <h3 className="text-lg font-bold text-brand mt-3 mb-4">{svc.title}</h3>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mb-6">
                   {svc.items.map((item) => (
                     <li key={item} className="flex items-start gap-2 text-xs text-zinc-600">
-                      <span className="text-brand mt-0.5 shrink-0">▸</span>
+                      <span aria-hidden="true" className="text-accent mt-0.5 shrink-0">▸</span>
                       {item}
                     </li>
                   ))}
                 </ul>
-                <div className="mt-6 pt-4 border-t border-zinc-100">
+                <div className="mt-auto pt-4 border-t border-zinc-100">
                   <Link
                     href="/servicios"
-                    className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-brand hover:text-brand transition-colors uppercase tracking-wider"
+                    className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-brand hover:text-brand-deep hover:underline decoration-accent decoration-2 underline-offset-4 transition-colors uppercase tracking-wider"
                   >
                     Ver servicios
                     <span className="text-xs">→</span>
@@ -436,7 +436,7 @@ function DesktopView() {
           >
             <Link
               href="/catalogo"
-              className="inline-flex items-center gap-2 text-xs font-bold text-brand hover:text-brand transition-colors uppercase tracking-wider border border-accent/30 hover:border-accent/60 px-8 py-3.5"
+              className="inline-flex items-center gap-2 text-xs font-bold text-brand hover:text-brand-deep transition-colors uppercase tracking-wider border border-accent/60 hover:border-accent px-8 py-3.5"
             >
               Ver catálogo completo de productos
               <span className="text-sm">→</span>
@@ -487,7 +487,7 @@ function DesktopView() {
                   <motion.span
                     animate={{ x: 0 }}
                     whileHover={{ x: 4 }}
-                    className="text-zinc-300 group-hover:text-brand text-xs transition-colors"
+                    className="text-zinc-400 group-hover:text-accent text-xs transition-colors"
                   >
                     →
                   </motion.span>
@@ -548,7 +548,7 @@ function MobileView() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-brand uppercase border border-accent/30 px-3 py-1.5 inline-block mb-5">
+            <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-brand uppercase border border-accent/60 px-3 py-1.5 inline-block mb-5">
               Suministros · Obras
             </span>
             <h1 className="text-[3.5rem] font-bold leading-[0.85] text-brand tracking-tighter drop-shadow-sm">
@@ -613,7 +613,7 @@ function MobileView() {
               <AnimatedCounter to={TOTAL_REFERENCIAS} suffix="" />
             </div>
             <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Referencias en Catálogo</span>
-            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">componentes, herramientas y señalización</span>
+            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider text-balance">componentes, herramientas y señalización</span>
           </motion.div>
 
           <motion.div
@@ -626,7 +626,7 @@ function MobileView() {
               <AnimatedCounter to={TOTAL_LINEAS} suffix="" />
             </div>
             <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Líneas de Suministro</span>
-            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">especificadas según referencias AREMA y UIC</span>
+            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider text-balance">especificadas según referencias AREMA y UIC</span>
           </motion.div>
         </div>
       </section>
@@ -679,7 +679,7 @@ function MobileView() {
               <ul className="space-y-3">
                 {svc.items.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-xs text-zinc-600 leading-snug">
-                    <span className="text-brand shrink-0 font-bold">✓</span>
+                    <span aria-hidden="true" className="text-accent shrink-0 font-bold">✓</span>
                     {item}
                   </li>
                 ))}
@@ -696,7 +696,7 @@ function MobileView() {
         >
           <Link
             href="/catalogo"
-            className="flex items-center justify-center w-full bg-white border border-accent/30 text-brand text-xs font-bold uppercase tracking-wider py-5 rounded-xl shadow-sm active:scale-[0.98] transition-transform"
+            className="flex items-center justify-center w-full bg-white border border-accent/60 text-brand text-xs font-bold uppercase tracking-wider py-5 rounded-xl shadow-sm active:scale-[0.98] transition-transform"
           >
             Ver catálogo completo →
           </Link>

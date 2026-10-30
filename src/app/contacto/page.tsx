@@ -8,7 +8,7 @@ import { Hammer, Truck, HardHat, Phone, Mail, Activity, Terminal, ShieldAlert, Z
 
 type RequestType = "SUMINISTROS" | "SERVICIOS" | "OBRAS";
 
-const REQUEST_TYPES: Record<RequestType, { title: string; icon: any; placeholder: string; color: string; textColor?: string; desc: string }> = {
+const REQUEST_TYPES: Record<RequestType, { title: string; icon: any; placeholder: string; color: string; textColor?: string; onDarkColor?: string; desc: string }> = {
   SUMINISTROS: {
     title: "Suministros",
     icon: Truck,
@@ -21,15 +21,17 @@ const REQUEST_TYPES: Record<RequestType, { title: string; icon: any; placeholder
     title: "Servicios Técnicos",
     icon: Hammer,
     placeholder: "EJ. MANTENIMIENTO, SOLDADURA...",
-    color: "#0ea5e9",
+    color: "#143B64",
     textColor: "var(--brand)",
+    // color equals the submit button's fill; use white for marks drawn on it
+    onDarkColor: "#FFFFFF",
     desc: "Atención técnica especializada."
   },
   OBRAS: {
     title: "Obras Civiles",
     icon: HardHat,
     placeholder: "EJ. TERRACERÍAS, VÍAS, CANALIZACIONES...",
-    color: "#10b981",
+    color: "#F5A623",
     textColor: "var(--brand)",
     desc: "Infraestructura civil pesada."
   }
@@ -104,10 +106,10 @@ export default function ContactoPage() {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen bg-background" ref={containerRef}>
+      <div className="flex flex-col min-h-screen bg-surface" ref={containerRef}>
         
         {/* HERO with parallax */}
-        <section className="relative bg-background overflow-hidden min-h-[50vh] flex items-center border-b border-zinc-200/60">
+        <section className="relative bg-surface overflow-hidden min-h-[50vh] flex items-center border-b border-zinc-200/60">
           <motion.div style={{ y, opacity }} className="absolute inset-0">
             <Image
               src="/images/gemini-hero.webp"
@@ -125,7 +127,7 @@ export default function ContactoPage() {
             />
           </motion.div>
 
-          <div className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 relative z-10 py-20">
+          <div className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 relative z-10 pt-32 pb-20">
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -143,14 +145,14 @@ export default function ContactoPage() {
               className="mt-8 text-5xl sm:text-7xl lg:text-[6rem] font-bold text-brand uppercase tracking-tighter"
               style={{ letterSpacing: "-0.04em" }}
             >
-              Enlace <motion.span key={requestType} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-block transition-colors duration-500" style={{ color: activeMode.textColor ?? activeMode.color }}>Directo</motion.span>
+              Enlace <motion.span key={requestType} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-block transition-colors duration-500 underline decoration-accent decoration-[0.06em] underline-offset-[0.12em]" style={{ color: activeMode.textColor ?? activeMode.color }}>Directo</motion.span>
             </motion.h1>
             
             <motion.p 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-6 text-sm font-mono text-zinc-500 max-w-2xl leading-relaxed border-l-[3px] pl-5 transition-colors duration-500 inline-block"
+              className="mt-6 text-sm font-mono text-zinc-600 max-w-2xl leading-relaxed border-l-[3px] pl-5 transition-colors duration-500 inline-block"
               style={{ borderColor: activeMode.color }}
             >
               Establezca conexión en tiempo real con nuestra central de operaciones. Seleccione el tipo de requerimiento técnico a continuación para enrutar su solicitud.
@@ -235,10 +237,10 @@ export default function ContactoPage() {
                       value={formNombre}
                       onChange={(e) => setFormNombre(e.target.value)}
                       placeholder="NOMBRE / EMPRESA..."
-                      className="w-full bg-transparent border-0 border-b border-zinc-200 text-sm font-mono text-ink placeholder-zinc-300 focus:outline-none py-3 transition-all uppercase focus:border-transparent peer"
+                      className="w-full bg-transparent border-0 border-b border-zinc-200 text-sm font-mono text-ink placeholder-zinc-400 focus:outline-none py-3 transition-all uppercase focus:border-transparent peer"
                     />
                     {/* Animated Track Line */}
-                    <div className="absolute bottom-0 left-0 w-0 h-[1px] peer-focus:w-full transition-all duration-500 ease-out" style={{ backgroundColor: activeMode.color }}>
+                    <div className="absolute bottom-0 left-0 w-0 h-[1px] opacity-0 peer-focus:w-full peer-focus:opacity-100 transition-all duration-500 ease-out" style={{ backgroundColor: activeMode.color }}>
                        <motion.div 
                          initial={{ opacity: 0, x: 0 }}
                          whileInView={{ opacity: 1, x: "100%" }}
@@ -259,9 +261,9 @@ export default function ContactoPage() {
                         value={formTelefono}
                         onChange={(e) => setFormTelefono(e.target.value)}
                         placeholder="+57 XXXXXXXXXX"
-                        className="w-full bg-transparent border-0 border-b border-zinc-200 text-sm font-mono text-ink placeholder-zinc-300 focus:outline-none py-3 transition-all uppercase peer focus:border-transparent"
+                        className="w-full bg-transparent border-0 border-b border-zinc-200 text-sm font-mono text-ink placeholder-zinc-400 focus:outline-none py-3 transition-all uppercase peer focus:border-transparent"
                       />
-                      <div className="absolute bottom-0 left-0 w-0 h-[1px] peer-focus:w-full transition-all duration-500 ease-out" style={{ backgroundColor: activeMode.color }} />
+                      <div className="absolute bottom-0 left-0 w-0 h-[1px] opacity-0 peer-focus:w-full peer-focus:opacity-100 transition-all duration-500 ease-out" style={{ backgroundColor: activeMode.color }} />
                     </div>
                     
                     <div className="group relative">
@@ -273,9 +275,9 @@ export default function ContactoPage() {
                         value={formEmail}
                         onChange={(e) => setFormEmail(e.target.value)}
                         placeholder="MAIL@DOMINIO.COM"
-                        className="w-full bg-transparent border-0 border-b border-zinc-200 text-sm font-mono text-ink placeholder-zinc-300 focus:outline-none py-3 transition-all uppercase peer focus:border-transparent"
+                        className="w-full bg-transparent border-0 border-b border-zinc-200 text-sm font-mono text-ink placeholder-zinc-400 focus:outline-none py-3 transition-all uppercase peer focus:border-transparent"
                       />
-                      <div className="absolute bottom-0 left-0 w-0 h-[1px] peer-focus:w-full transition-all duration-500 ease-out" style={{ backgroundColor: activeMode.color }} />
+                      <div className="absolute bottom-0 left-0 w-0 h-[1px] opacity-0 peer-focus:w-full peer-focus:opacity-100 transition-all duration-500 ease-out" style={{ backgroundColor: activeMode.color }} />
                     </div>
                   </div>
 
@@ -291,7 +293,7 @@ export default function ContactoPage() {
                       placeholder={activeMode.placeholder}
                       className="w-full bg-white/50 border border-zinc-200 text-sm font-mono text-ink placeholder-zinc-400 focus:outline-none p-5 transition-all resize-none uppercase peer rounded-sm hover:border-zinc-300 focus:bg-white"
                     />
-                    <div className="absolute bottom-0 left-0 w-0 h-[2px] peer-focus:w-full transition-all duration-500 ease-out" style={{ backgroundColor: activeMode.color }} />
+                    <div className="absolute bottom-0 left-0 w-0 h-[2px] opacity-0 peer-focus:w-full peer-focus:opacity-100 transition-all duration-500 ease-out" style={{ backgroundColor: activeMode.color }} />
                   </div>
                   
                   {/* BOTÓN DE LANZAMIENTO */}
@@ -299,7 +301,7 @@ export default function ContactoPage() {
                     <button
                       type="submit"
                       disabled={isTransmitting}
-                      className="relative w-full overflow-hidden text-center text-white text-xs font-bold uppercase tracking-[0.2em] px-10 py-5 transition-all active:scale-[0.98] group disabled:opacity-90 disabled:scale-100 rounded-sm shadow-xl shadow-black/10 hover:shadow-black/20"
+                      className="relative w-full overflow-hidden text-center text-white text-xs font-bold uppercase tracking-[0.12em] sm:tracking-[0.2em] px-5 sm:px-10 py-5 transition-all active:scale-[0.98] group disabled:opacity-90 disabled:scale-100 rounded-sm shadow-xl shadow-black/10 hover:shadow-black/20"
                       style={{ backgroundColor: "var(--brand)" }}
                     >
                       <AnimatePresence mode="wait">
@@ -311,7 +313,7 @@ export default function ContactoPage() {
                             exit={{ opacity: 0, y: -10 }}
                             className="relative z-10 flex items-center justify-center gap-3"
                           >
-                            <Zap className="w-4 h-4 transition-colors group-hover:text-white" style={{ color: activeMode.color }} />
+                            <Zap className="w-4 h-4 transition-colors group-hover:text-white" style={{ color: activeMode.onDarkColor ?? activeMode.color }} />
                             Iniciar Transmisión de Datos
                             <span className="group-hover:translate-x-1 transition-transform">→</span>
                           </motion.div>
@@ -331,7 +333,7 @@ export default function ContactoPage() {
                       {/* Loading Progress Bar */}
                       <motion.div 
                         className="absolute top-0 left-0 h-full opacity-20"
-                        style={{ backgroundColor: activeMode.color, width: `${transmissionProgress}%` }}
+                        style={{ backgroundColor: activeMode.onDarkColor ?? activeMode.color, width: `${transmissionProgress}%` }}
                         transition={{ ease: "linear" }}
                       />
                       
@@ -355,7 +357,7 @@ export default function ContactoPage() {
               className="lg:col-span-4 space-y-4"
             >
               <div className="mb-8 px-2">
-                <h2 className="text-sm font-bold text-zinc-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                <h2 className="text-sm font-bold text-zinc-600 uppercase tracking-[0.2em] flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4" />
                   Directorio Activo
                 </h2>
@@ -369,25 +371,25 @@ export default function ContactoPage() {
                 ].map((item, i) => (
                   <div key={i} className="bg-transparent hover:bg-white/60 p-5 rounded-md flex flex-col transition-all group relative border border-transparent hover:border-zinc-200/50 hover:shadow-lg hover:shadow-black/5">
                     <div className="flex justify-between items-start mb-3">
-                      <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.2em] flex items-center gap-2 group-hover:text-zinc-600 transition-colors">
+                      <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em] flex items-center gap-2 group-hover:text-zinc-700 transition-colors">
                         <item.icon className="w-3 h-3" />
                         {item.label}
                       </span>
                       {/* Status indicator */}
-                      <span className="flex items-center gap-1.5 text-[8px] font-mono font-bold tracking-widest text-zinc-500">
+                      <span className="flex items-center gap-1.5 text-[8px] font-mono font-bold tracking-widest text-zinc-600">
                         <span className={`w-1.5 h-1.5 rounded-full ${item.status === 'ONLINE' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500'}`} />
                         {item.status}
                       </span>
                     </div>
 
                     {item.isLink ? (
-                      <a href={item.href} className="text-sm font-mono font-bold text-brand break-all group-hover:text-brand transition-colors relative z-10">
+                      <a href={item.href} className="text-sm font-mono font-bold text-brand break-all group-hover:underline decoration-accent decoration-2 underline-offset-4 transition-colors relative z-10">
                         {item.value}
                       </a>
                     ) : (
                       <div className="relative z-10">
                         <p className="text-base font-bold text-brand uppercase tracking-tight">{item.value}</p>
-                        {item.sub && <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mt-0.5">{item.sub}</p>}
+                        {item.sub && <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest mt-0.5">{item.sub}</p>}
                       </div>
                     )}
                   </div>
@@ -395,7 +397,7 @@ export default function ContactoPage() {
               </div>
 
               {/* Botón de Emergencia Férrea - Minimal & Sleek */}
-              <div className="mt-8 bg-zinc-900 rounded-md p-6 relative overflow-hidden group hover:shadow-2xl hover:shadow-accent/20 transition-all border border-zinc-800 hover:border-accent/50">
+              <div className="mt-8 bg-brand-deep rounded-md p-6 relative overflow-hidden group hover:shadow-2xl hover:shadow-accent/20 transition-all border border-brand hover:border-accent/50">
                 <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 <div className="flex items-center gap-3 mb-5 relative z-10">

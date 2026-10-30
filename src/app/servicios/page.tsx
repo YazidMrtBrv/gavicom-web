@@ -148,7 +148,7 @@ function BrutalistServiceCard({ servicio, index }: { servicio: (typeof SERVICIOS
 
         {/* Content */}
         <div className="p-6 flex flex-col flex-grow">
-          <h3 className="text-xl font-bold text-brand uppercase tracking-tight leading-none mb-4 group-hover:text-brand transition-colors">
+          <h3 className="text-xl font-bold text-brand uppercase tracking-tight leading-tight mb-4 group-hover:text-brand-deep transition-colors">
             {servicio.nombre}
           </h3>
           <p className="text-xs font-mono text-zinc-500 leading-relaxed mb-6 flex-grow">
@@ -159,8 +159,8 @@ function BrutalistServiceCard({ servicio, index }: { servicio: (typeof SERVICIOS
           <div className="grid grid-cols-2 gap-px bg-zinc-200 border border-zinc-200 mb-6">
             {Object.entries(servicio.especificaciones).slice(0, 4).map(([k, v]) => (
               <div key={k} className="bg-surface p-3 hover:bg-white transition-colors">
-                <span className="block text-[8px] font-bold uppercase tracking-[0.2em] text-brand mb-1.5">{k}</span>
-                <span className="block text-[10px] font-mono text-ink leading-tight">{v as string}</span>
+                <span className="block text-[8px] font-bold uppercase tracking-widest text-brand mb-1.5">{k}</span>
+                <span className="block text-[10px] font-mono text-zinc-700 leading-tight">{v as string}</span>
               </div>
             ))}
           </div>
@@ -242,7 +242,7 @@ export default function ServiciosPage() {
             />
           </motion.div>
 
-          <div className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 relative z-10 py-20">
+          <div className="max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 relative z-10 pt-32 pb-20">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               
               <div className="max-w-2xl">
@@ -367,7 +367,7 @@ export default function ServiciosPage() {
                 href={enlaceWhatsAppGlobal}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center text-white text-xs font-bold uppercase tracking-[0.2em] border border-accent px-10 py-4 hover:bg-accent hover:text-brand-deep transition-all active:scale-[0.97] group"
+                className="inline-flex items-center justify-center text-white text-xs font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] border border-accent px-6 sm:px-10 py-4 hover:bg-accent hover:text-brand-deep transition-all active:scale-[0.97] group"
               >
                 Hablar con un Ingeniero
                 <span className="ml-3 text-accent group-hover:text-brand-deep group-hover:translate-x-1 transition-all">→</span>

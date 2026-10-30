@@ -40,7 +40,7 @@ function VariantStrip({
   return (
     <div
       ref={stripRef}
-      className="flex gap-1.5 px-4 py-3 bg-surface border-b border-zinc-200 overflow-x-auto"
+      className="relative flex gap-1.5 px-4 py-3 bg-surface border-b border-zinc-200 overflow-x-auto"
     >
       {variantes.map((v, i) => (
         <button
@@ -184,10 +184,11 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
       <div className="p-5 flex flex-col flex-grow">
         <div className="mb-2 flex flex-wrap items-center gap-1.5">
           <span className="text-[10px] font-bold uppercase tracking-wider text-brand">
+            <span aria-hidden="true" className="w-1.5 h-1.5 bg-accent inline-block mr-1.5 align-middle" />
             {categoria}
           </span>
-          <span className="text-zinc-300 text-xs">•</span>
-          <span className="text-[9px] font-mono tracking-widest text-zinc-500 border border-zinc-200 px-2 py-0.5">
+          <span aria-hidden="true" className="hidden sm:inline text-zinc-300 text-xs">•</span>
+          <span className="text-[9px] font-mono tracking-wider text-zinc-500 border border-zinc-200 px-2 py-0.5">
             {subcategoria}
           </span>
           {todasLasVariantes.length > 1 && (
@@ -197,11 +198,11 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
           )}
         </div>
 
-        <h3 className="text-base font-bold text-brand group-hover:text-brand transition-colors duration-300 mb-2 leading-snug">
+        <h3 className="text-base font-bold text-brand group-hover:text-brand-deep transition-colors duration-300 mb-2 leading-snug">
           {nombre}
         </h3>
 
-        <p className="text-xs text-zinc-500 leading-relaxed mb-4 flex-grow">
+        <p className="text-xs text-zinc-600 leading-relaxed mb-4 flex-grow">
           {descripcion}
         </p>
 
@@ -211,7 +212,7 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
 
         <div className="mt-auto pt-4 border-t border-zinc-200 flex items-center justify-between gap-4">
           <span
-            className="text-[9px] font-mono text-zinc-500 tracking-widest uppercase block max-w-[140px] truncate"
+            className="text-[9px] font-mono text-zinc-500 tracking-widest uppercase block min-w-0 flex-1 truncate"
             title={origen}
           >
             {origen}
@@ -221,7 +222,7 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
             href={enlaceCotizacion}
             target="_blank"
             rel="noopener noreferrer"
-            className="spotlight inline-flex items-center justify-center text-brand text-[10px] font-bold uppercase tracking-[0.2em] border border-accent px-4 py-2 hover:bg-accent hover:text-brand-deep transition-all active:scale-[0.97]"
+            className="spotlight shrink-0 inline-flex items-center justify-center text-brand text-[10px] font-bold uppercase tracking-[0.2em] border border-accent px-4 py-2 hover:bg-accent hover:text-brand-deep transition-all active:scale-[0.97]"
           >
             Cotizar →
           </a>
