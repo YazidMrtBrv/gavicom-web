@@ -3,9 +3,12 @@ import { NextResponse } from "next/server";
 const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 const DESTINATARIO = "gerencia@gavicom.com";
 const MAX_LEN = 2000;
+// A quote from /cotizar lists every reference on its own line, so the message
+// needs far more room than a name or a phone number.
+const MAX_LEN_MENSAJE = 12000;
 
-function limpiar(valor: unknown): string {
-  return typeof valor === "string" ? valor.trim().slice(0, MAX_LEN) : "";
+function limpiar(valor: unknown, max = MAX_LEN): string {
+  return typeof valor === "string" ? valor.trim().slice(0, max) : "";
 }
 
 function escaparHtml(texto: string): string {
@@ -31,7 +34,7 @@ export async function POST(request: Request) {
   const nombre = limpiar(datos.nombre);
   const telefono = limpiar(datos.telefono);
   const email = limpiar(datos.email);
-  const mensaje = limpiar(datos.mensaje);
+  const mensaje = limpiar(datos.mensaje, MAX_LEN_MENSAJE);
   const tipo = limpiar(datos.tipo);
 
   if (!nombre && !telefono && !email && !mensaje) {
@@ -55,7 +58,7 @@ export async function POST(request: Request) {
     .filter(([, valor]) => valor)
     .map(
       ([etiqueta, valor]) =>
-        `<tr><td style="padding:6px 12px;font-weight:bold">${etiqueta}</td><td style="padding:6px 12px">${escaparHtml(valor)}</td></tr>`
+        `<tr><td style="padding:6px 12px;font-weight:bold">${etiqueta}</td><td style="padding:6px 12px;white-space:pre-wrap">${escaparHtml(valor)}</td></tr>`
     )
     .join("");
 
@@ -70,7 +73,7 @@ export async function POST(request: Request) {
         sender: { name: "Web GAVICOM", email: remitente },
         to: [{ email: DESTINATARIO }],
         replyTo: email ? { email } : undefined,
-        subject: `Nueva solicitud desde la web${nombre ? ` — ${nombre}` : ""}`,
+        subject: `${tipo === "Cotización" ? "Nueva cotización" : "Nueva solicitud"} desde la web${nombre ? ` — ${nombre}` : ""}`,
         htmlContent: `<h2>Solicitud recibida desde gavicomferroviario.com</h2><table>${filas}</table>`,
       }),
     });
