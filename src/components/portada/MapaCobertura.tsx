@@ -97,10 +97,10 @@ export default function MapaCobertura({ encabezado }: { encabezado: ReactNode })
                   {nivel.rotulo}
                 </span>
               ))}
-              <span className="flex items-center gap-1.5">
-                <span className="size-3 border border-zinc-300 bg-white" />
-                Fuera de las zonas
-              </span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="size-3 border border-zinc-300 bg-white" />
+              Fuera de las zonas
             </span>
             <span className="flex items-center gap-1.5">
               <svg aria-hidden="true" viewBox="0 0 28 10" className="h-2.5 w-7" fill="none">

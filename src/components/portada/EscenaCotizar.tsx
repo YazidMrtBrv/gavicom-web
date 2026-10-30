@@ -84,7 +84,7 @@ export default function EscenaCotizar({ encabezado, accion, pasos }: EscenaCotiz
 
       // ScrollTrigger mide al crearse; si algo de más arriba cambia de alto
       // (fuentes que llegan tarde, contenido que se despliega), se vuelve a medir
-      // para que el anclaje no arranque corrido.
+      // para que el anclaje no arranque corrido; si la escena ya no cabe, se suelta.
       let espera = 0;
       const soltar = () => {
         observador.disconnect();
