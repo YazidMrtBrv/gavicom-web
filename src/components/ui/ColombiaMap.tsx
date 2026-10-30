@@ -390,11 +390,11 @@ export default function ColombiaMap() {
               className="bg-white/95 border border-[#7CB342]/20 px-4 py-3 min-w-[200px] shadow-lg"
               style={{ backdropFilter: "blur(12px)" }}
             >
-              <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#D35400]/10">
+              <div className="flex items-center justify-between mb-2 pb-2 border-b border-brand/10">
                 <span className="text-[10px] font-semibold text-[#7CB342] tracking-[0.25em] uppercase">
                   Región {activeData.label}
                 </span>
-                <span className="text-[10px] text-zinc-400 tracking-wider">
+                <span className="text-[10px] text-zinc-500 tracking-wider">
                   Cobertura
                 </span>
               </div>
@@ -408,7 +408,7 @@ export default function ColombiaMap() {
                 ))}
               </div>
 
-              <p className="text-[9px] text-zinc-400 mt-2 pt-2 border-t border-zinc-100 leading-relaxed">
+              <p className="text-[9px] text-zinc-500 mt-2 pt-2 border-t border-zinc-100 leading-relaxed">
                 {activeData.descripcion}
               </p>
             </div>

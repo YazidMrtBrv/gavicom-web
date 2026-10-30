@@ -53,7 +53,7 @@ export default function ColombiaProud() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.3 }}
-          className="text-5xl sm:text-6xl font-black text-[#1a1a2e] block"
+          className="text-5xl sm:text-6xl font-bold text-brand block"
           style={{ letterSpacing: "-0.05em" }}
         >
           100%
@@ -79,7 +79,7 @@ export default function ColombiaProud() {
                 ease: [0.34, 1.56, 0.64, 1],
               }}
               whileHover={{ scale: 1.3, rotate: [-5, 5, 0] }}
-              className="text-sm sm:text-base font-black tracking-wide inline-block cursor-default"
+              className="text-sm sm:text-base font-bold tracking-wide inline-block cursor-default"
               style={{ color: letterColors[i % letterColors.length] }}
             >
               {letter}
@@ -92,7 +92,7 @@ export default function ColombiaProud() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 1.2 }}
-          className="text-[10px] text-zinc-400 mt-2"
+          className="text-[10px] text-zinc-500 mt-2"
         >
           Empresa 100% colombiana
         </motion.p>

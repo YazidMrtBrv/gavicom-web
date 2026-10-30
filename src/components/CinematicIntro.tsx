@@ -22,9 +22,9 @@ function TrainSVG() {
       xmlns="http://www.w3.org/2000/svg"
     >
       {/* Speed motion lines */}
-      <line x1="-65" y1="13" x2="-6" y2="13" stroke="#D35400" strokeWidth="0.8" opacity="0.45" />
-      <line x1="-50" y1="22" x2="-6" y2="22" stroke="#D35400" strokeWidth="0.6" opacity="0.30" />
-      <line x1="-35" y1="31" x2="-6" y2="31" stroke="#D35400" strokeWidth="0.4" opacity="0.18" />
+      <line x1="-65" y1="13" x2="-6" y2="13" stroke="#E8920C" strokeWidth="0.8" opacity="0.45" />
+      <line x1="-50" y1="22" x2="-6" y2="22" stroke="#E8920C" strokeWidth="0.6" opacity="0.30" />
+      <line x1="-35" y1="31" x2="-6" y2="31" stroke="#E8920C" strokeWidth="0.4" opacity="0.18" />
 
       {/* Smokestack exhaust particles (trailing hot diesel steam) */}
       {[0, 1, 2].map((i) => (
@@ -33,7 +33,7 @@ function TrainSVG() {
           cx="34"
           cy="2"
           r="2.5"
-          fill="#D35400"
+          fill="#E8920C"
           initial={{ opacity: 0, scale: 0.3, x: 0, y: 0 }}
           animate={{ 
             opacity: [0, 0.8, 0], 
@@ -47,26 +47,26 @@ function TrainSVG() {
             delay: i * 0.23,
             ease: "easeOut"
           }}
-          style={{ filter: "drop-shadow(0 0 5px #CC4C00)" }}
+          style={{ filter: "drop-shadow(0 0 5px var(--accent))" }}
         />
       ))}
 
       {/* Locomotive main body */}
-      <rect x="8" y="10" width="262" height="38" rx="5" fill="#141414" stroke="#D35400" strokeWidth="1.1" />
+      <rect x="8" y="10" width="262" height="38" rx="5" fill="#141414" stroke="#E8920C" strokeWidth="1.1" />
 
       {/* Cab section */}
-      <rect x="232" y="2" width="38" height="32" rx="4" fill="#1e1e1e" stroke="#D35400" strokeWidth="0.9" />
+      <rect x="232" y="2" width="38" height="32" rx="4" fill="#1e1e1e" stroke="#E8920C" strokeWidth="0.9" />
 
       {/* Cab windows */}
-      <rect x="237" y="8" width="12" height="9" rx="2" fill="#D35400" opacity="0.70" />
-      <rect x="253" y="8" width="11" height="9" rx="2" fill="#D35400" opacity="0.70" />
+      <rect x="237" y="8" width="12" height="9" rx="2" fill="#E8920C" opacity="0.70" />
+      <rect x="253" y="8" width="11" height="9" rx="2" fill="#E8920C" opacity="0.70" />
 
       {/* Window glow */}
-      <rect x="237" y="8" width="12" height="9" rx="2" fill="#FF7F00" opacity="0.15" />
-      <rect x="253" y="8" width="11" height="9" rx="2" fill="#FF7F00" opacity="0.15" />
+      <rect x="237" y="8" width="12" height="9" rx="2" fill="#F5A623" opacity="0.15" />
+      <rect x="253" y="8" width="11" height="9" rx="2" fill="#F5A623" opacity="0.15" />
 
       {/* Front nose */}
-      <rect x="0" y="18" width="10" height="24" rx="4" fill="#CC4C00" />
+      <rect x="0" y="18" width="10" height="24" rx="4" fill="#E8920C" />
 
       {/* Headlight with high-intensity pulse */}
       <circle cx="4" cy="25" r="3.5" fill="#FFD700" opacity="0.95" />
@@ -80,14 +80,14 @@ function TrainSVG() {
       />
 
       {/* Body accent stripe */}
-      <rect x="8" y="37" width="262" height="5" rx="0" fill="#D35400" opacity="0.30" />
+      <rect x="8" y="37" width="262" height="5" rx="0" fill="#E8920C" opacity="0.30" />
 
       {/* Number plate */}
       <rect x="62" y="17" width="58" height="16" rx="2" fill="#090909" opacity="0.85" />
       <text
         x="66"
         y="29"
-        fill="#D35400"
+        fill="#E8920C"
         fontSize="11"
         fontWeight="bold"
         fontFamily="monospace"
@@ -97,7 +97,7 @@ function TrainSVG() {
       </text>
 
       {/* Smokestack */}
-      <rect x="28" y="3" width="13" height="10" rx="3" fill="#1e1e1e" stroke="#D35400" strokeWidth="0.7" />
+      <rect x="28" y="3" width="13" height="10" rx="3" fill="#1e1e1e" stroke="#E8920C" strokeWidth="0.7" />
 
       {/* Wheels with physical spinning animation */}
       {[44, 96, 160, 228].map((cx) => (
@@ -107,8 +107,8 @@ function TrainSVG() {
           transition={{ duration: 0.36, repeat: Infinity, ease: "linear" }}
           style={{ transformOrigin: `${cx}px 52px` }}
         >
-          <circle cx={cx} cy="52" r="11" fill="#0d0d0d" stroke="#D35400" strokeWidth="1.3" />
-          <circle cx={cx} cy="52" r="4"  fill="#D35400" opacity="0.45" />
+          <circle cx={cx} cy="52" r="11" fill="#0d0d0d" stroke="#E8920C" strokeWidth="1.3" />
+          <circle cx={cx} cy="52" r="4"  fill="#E8920C" opacity="0.45" />
           <line x1={cx}      y1="41" x2={cx}      y2="63" stroke="#2a2a2a" strokeWidth="1" />
           <line x1={cx - 11} y1="52" x2={cx + 11} y2="52" stroke="#2a2a2a" strokeWidth="1" />
         </motion.g>
@@ -210,7 +210,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
         className="absolute inset-0 pointer-events-none opacity-[0.025]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(211,84,0,1) 1px, transparent 1px), linear-gradient(90deg, rgba(211,84,0,1) 1px, transparent 1px)",
+            "linear-gradient(rgba(232,146,12,1) 1px, transparent 1px), linear-gradient(90deg, rgba(232,146,12,1) 1px, transparent 1px)",
           backgroundSize: "44px 44px",
         }}
       />
@@ -218,10 +218,10 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
       {/* ── Perspective rail lines ── */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
         <svg className="w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="none">
-          <line x1="0"    y1="900" x2="720"  y2="0" stroke="#D35400" strokeWidth="1" />
-          <line x1="1440" y1="900" x2="720"  y2="0" stroke="#D35400" strokeWidth="1" />
-          <line x1="300"  y1="900" x2="820"  y2="0" stroke="#D35400" strokeWidth="0.5" />
-          <line x1="1140" y1="900" x2="620"  y2="0" stroke="#D35400" strokeWidth="0.5" />
+          <line x1="0"    y1="900" x2="720"  y2="0" stroke="#E8920C" strokeWidth="1" />
+          <line x1="1440" y1="900" x2="720"  y2="0" stroke="#E8920C" strokeWidth="1" />
+          <line x1="300"  y1="900" x2="820"  y2="0" stroke="#E8920C" strokeWidth="0.5" />
+          <line x1="1140" y1="900" x2="620"  y2="0" stroke="#E8920C" strokeWidth="0.5" />
         </svg>
       </div>
 
@@ -247,12 +247,12 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
               }}
               style={{
                 fontSize: "clamp(3.8rem, 12vw, 9.5rem)",
-                fontWeight: 900,
+                fontWeight: 700,
                 color: "#ffffff",
                 lineHeight: 1,
                 letterSpacing: "-0.04em",
                 fontFamily: "var(--font-geist-sans)",
-                textShadow: "0 0 80px rgba(211,84,0,0.18)",
+                textShadow: "0 0 80px rgba(232,146,12,0.18)",
               }}
             >
               {letter}
@@ -269,7 +269,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                 className="absolute inset-0 pointer-events-none rounded"
                 style={{
                   background:
-                    "radial-gradient(circle, rgba(204,76,0,0.45) 0%, transparent 72%)",
+                    "radial-gradient(circle, rgba(232,146,12,0.45) 0%, transparent 72%)",
                 }}
               />
 
@@ -303,7 +303,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-4 rounded-full pointer-events-none"
                         style={{
                           background:
-                            "radial-gradient(ellipse, rgba(211,84,0,0.65) 0%, transparent 70%)",
+                            "radial-gradient(ellipse, rgba(232,146,12,0.65) 0%, transparent 70%)",
                         }}
                       />
 
@@ -325,8 +325,8 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                           }}
                           className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full pointer-events-none"
                           style={{ 
-                            background: pi % 2 === 0 ? "#F5C518" : "#D35400",
-                            boxShadow: pi % 2 === 0 ? "0 0 8px #F5C518" : "0 0 8px #D35400"
+                            background: pi % 2 === 0 ? "#F5C518" : "var(--accent)",
+                            boxShadow: pi % 2 === 0 ? "0 0 8px #F5C518" : "0 0 8px var(--accent)"
                           }}
                         />
                       ))}
@@ -397,9 +397,9 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                 }}
                 style={{
                   fontSize: "clamp(0.9rem, 2.8vw, 1.8rem)",
-                  fontWeight: 900,
+                  fontWeight: 700,
                   color: "#d4d4d8",
-                  textShadow: "0 0 10px rgba(211,84,0,0.45)",
+                  textShadow: "0 0 10px rgba(232,146,12,0.45)",
                   letterSpacing: "0.08em",
                   fontFamily: "var(--font-geist-sans)",
                   lineHeight: 1,
@@ -418,7 +418,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="font-mono text-[10px] text-[#D35400] tracking-[0.45em] uppercase mt-1"
+              className="font-mono text-[10px] text-accent tracking-[0.45em] uppercase mt-1"
             >
               Infraestructura · Suministros · Obras Civiles
             </motion.p>
@@ -440,7 +440,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
       {/* ── Progress bar ── */}
       <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-zinc-900 pointer-events-none">
         <motion.div
-          className="h-full bg-[#D35400]"
+          className="h-full bg-accent"
           style={{ transformOrigin: "left" }}
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}

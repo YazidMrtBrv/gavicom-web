@@ -20,7 +20,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
               delay: i * 0.03,
             }}
             style={{ originY: i % 2 === 0 ? 0 : 1 }}
-            className="flex-1 bg-[#1a1a2e] border-x border-[#ffffff10]"
+            className="flex-1 bg-brand-deep border-x border-[#ffffff10]"
           />
         ))}
       </div>
@@ -38,7 +38,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
               delay: 0.06 + i * 0.03,
             }}
             style={{ originY: i % 2 === 0 ? 0 : 1 }}
-            className="flex-1 bg-[#D35400] shadow-[0_0_30px_#D35400]"
+            className="flex-1 bg-accent shadow-[0_0_30px_var(--accent)]"
           />
         ))}
       </div>

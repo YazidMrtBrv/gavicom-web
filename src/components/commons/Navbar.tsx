@@ -31,22 +31,22 @@ export default function Navbar() {
         }`}
       >
         {/* Top bar */}
-        <div className="border-b border-[#D35400]/10 px-5 py-1.5 flex items-center justify-center gap-3 text-[10px]">
-          <span className="hidden sm:inline text-[#D35400] font-semibold uppercase tracking-widest">
+        <div className="border-b border-brand/10 px-5 py-1.5 flex items-center justify-center gap-3 text-[10px]">
+          <span className="hidden sm:inline text-brand font-semibold uppercase tracking-widest">
             Contacto Directo:
           </span>
           <a
             href={`https://wa.me/${COMPANIA_INFO.whatsappSales.replace("+", "")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#D35400] hover:text-[#CC4C00] transition-colors font-semibold"
+            className="text-brand hover:text-brand transition-colors font-semibold"
           >
             WhatsApp
           </a>
           <span className="text-zinc-300 select-none">|</span>
           <a
             href={`mailto:${COMPANIA_INFO.email}`}
-            className="text-zinc-500 hover:text-[#1a1a2e] transition-colors"
+            className="text-zinc-500 hover:text-brand transition-colors"
           >
             {COMPANIA_INFO.email}
           </a>
@@ -55,7 +55,7 @@ export default function Navbar() {
         {/* Main row */}
         <div className="px-5 h-14 sm:h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="bg-[#1a1a2e] p-1.5 rounded-lg group-hover:shadow-[0_0_16px_rgba(211,84,0,0.4)] transition-all duration-300">
+            <div className="bg-brand p-1.5 rounded-lg group-hover:shadow-[0_0_16px_rgba(232,146,12,0.4)] transition-all duration-300">
               <Image
                 src="/logo-gavicom.png"
                 alt="GAVICOM SAS"
@@ -64,7 +64,7 @@ export default function Navbar() {
                 className="object-contain"
               />
             </div>
-            <span className="hidden sm:inline text-[8px] text-zinc-400 font-bold tracking-[0.25em] uppercase group-hover:text-zinc-600 transition-colors">
+            <span className="hidden sm:inline text-[8px] text-zinc-500 font-bold tracking-[0.25em] uppercase group-hover:text-zinc-600 transition-colors">
               S.A.S
             </span>
           </Link>
@@ -74,7 +74,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="hover:text-[#D35400] transition-colors tracking-wide relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-[#D35400] after:transition-all hover:after:w-full"
+                className="hover:text-brand transition-colors tracking-wide relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-accent after:transition-all hover:after:w-full"
               >
                 {link.label}
               </Link>
@@ -84,14 +84,14 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Link
               href="/contacto"
-              className="hidden sm:inline-flex items-center text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 bg-[#D35400] hover:bg-[#CC4C00] transition-all active:scale-95 shiny-btn spotlight rounded-[4px]"
+              className="hidden sm:inline-flex items-center text-brand-deep text-xs font-bold uppercase tracking-wider px-5 py-2.5 bg-accent hover:bg-accent-strong transition-all active:scale-95 shiny-btn spotlight rounded-[4px]"
             >
               Solicitar Cotización
             </Link>
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden flex flex-col items-center justify-center w-10 h-10 gap-1 text-zinc-600 hover:text-[#D35400] transition-colors"
+              className="lg:hidden flex flex-col items-center justify-center w-10 h-10 gap-1 text-zinc-600 hover:text-brand transition-colors"
               aria-label="Menú"
             >
               <span className={`block w-5 h-[1.5px] bg-current transition-all ${menuOpen ? "rotate-45 translate-y-[3.5px]" : ""}`} />
@@ -109,7 +109,7 @@ export default function Navbar() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="border-t border-[#D35400]/10 overflow-hidden lg:hidden"
+              className="border-t border-brand/10 overflow-hidden lg:hidden"
             >
               <div className="px-5 py-4 flex flex-col gap-1">
                 {links.map((link) => (
@@ -117,7 +117,7 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
-                    className="text-sm font-bold text-zinc-600 hover:text-[#D35400] uppercase tracking-wider py-3 border-b border-zinc-100 last:border-0 transition-colors"
+                    className="text-sm font-bold text-zinc-600 hover:text-brand uppercase tracking-wider py-3 border-b border-zinc-100 last:border-0 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -125,7 +125,7 @@ export default function Navbar() {
                 <Link
                   href="/contacto"
                   onClick={() => setMenuOpen(false)}
-                  className="sm:hidden mt-2 w-full text-center text-white text-xs font-bold uppercase tracking-wider px-5 py-3 bg-[#D35400] hover:bg-[#CC4C00] transition-all rounded-[4px]"
+                  className="sm:hidden mt-2 w-full text-center text-brand-deep text-xs font-bold uppercase tracking-wider px-5 py-3 bg-accent hover:bg-accent-strong transition-all rounded-[4px]"
                 >
                   Solicitar Cotización
                 </Link>

@@ -1,7 +1,7 @@
 export default function ServiciosLoading() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#f8f9fa]">
-      <div className="bg-white border-b border-[#D35400]/10 min-h-[55vh] flex items-center">
+    <div className="flex flex-col min-h-screen bg-background">
+      <div className="bg-white border-b border-brand/10 min-h-[55vh] flex items-center">
         <div className="max-w-4xl mx-auto px-6 text-center w-full">
           <div className="w-40 h-3 bg-zinc-200 rounded animate-pulse mx-auto" />
           <div className="w-72 sm:w-96 h-8 sm:h-10 bg-zinc-200 rounded animate-pulse mx-auto mt-6" />

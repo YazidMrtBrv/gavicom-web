@@ -80,7 +80,7 @@ function ShinyButton({
   return (
     <Link
       href={href}
-      className="shiny-btn spotlight relative w-full sm:w-auto text-center text-[#030303] text-xs font-mono font-bold uppercase tracking-[0.2em] px-10 py-4 bg-[#CC4C00] hover:bg-[#D95800] border border-[#CC4C00] transition-colors active:scale-[0.97] overflow-hidden inline-block"
+      className="shiny-btn spotlight relative w-full sm:w-auto text-center text-brand-deep text-xs font-mono font-bold uppercase tracking-[0.2em] px-10 py-4 bg-accent hover:bg-accent-strong border border-accent transition-colors active:scale-[0.97] overflow-hidden inline-block"
     >
       <span className="relative z-10">{children}</span>
     </Link>
@@ -107,13 +107,13 @@ function GhostButton({
       rel={rel}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="w-full sm:w-auto text-center text-[#1a1a2e] text-xs font-bold uppercase tracking-[0.2em] border border-zinc-300 hover:border-[#D35400] px-10 py-4 transition-all active:scale-[0.97] inline-flex items-center justify-center gap-2.5 group"
+      className="w-full sm:w-auto text-center text-brand text-xs font-bold uppercase tracking-[0.2em] border border-zinc-300 hover:border-accent px-10 py-4 transition-all active:scale-[0.97] inline-flex items-center justify-center gap-2.5 group"
     >
       <span>{children}</span>
       <motion.span
         animate={{ x: hovered ? 5 : 0 }}
         transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-        className="text-[#CC4C00] text-sm leading-none"
+        className="text-brand text-sm leading-none"
       >
         →
       </motion.span>
@@ -176,7 +176,7 @@ function DesktopView() {
       {/* ── HERO ── */}
       <section
         ref={heroRef}
-        className="relative bg-[#f8f9fa] min-h-screen flex items-center overflow-hidden border-b border-[#D35400]/10"
+        className="relative bg-background min-h-screen flex items-center overflow-hidden border-b border-brand/10"
       >
         <div className="absolute inset-0">
           <Image
@@ -192,7 +192,7 @@ function DesktopView() {
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "linear-gradient(to right, #f8f9fa 0%, #f8f9fa 30%, rgba(248,249,250,0.6) 55%, transparent 100%)",
+                "linear-gradient(to right, var(--background) 0%, var(--background) 30%, rgba(255,255,255,0.6) 55%, transparent 100%)",
             }}
           />
         </div>
@@ -200,12 +200,12 @@ function DesktopView() {
         {/* Perspective rail lines */}
         <div ref={linesRef} className="absolute inset-0 opacity-[0.045] pointer-events-none">
           <svg className="w-[200%] h-full" viewBox="0 0 2880 900" preserveAspectRatio="none">
-            <line x1="0" y1="900" x2="720" y2="0" stroke="#D35400" strokeWidth="0.5" />
-            <line x1="1440" y1="900" x2="720" y2="0" stroke="#D35400" strokeWidth="0.5" />
-            <line x1="200" y1="900" x2="900" y2="0" stroke="#D35400" strokeWidth="0.3" />
-            <line x1="1640" y1="900" x2="900" y2="0" stroke="#D35400" strokeWidth="0.3" />
-            <line x1="400" y1="900" x2="1080" y2="0" stroke="#D35400" strokeWidth="0.2" />
-            <line x1="1840" y1="900" x2="1080" y2="0" stroke="#D35400" strokeWidth="0.2" />
+            <line x1="0" y1="900" x2="720" y2="0" stroke="#E8920C" strokeWidth="0.5" />
+            <line x1="1440" y1="900" x2="720" y2="0" stroke="#E8920C" strokeWidth="0.5" />
+            <line x1="200" y1="900" x2="900" y2="0" stroke="#E8920C" strokeWidth="0.3" />
+            <line x1="1640" y1="900" x2="900" y2="0" stroke="#E8920C" strokeWidth="0.3" />
+            <line x1="400" y1="900" x2="1080" y2="0" stroke="#E8920C" strokeWidth="0.2" />
+            <line x1="1840" y1="900" x2="1080" y2="0" stroke="#E8920C" strokeWidth="0.2" />
           </svg>
         </div>
 
@@ -217,7 +217,7 @@ function DesktopView() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
-                className="text-[10px] font-mono font-bold tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/30 px-3 py-1.5 inline-block"
+                className="text-[10px] font-mono font-bold tracking-[0.3em] text-brand uppercase border border-accent/30 px-3 py-1.5 inline-block"
               >
                 Suministros · Fabricación · Obras Civiles
               </motion.span>
@@ -227,7 +227,7 @@ function DesktopView() {
                   initial={{ opacity: 0, y: 80 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1], delay: 0.2 }}
-                  className="block text-6xl sm:text-7xl lg:text-8xl xl:text-[9rem] font-black leading-[0.82] text-[#1a1a2e]"
+                  className="block text-6xl sm:text-7xl lg:text-8xl xl:text-[9rem] font-bold leading-[0.82] text-brand"
                 >
                   GAVICOM
                 </motion.span>
@@ -235,7 +235,7 @@ function DesktopView() {
                   initial={{ opacity: 0, y: 60 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1], delay: 0.35 }}
-                  className="block text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-zinc-400 mt-3"
+                  className="block text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-zinc-500 mt-3"
                 >
                   Infraestructura Ferroviaria
                 </motion.span>
@@ -279,7 +279,7 @@ function DesktopView() {
       </section>
 
       {/* ── STATS BAND ── */}
-      <section className="border-b border-[#D35400]/10 bg-white">
+      <section className="border-b border-brand/10 bg-white">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -287,10 +287,10 @@ function DesktopView() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
           >
-            <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase">
+            <span className="text-[10px] font-bold tracking-[0.3em] text-brand uppercase">
               Trazabilidad
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-[#1a1a2e] mt-3">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tighter text-brand mt-3">
               Cifras que Respaldan
             </h2>
           </motion.div>
@@ -325,7 +325,7 @@ function DesktopView() {
                 transition={{ duration: 0.5, delay: (i + 1) * 0.12, ease: [0.65, 0, 0.35, 1] }}
               >
                 <div
-                  className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#1a1a2e]"
+                  className="text-5xl sm:text-6xl lg:text-7xl font-bold text-brand"
                   style={{ letterSpacing: "-0.05em" }}
                 >
                   <AnimatedCounter to={stat.to} delay={(i + 1) * 120} />
@@ -334,7 +334,7 @@ function DesktopView() {
                   <span className="text-xs font-bold text-zinc-600 tracking-wide uppercase">
                     {stat.label}
                   </span>
-                  <span className="text-[10px] text-zinc-400 block mt-0.5">{stat.sub}</span>
+                  <span className="text-[10px] text-zinc-500 block mt-0.5">{stat.sub}</span>
                 </div>
               </motion.div>
             ))}
@@ -343,7 +343,7 @@ function DesktopView() {
       </section>
 
       {/* ── SERVICES PREVIEW ── */}
-      <section className="border-b border-[#D35400]/10 bg-[#f8f9fa]">
+      <section className="border-b border-brand/10 bg-surface">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -352,10 +352,10 @@ function DesktopView() {
             transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
             className="mb-16"
           >
-            <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase">
+            <span className="text-[10px] font-bold tracking-[0.3em] text-brand uppercase">
               Capacidades
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter leading-[0.9] text-[#1a1a2e] mt-4">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter leading-[0.9] text-brand mt-4">
               Soluciones Integrales
             </h2>
             <p className="text-sm text-zinc-600 mt-4 max-w-xl">
@@ -402,14 +402,14 @@ function DesktopView() {
                 transition={{ duration: 0.5, delay: i * 0.12, ease: [0.65, 0, 0.35, 1] }}
                 className="neon-chase bg-white p-8 hover:bg-[#f0f2f5] transition-colors group"
               >
-                <span className="text-[10px] font-bold text-[#D35400] tracking-widest uppercase">
+                <span className="text-[10px] font-bold text-brand tracking-widest uppercase">
                   {`0${i + 1}`}
                 </span>
-                <h3 className="text-lg font-bold text-[#1a1a2e] mt-3 mb-4">{svc.title}</h3>
+                <h3 className="text-lg font-bold text-brand mt-3 mb-4">{svc.title}</h3>
                 <ul className="space-y-2">
                   {svc.items.map((item) => (
                     <li key={item} className="flex items-start gap-2 text-xs text-zinc-600">
-                      <span className="text-[#D35400] mt-0.5 shrink-0">▸</span>
+                      <span className="text-brand mt-0.5 shrink-0">▸</span>
                       {item}
                     </li>
                   ))}
@@ -417,7 +417,7 @@ function DesktopView() {
                 <div className="mt-6 pt-4 border-t border-zinc-100">
                   <Link
                     href="/servicios"
-                    className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[#D35400] hover:text-[#1a1a2e] transition-colors uppercase tracking-wider"
+                    className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-brand hover:text-brand transition-colors uppercase tracking-wider"
                   >
                     Ver servicios
                     <span className="text-xs">→</span>
@@ -436,7 +436,7 @@ function DesktopView() {
           >
             <Link
               href="/catalogo"
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#D35400] hover:text-[#1a1a2e] transition-colors uppercase tracking-wider border border-[#D35400]/30 hover:border-[#D35400]/60 px-8 py-3.5"
+              className="inline-flex items-center gap-2 text-xs font-bold text-brand hover:text-brand transition-colors uppercase tracking-wider border border-accent/30 hover:border-accent/60 px-8 py-3.5"
             >
               Ver catálogo completo de productos
               <span className="text-sm">→</span>
@@ -446,7 +446,7 @@ function DesktopView() {
       </section>
 
       {/* ── COVERAGE MAP ── */}
-      <section className="border-b border-[#D35400]/10 bg-white">
+      <section className="border-b border-brand/10 bg-white">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -455,10 +455,10 @@ function DesktopView() {
             transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
             className="mb-16"
           >
-            <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase">
+            <span className="text-[10px] font-bold tracking-[0.3em] text-brand uppercase">
               Cobertura Nacional
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-[#1a1a2e] mt-3">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tighter text-brand mt-3">
               Cobertura en las Principales Zonas Ferroviarias
             </h2>
           </motion.div>
@@ -474,11 +474,11 @@ function DesktopView() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.08 }}
-                  className="flex items-center gap-4 border-l-2 border-[#D35400]/40 pl-4 hover:border-[#D35400] transition-colors group"
+                  className="flex items-center gap-4 border-l-2 border-accent/40 pl-4 hover:border-accent transition-colors group"
                 >
                   <div className="flex-1">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-sm font-bold text-[#1a1a2e] tracking-tight">
+                      <span className="text-sm font-bold text-brand tracking-tight">
                         {item.zona}
                       </span>
                     </div>
@@ -487,7 +487,7 @@ function DesktopView() {
                   <motion.span
                     animate={{ x: 0 }}
                     whileHover={{ x: 4 }}
-                    className="text-zinc-300 group-hover:text-[#D35400] text-xs transition-colors"
+                    className="text-zinc-300 group-hover:text-brand text-xs transition-colors"
                   >
                     →
                   </motion.span>
@@ -499,12 +499,12 @@ function DesktopView() {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="mt-6 border border-[#D35400]/20 px-5 py-4 flex items-center justify-between bg-white/50"
+                className="mt-6 border border-brand/10 px-5 py-4 flex items-center justify-between bg-white/50"
               >
                 <span className="text-[10px] text-zinc-600 uppercase tracking-widest">
                   Cobertura operativa
                 </span>
-                <span className="text-sm font-black text-[#1a1a2e] uppercase tracking-tight">
+                <span className="text-sm font-bold text-brand uppercase tracking-tight">
                   Nacional
                 </span>
               </motion.div>
@@ -524,7 +524,7 @@ function MobileView() {
   const enlaceWhatsApp = `${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=${mensajeInicio}`;
 
   return (
-    <div className="flex flex-col bg-[#f8f9fa] overflow-x-hidden">
+    <div className="flex flex-col bg-background overflow-x-hidden">
       {/* ── MOBILE HERO ── */}
       <section className="relative min-h-[100dvh] flex flex-col justify-end pb-16 px-6">
         {/* Background Image Optimized for Mobile */}
@@ -538,7 +538,7 @@ function MobileView() {
             fetchPriority="high"
           />
           {/* Vertical gradient overlay to ensure text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#f8f9fa] via-[#f8f9fa]/90 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-transparent" />
         </div>
 
         {/* Content */}
@@ -548,13 +548,13 @@ function MobileView() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/30 px-3 py-1.5 inline-block mb-5">
+            <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-brand uppercase border border-accent/30 px-3 py-1.5 inline-block mb-5">
               Suministros · Obras
             </span>
-            <h1 className="text-[3.5rem] font-black leading-[0.85] text-[#1a1a2e] tracking-tighter drop-shadow-sm">
+            <h1 className="text-[3.5rem] font-bold leading-[0.85] text-brand tracking-tighter drop-shadow-sm">
               GAVICOM
             </h1>
-            <h2 className="text-2xl font-black text-zinc-600 mt-3 leading-tight">
+            <h2 className="text-2xl font-bold text-zinc-600 mt-3 leading-tight">
               Infraestructura<br />Ferroviaria
             </h2>
             <p className="mt-5 text-sm text-zinc-700 leading-relaxed max-w-[95%]">
@@ -577,17 +577,17 @@ function MobileView() {
       </section>
 
       {/* ── MOBILE STATS (VERTICAL CARDS) ── */}
-      <section className="py-20 px-6 bg-white border-y border-[#D35400]/10">
+      <section className="py-20 px-6 bg-white border-y border-brand/10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mb-12 text-center"
         >
-          <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase block mb-2">
+          <span className="text-[10px] font-bold tracking-[0.3em] text-brand uppercase block mb-2">
             Trazabilidad
           </span>
-          <h2 className="text-3xl font-black tracking-tighter text-[#1a1a2e]">
+          <h2 className="text-3xl font-bold tracking-tighter text-brand">
             Cifras que Respaldan
           </h2>
         </motion.div>
@@ -609,7 +609,7 @@ function MobileView() {
             viewport={{ once: true }}
             className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
           >
-            <div className="text-6xl font-black text-[#1a1a2e] tracking-tighter">
+            <div className="text-6xl font-bold text-brand tracking-tighter">
               <AnimatedCounter to={TOTAL_REFERENCIAS} suffix="" />
             </div>
             <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Referencias en Catálogo</span>
@@ -622,7 +622,7 @@ function MobileView() {
             viewport={{ once: true }}
             className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
           >
-            <div className="text-6xl font-black text-[#1a1a2e] tracking-tighter">
+            <div className="text-6xl font-bold text-brand tracking-tighter">
               <AnimatedCounter to={TOTAL_LINEAS} suffix="" />
             </div>
             <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Líneas de Suministro</span>
@@ -632,17 +632,17 @@ function MobileView() {
       </section>
 
       {/* ── MOBILE SERVICES (STACKED LIST) ── */}
-      <section className="py-20 px-6 bg-[#f8f9fa]">
+      <section className="py-20 px-6 bg-surface">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mb-10"
         >
-          <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase block mb-2">
+          <span className="text-[10px] font-bold tracking-[0.3em] text-brand uppercase block mb-2">
             Capacidades
           </span>
-          <h2 className="text-4xl font-black tracking-tighter leading-[0.9] text-[#1a1a2e]">
+          <h2 className="text-4xl font-bold tracking-tighter leading-[0.9] text-brand">
             Soluciones<br />Integrales
           </h2>
         </motion.div>
@@ -671,15 +671,15 @@ function MobileView() {
               className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm"
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-base font-bold text-[#1a1a2e]">{svc.title}</h3>
-                <span className="text-[10px] font-bold text-[#D35400] tracking-widest bg-[#D35400]/10 px-2 py-1 rounded">
+                <h3 className="text-base font-bold text-brand">{svc.title}</h3>
+                <span className="text-[10px] font-bold text-brand tracking-widest bg-accent/10 px-2 py-1 rounded">
                   0{i + 1}
                 </span>
               </div>
               <ul className="space-y-3">
                 {svc.items.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-xs text-zinc-600 leading-snug">
-                    <span className="text-[#D35400] shrink-0 font-bold">✓</span>
+                    <span className="text-brand shrink-0 font-bold">✓</span>
                     {item}
                   </li>
                 ))}
@@ -696,7 +696,7 @@ function MobileView() {
         >
           <Link
             href="/catalogo"
-            className="flex items-center justify-center w-full bg-white border border-[#D35400]/30 text-[#D35400] text-xs font-bold uppercase tracking-wider py-5 rounded-xl shadow-sm active:scale-[0.98] transition-transform"
+            className="flex items-center justify-center w-full bg-white border border-accent/30 text-brand text-xs font-bold uppercase tracking-wider py-5 rounded-xl shadow-sm active:scale-[0.98] transition-transform"
           >
             Ver catálogo completo →
           </Link>
@@ -704,17 +704,17 @@ function MobileView() {
       </section>
 
       {/* ── MOBILE MAP ── */}
-      <section className="py-20 px-6 bg-white border-t border-[#D35400]/10">
+      <section className="py-20 px-6 bg-white border-t border-brand/10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mb-10 text-center"
         >
-          <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase block mb-2">
+          <span className="text-[10px] font-bold tracking-[0.3em] text-brand uppercase block mb-2">
             Cobertura Nacional
           </span>
-          <h2 className="text-3xl font-black tracking-tighter text-[#1a1a2e]">
+          <h2 className="text-3xl font-bold tracking-tighter text-brand">
             Cobertura Operativa
           </h2>
         </motion.div>
@@ -737,10 +737,10 @@ function MobileView() {
                 transition={{ delay: i * 0.1 }}
                 className="flex items-start gap-3 border-b border-zinc-200 pb-4 last:border-0 last:pb-0"
               >
-                <div className="mt-1 w-2 h-2 rounded-full bg-[#D35400] shrink-0" />
+                <div className="mt-1 w-2 h-2 rounded-full bg-accent shrink-0" />
                 <div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-sm font-bold text-[#1a1a2e]">{item.zona}</span>
+                    <span className="text-sm font-bold text-brand">{item.zona}</span>
                   </div>
                   <span className="text-[11px] text-zinc-500 mt-1 block leading-tight">{item.desc}</span>
                 </div>
@@ -752,7 +752,7 @@ function MobileView() {
             <span className="text-[10px] text-zinc-600 uppercase tracking-widest font-bold">
               Cobertura operativa
             </span>
-            <span className="text-sm font-black text-[#D35400] uppercase tracking-tight">
+            <span className="text-sm font-bold text-brand uppercase tracking-tight">
               Nacional
             </span>
           </div>

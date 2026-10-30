@@ -1,7 +1,7 @@
 export default function CatalogoLoading() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#f8f9fa]">
-      <div className="bg-white border-b border-[#D35400]/10">
+    <div className="flex flex-col min-h-screen bg-background">
+      <div className="bg-white border-b border-brand/10">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16 lg:py-20">
           <div className="w-32 h-3 bg-zinc-200 rounded animate-pulse" />
           <div className="w-64 h-8 bg-zinc-200 rounded animate-pulse mt-3" />

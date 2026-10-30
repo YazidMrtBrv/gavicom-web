@@ -40,7 +40,7 @@ function VariantStrip({
   return (
     <div
       ref={stripRef}
-      className="flex gap-1.5 px-4 py-3 bg-[#f8f9fa] border-b border-zinc-200 overflow-x-auto"
+      className="flex gap-1.5 px-4 py-3 bg-surface border-b border-zinc-200 overflow-x-auto"
     >
       {variantes.map((v, i) => (
         <button
@@ -49,7 +49,7 @@ function VariantStrip({
           onClick={() => onSelect(i)}
           className={`shrink-0 w-14 h-10 border-2 transition-all overflow-hidden rounded-none relative bg-white ${
             i === selected
-              ? "border-[#D35400] opacity-100"
+              ? "border-accent opacity-100"
               : "border-transparent opacity-50 hover:opacity-80"
           }`}
         >
@@ -124,9 +124,9 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
           document.body
         )}
 
-      <div className="reveal-on-scroll flex flex-col bg-white rounded-none border border-zinc-200 overflow-hidden card-hover group transition-all duration-300 hover:border-[#D35400]/50">
+      <div className="reveal-on-scroll flex flex-col bg-white rounded-none border border-zinc-200 overflow-hidden card-hover group transition-all duration-300 hover:border-accent/50">
         <div
-          className={`tech-corners relative w-full h-48 bg-[#f8f9fa] overflow-hidden border-b border-zinc-200 p-4 ${
+          className={`tech-corners relative w-full h-48 bg-surface overflow-hidden border-b border-zinc-200 p-4 ${
             varianteActual && !imgError ? "cursor-zoom-in" : ""
           }`}
           onClick={() => varianteActual && !imgError && setZoomOpen(true)}
@@ -151,7 +151,7 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
               />
             </div>
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 p-4 text-center">
+            <div className="w-full h-full flex flex-col items-center justify-center text-zinc-500 p-4 text-center">
               <svg
                 className="w-10 h-10 text-zinc-300 mb-2"
                 fill="none"
@@ -165,10 +165,10 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
                   d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <span className="text-[10px] font-mono text-zinc-400">{sku}</span>
+              <span className="text-[10px] font-mono text-zinc-500">{sku}</span>
             </div>
           )}
-          <span className="absolute top-3 left-3 z-10 bg-[#2a2a2a]/90 text-[#D35400] text-[10px] font-mono font-bold tracking-widest px-2 py-1 border border-[#D35400]/30">
+          <span className="absolute top-3 left-3 z-10 bg-brand-deep/90 text-accent text-[10px] font-mono font-bold tracking-widest px-2 py-1 border border-accent/30">
             {sku}
           </span>
         </div>
@@ -183,7 +183,7 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
 
       <div className="p-5 flex flex-col flex-grow">
         <div className="mb-2 flex flex-wrap items-center gap-1.5">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#D35400]">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-brand">
             {categoria}
           </span>
           <span className="text-zinc-300 text-xs">•</span>
@@ -191,13 +191,13 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
             {subcategoria}
           </span>
           {todasLasVariantes.length > 1 && (
-            <span className="text-[10px] font-mono text-zinc-400 ml-auto border border-zinc-200 px-1.5">
+            <span className="text-[10px] font-mono text-zinc-500 ml-auto border border-zinc-200 px-1.5">
               {varianteIdx + 1}/{todasLasVariantes.length}
             </span>
           )}
         </div>
 
-        <h3 className="text-base font-bold text-[#1a1a2e] group-hover:text-[#D35400] transition-colors duration-300 mb-2 leading-snug">
+        <h3 className="text-base font-bold text-brand group-hover:text-brand transition-colors duration-300 mb-2 leading-snug">
           {nombre}
         </h3>
 
@@ -211,7 +211,7 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
 
         <div className="mt-auto pt-4 border-t border-zinc-200 flex items-center justify-between gap-4">
           <span
-            className="text-[9px] font-mono text-zinc-400 tracking-widest uppercase block max-w-[140px] truncate"
+            className="text-[9px] font-mono text-zinc-500 tracking-widest uppercase block max-w-[140px] truncate"
             title={origen}
           >
             {origen}
@@ -221,7 +221,7 @@ export default function ProductCard({ producto, eager = false }: ProductCardProp
             href={enlaceCotizacion}
             target="_blank"
             rel="noopener noreferrer"
-            className="spotlight inline-flex items-center justify-center text-[#D35400] text-[10px] font-bold uppercase tracking-[0.2em] border border-[#D35400] px-4 py-2 hover:bg-[#D35400] hover:text-white transition-all active:scale-[0.97]"
+            className="spotlight inline-flex items-center justify-center text-brand text-[10px] font-bold uppercase tracking-[0.2em] border border-accent px-4 py-2 hover:bg-accent hover:text-brand-deep transition-all active:scale-[0.97]"
           >
             Cotizar →
           </a>
