@@ -206,7 +206,7 @@ export default function FormularioContacto() {
               {/* Tipo de solicitud: radios nativos (flechas del teclado incluidas) con aspecto de tarjeta. */}
               <fieldset className="mt-8">
                 <legend className="text-sm font-semibold text-brand">¿Sobre qué es su solicitud?</legend>
-                <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
                   {CLAVES_TIPO.map((clave) => {
                     const opcion = TIPOS_SOLICITUD[clave];
                     const Icono = opcion.icono;

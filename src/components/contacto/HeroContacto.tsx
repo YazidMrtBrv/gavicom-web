@@ -77,7 +77,7 @@ export default function HeroContacto() {
                         <span className="block text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-600">
                           {canal.etiqueta}
                         </span>
-                        <span className="mt-1.5 block break-words font-titulo text-lg font-light leading-tight text-brand tabular-nums transition-transform duration-500 ease-[var(--apple-ease)] group-hover/canal:translate-x-1 motion-reduce:transition-none min-[400px]:text-xl sm:text-2xl lg:text-[1.75rem]">
+                        <span className="mt-1.5 block break-words font-titulo text-lg font-light leading-tight text-brand tabular-nums transition-transform duration-500 ease-[var(--apple-ease)] group-hover/canal:translate-x-1 motion-reduce:transition-none min-[400px]:text-xl sm:text-2xl xl:text-[1.75rem]">
                           {canal.valor}
                         </span>
                         {canal.aviso && <span className="sr-only">{canal.aviso}</span>}

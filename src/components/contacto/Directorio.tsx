@@ -142,7 +142,7 @@ export default function Directorio() {
                 <h3 className={cn(ETIQUETA, "text-zinc-600")}>Correo de gerencia</h3>
                 <Mail aria-hidden="true" className="size-5 text-brand" strokeWidth={1.6} />
               </div>
-              <p className="mt-8 break-all font-titulo text-xl font-light leading-tight text-brand min-[400px]:text-2xl sm:text-3xl">
+              <p className="mt-8 break-all font-titulo text-xl font-light leading-tight text-brand min-[400px]:text-2xl sm:text-3xl lg:text-2xl xl:text-3xl">
                 {COMPANIA_INFO.email}
               </p>
               <p className="mt-5 max-w-sm text-base leading-relaxed text-zinc-600">
