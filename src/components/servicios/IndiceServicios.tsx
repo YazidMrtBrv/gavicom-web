@@ -60,7 +60,7 @@ export default function IndiceServicios({ items, className }: { items: ItemIndic
         </p>
         <p aria-hidden="true" className="text-[11px] font-semibold tracking-[0.2em] text-zinc-600 tabular-nums">
           {activo >= 0 ? dosCifras(activo + 1) : "00"}
-          <span className="px-1 text-zinc-400">/</span>
+          <span className="px-1">/</span>
           {dosCifras(items.length)}
         </p>
       </div>
@@ -94,8 +94,8 @@ export default function IndiceServicios({ items, className }: { items: ItemIndic
               />
               <a
                 href={`#${item.ancla}`}
-                aria-current={actual ? "true" : undefined}
-                className="group/estacion block rounded-[2px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                aria-current={actual ? "location" : undefined}
+                className="group/estacion block rounded-[2px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
               >
                 <span className="block text-[11px] font-semibold tracking-[0.2em] text-zinc-600 tabular-nums">
                   {dosCifras(i + 1)} · {item.sku}

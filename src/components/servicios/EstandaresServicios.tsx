@@ -73,7 +73,7 @@ export default function EstandaresServicios() {
           <Reveal variant="clip">
             <TechFrame tone="oscuro" className="relative isolate bg-brand-deep p-6 text-white sm:p-8">
               <div aria-hidden="true" className={cn(estilos.cuadriculaOscura, "pointer-events-none absolute inset-0 -z-10")} />
-              <div className="flex items-center justify-between gap-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-400">
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-400">
                 <span>Perfil de riel</span>
                 <span>Esquema sin escala</span>
               </div>

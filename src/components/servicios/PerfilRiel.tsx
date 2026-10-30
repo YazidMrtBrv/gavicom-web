@@ -34,6 +34,25 @@ const LIMBO = Array.from({ length: 36 }, (_, i) => {
 // Guías hacia los rótulos (coordenadas del lienzo de 240).
 const GUIAS = ["M147,72 L170,58 H186", "M126,129 H186", "M160,168 L172,180 H186"];
 
+const ANILLOS = [
+  {
+    giro: estilos.anilloHorario,
+    color: "stroke-white",
+    r: 108,
+    strokeOpacity: 0.35,
+    strokeWidth: 0.8,
+    strokeDasharray: "2 6",
+  },
+  {
+    giro: estilos.anilloAntihorario,
+    color: "stroke-accent",
+    r: 100,
+    strokeOpacity: 0.45,
+    strokeWidth: 1.2,
+    strokeDasharray: "40 14 4 14",
+  },
+];
+
 /** Rótulos en HTML sobre el dibujo: posición en % del lienzo cuadrado. */
 const ROTULOS: { texto: string; y: number }[] = [
   { texto: "Cabeza", y: 58 },
@@ -45,6 +64,16 @@ const X_ROTULOS = 188;
 export default function PerfilRiel({ className }: { className?: string }) {
   return (
     <div className={cn("relative aspect-square w-full", className)}>
+      {/* Cada anillo gira en su propio <div>: el giro de un elemento HTML lo
+          hace el compositor; el de un hijo de <svg> repintaría el dibujo en
+          cada fotograma mientras la sección está en pantalla. */}
+      {ANILLOS.map(({ giro, color, ...trazo }) => (
+        <div key={giro} aria-hidden="true" className={cn(giro, "pointer-events-none absolute inset-0")}>
+          <svg viewBox="0 0 240 240" fill="none" focusable="false" className="size-full">
+            <circle cx={120} cy={120} className={color} {...trazo} />
+          </svg>
+        </div>
+      ))}
       <svg
         aria-hidden="true"
         focusable="false"
@@ -53,25 +82,6 @@ export default function PerfilRiel({ className }: { className?: string }) {
         className={cn(estilos.dibujo, "absolute inset-0 size-full overflow-visible text-white")}
       >
         <path d={LIMBO} stroke="currentColor" strokeOpacity={0.3} strokeWidth={0.8} />
-        <circle
-          cx={120}
-          cy={120}
-          r={108}
-          stroke="currentColor"
-          strokeOpacity={0.35}
-          strokeWidth={0.8}
-          strokeDasharray="2 6"
-          className={cn(estilos.anillo, estilos.anilloHorario)}
-        />
-        <circle
-          cx={120}
-          cy={120}
-          r={100}
-          className={cn(estilos.anillo, estilos.anilloAntihorario, "stroke-accent")}
-          strokeOpacity={0.45}
-          strokeWidth={1.2}
-          strokeDasharray="40 14 4 14"
-        />
 
         {/* Ejes del perfil, en trazo y punto como en un plano. */}
         <path

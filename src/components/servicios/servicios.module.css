@@ -86,10 +86,6 @@
 }
 
 /* ---------- Diagramas (perfil de riel, cambiavía) ---------- */
-.anillo {
-  transform-box: view-box;
-  transform-origin: 50% 50%;
-}
 @media (prefers-reduced-motion: no-preference) {
   .anilloHorario { animation: girar 90s linear infinite; }
   .anilloAntihorario { animation: girar 120s linear infinite reverse; }

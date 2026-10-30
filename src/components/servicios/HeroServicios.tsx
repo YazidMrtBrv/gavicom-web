@@ -65,7 +65,7 @@ export default function HeroServicios() {
           alt="Locomotoras de carga sobre una vía férrea"
           prioridad
           enmarcado
-          sizes="(min-width: 1280px) 1184px, (min-width: 640px) calc(100vw - 48px), calc(100vw - 32px)"
+          sizes="(min-width: 1280px) 1184px, (min-width: 1024px) calc(100vw - 96px), (min-width: 640px) calc(100vw - 48px), calc(100vw - 32px)"
           className="mt-14 aspect-[4/3] sm:aspect-[16/9] lg:mt-20 lg:aspect-[21/9]"
         />
 
