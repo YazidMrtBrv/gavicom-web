@@ -15,7 +15,8 @@ import {
 } from "./datos";
 import estilos from "./contacto.module.css";
 
-const PATRON = new RegExp(`(\\*[^*\\n]+\\*|${HUECO_ABRE}[^${HUECO_CIERRA}]+${HUECO_CIERRA})`, "g");
+// Negrita como la entiende WhatsApp: asteriscos pegados al texto ("*así*", no "* así *").
+const PATRON = new RegExp(`(\\*[^*\\s](?:[^*\\n]*[^*\\s])?\\*|${HUECO_ABRE}[^${HUECO_CIERRA}]+${HUECO_CIERRA})`, "g");
 
 
 /*
@@ -47,7 +48,9 @@ export default function VistaPrevia({ tipo, datos }: { tipo: TipoSolicitud; dato
           <div className={cn(estilos.globo, "ml-6 rounded-[6px] rounded-tr-none bg-white px-4 py-3.5 text-ink shadow-sm")}>
             <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">
               {partes.map((parte, i) => {
-                if (parte.startsWith("*") && parte.endsWith("*") && parte.length > 2) {
+                // split() con grupo de captura alterna texto suelto (pares) y coincidencias (impares).
+                if (i % 2 === 0) return <Fragment key={i}>{parte}</Fragment>;
+                if (parte.startsWith("*")) {
                   // La key lleva el texto: al cambiar el tipo, se monta de nuevo y repite el resaltado.
                   return (
                     <strong key={`${i}-${parte}`} className={cn(estilos.resaltado, "rounded-[2px] font-semibold")}>
@@ -55,14 +58,11 @@ export default function VistaPrevia({ tipo, datos }: { tipo: TipoSolicitud; dato
                     </strong>
                   );
                 }
-                if (parte.startsWith(HUECO_ABRE)) {
-                  return (
-                    <span key={i} className="text-zinc-500 italic">
-                      {parte.slice(1, -1)}
-                    </span>
-                  );
-                }
-                return <Fragment key={i}>{parte}</Fragment>;
+                return (
+                  <span key={i} className="text-zinc-500 italic">
+                    {parte.slice(HUECO_ABRE.length, -HUECO_CIERRA.length)}
+                  </span>
+                );
               })}
             </p>
           </div>

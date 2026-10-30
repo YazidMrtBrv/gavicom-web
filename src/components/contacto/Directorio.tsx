@@ -110,7 +110,7 @@ export default function Directorio() {
                 aria-hidden="true"
                 className={cn(estilos.cuadriculaOscura, "pointer-events-none absolute inset-0 -z-10 rounded-[4px]")}
               />
-              <article className="flex h-full flex-col p-7 sm:p-10">
+              <article className="flex h-full flex-col p-8 sm:p-10">
                 <div className="flex items-center justify-between gap-4">
                   <h3 className={cn(ETIQUETA, "text-accent")}>WhatsApp comercial</h3>
                   <IconoWhatsApp className="size-5 text-white/70" />

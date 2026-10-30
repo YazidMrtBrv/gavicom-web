@@ -37,8 +37,8 @@ import VistaPrevia from "./VistaPrevia";
 type CampoValidable = keyof DatosContacto | "autoriza";
 type Errores = Partial<Record<CampoValidable, string>>;
 
-// Orden del formulario: el foco va al primer campo con error.
-const ORDEN_CAMPOS: CampoValidable[] = ["nombre", "empresa", "telefono", "correo", "mensaje", "autoriza"];
+// Orden del formulario: el foco va al primer campo con error (empresa es libre y no se valida).
+const ORDEN_CAMPOS: CampoValidable[] = ["nombre", "telefono", "correo", "mensaje", "autoriza"];
 const CORREO_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -96,7 +96,12 @@ export default function FormularioContacto() {
     // Se abre en el mismo clic: los navegadores solo lo permiten mientras dura
     // el gesto del usuario, y con cualquier espera la ventana queda bloqueada.
     const ventana = window.open(urlWhatsApp, "_blank");
-    if (ventana) ventana.opener = null;
+    try {
+      // Corta el enlace de vuelta a esta pestaña (lo que hace rel="noopener" en un <a>).
+      if (ventana) ventana.opener = null;
+    } catch {
+      // Si la pestaña ya cambió de origen, el navegador no deja tocarla: no hace falta.
+    }
 
     const numero = ++contadorEnvios.current;
     const contacto = [datos.telefono.trim(), datos.correo.trim()].filter(Boolean).join(" · ");
