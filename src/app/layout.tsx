@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/commons/Navbar";
-import WhatsAppFloat from "@/components/commons/WhatsAppFloat";
-import PageTransition from "@/components/PageTransition";
-import SmoothScrollProvider from "@/components/SmoothScrollProvider";
-import IntroWrapper from "@/components/IntroWrapper";
-import ErrorBoundary from "@/components/ErrorBoundary";
-import Footer from "@/components/ui/Footer";
-import PointerSpotlight from "@/components/ui/PointerSpotlight";
+import Encabezado from "@/components/Encabezado";
+import Pie from "@/components/Pie";
+import BotonWhatsApp from "@/components/BotonWhatsApp";
 import { Analytics } from "@vercel/analytics/next";
 
-const inter = Inter({
-  variable: "--font-inter",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+// Stand-in for Batangas, the manual's heading face, until it has a web license.
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["600", "700"],
 });
 
 const SITE_URL = "https://gavicomferroviario.com";
@@ -66,9 +69,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/logo-gavicom.png",
-        width: 512,
-        height: 512,
+        url: "/marca/gavicom-azul.png",
+        width: 1267,
+        height: 327,
         alt: EMPRESA,
       },
     ],
@@ -78,7 +81,7 @@ export const metadata: Metadata = {
     title: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
     description:
       "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas certificadas para la industria del tren.",
-    images: ["/logo-gavicom.png"],
+    images: ["/marca/gavicom-azul.png"],
   },
   robots: {
     index: true,
@@ -89,7 +92,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    apple: "/apple-icon.png",
   },
 };
 
@@ -100,8 +103,8 @@ const jsonLd = {
   name: EMPRESA,
   alternateName: ["GAVICOM", "GAVICOM Ferroviario"],
   url: SITE_URL,
-  logo: `${SITE_URL}/logo-gavicom.png`,
-  image: `${SITE_URL}/logo-gavicom.png`,
+  logo: `${SITE_URL}/marca/gavicom-azul.png`,
+  image: `${SITE_URL}/marca/gavicom-azul.png`,
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+57-315-050-9803",
@@ -142,25 +145,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="es"
-      className={`${inter.variable}`}
-    >
+    <html lang="es" className={`${montserrat.variable} ${poppins.variable}`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen bg-[#f8f9fa] text-[#1a1a2e] font-sans antialiased flex flex-col">
-        <div className="rail-progress" aria-hidden="true" />
-        <PointerSpotlight />
-        <IntroWrapper>
-          <Navbar />
-          <main className="flex-grow"><SmoothScrollProvider><ErrorBoundary><PageTransition>{children}</PageTransition></ErrorBoundary></SmoothScrollProvider></main>
-          <Footer />
-          <WhatsAppFloat />
-        </IntroWrapper>
+      <body className="min-h-screen font-sans flex flex-col">
+        <a href="#contenido" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:p-3 focus:bg-white focus:text-azul">
+          Saltar al contenido
+        </a>
+        <Encabezado />
+        <main id="contenido" className="flex-grow">
+          {children}
+        </main>
+        <Pie />
+        <BotonWhatsApp />
         <Analytics />
       </body>
     </html>
