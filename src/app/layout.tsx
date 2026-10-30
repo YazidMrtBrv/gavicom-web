@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/commons/Navbar";
 import WhatsAppFloat from "@/components/commons/WhatsAppFloat";
@@ -11,9 +11,13 @@ import Footer from "@/components/ui/Footer";
 import PointerSpotlight from "@/components/ui/PointerSpotlight";
 import { Analytics } from "@vercel/analytics/next";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Montserrat is the brand's secondary typeface (Manual de Identidad, sec. 03)
+// and stands in for headings too: the primary one, Batangas, has no web
+// licence. Variable font, so the manual's 300–700 range needs no weight list.
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const SITE_URL = "https://gavicomferroviario.com";
@@ -144,7 +148,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${inter.variable}`}
+      className={montserrat.variable}
     >
       <head>
         <script
@@ -152,7 +156,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen bg-[#f8f9fa] text-[#1a1a2e] font-sans antialiased flex flex-col">
+      <body className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col">
         <div className="rail-progress" aria-hidden="true" />
         <PointerSpotlight />
         <IntroWrapper>

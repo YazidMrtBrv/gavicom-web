@@ -1,21 +1,50 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Paleta del Manual de Identidad GAVICOM v1.0.
+   El manual imprime el HEX #0C2642 para el Azul Ejecutivo, pero su
+   RGB (20,59,100), su CMYK y las láminas de versiones del logotipo
+   resuelven a #143B64, que es el color real del logo sobre blanco.
+   Por eso #143B64 es el principal y #0C2642 queda como variante
+   oscura para fondos a sangre. El naranja no está en el manual: el
+   cliente lo autorizó como complemento de acción. Sobre blanco no
+   llega a 3:1, así que nunca se usa para texto sobre fondo claro.
+   ============================================================ */
 :root {
-  --background: #f8f9fa;
-  --foreground: #1a1a2e;
-  --orange-primary: #CC4C00;
-  --orange-accent:  #D35400;
+  --brand: #143B64;
+  --brand-deep: #0C2642;
+  --accent: #E8920C;
+  --accent-strong: #F5A623;
+  --surface: #F4F4F5;
+  --ink: #000000;
+
+  --background: #FFFFFF;
+  --foreground: var(--ink);
   --apple-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --glass-bg: rgba(248, 249, 250, 0.82);
-  --glass-border: rgba(211, 84, 0, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(20, 59, 100, 0.12);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
+/* Titulares y texto van en tokens separados aunque hoy apunten a la
+   misma fuente: el manual pide Batangas para titulares, que no tiene
+   licencia web; si algún día la tiene, se cambia solo --font-titulo. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-inter);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --font-sans: var(--font-montserrat);
+  --font-titulo: var(--font-montserrat);
+  --font-mono: var(--font-montserrat);
+}
+
+@layer base {
+  h1, h2, h3 { font-family: var(--font-titulo); }
 }
 
 body {
@@ -26,17 +55,17 @@ body {
 }
 
 ::selection {
-  background: #D35400;
-  color: #ffffff;
+  background: var(--accent);
+  color: var(--brand-deep);
 }
 
 ::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f3f5; }
+::-webkit-scrollbar-track { background: var(--surface); }
 ::-webkit-scrollbar-thumb {
-  background: #D35400;
+  background: var(--brand);
   border-radius: 0;
 }
-::-webkit-scrollbar-thumb:hover { background: #FF5F00; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(24px); }
@@ -70,11 +99,11 @@ body {
 
 @keyframes neon-chase {
   0%, 100% {
-    box-shadow: 0 0 2px rgba(211,84,0,0.2), inset 0 0 2px rgba(211,84,0,0.05);
+    box-shadow: 0 0 2px rgba(232,146,12,0.2), inset 0 0 2px rgba(232,146,12,0.05);
   }
-  25%  { box-shadow:  2px 0 4px rgba(211,84,0,0.35), inset 0  1px 2px rgba(211,84,0,0.1); }
-  50%  { box-shadow:  0   0 6px rgba(211,84,0,0.25), inset 0  0   3px rgba(211,84,0,0.08); }
-  75%  { box-shadow: -1px 0 4px rgba(211,84,0,0.35), inset 0 -1px 2px rgba(211,84,0,0.1); }
+  25%  { box-shadow:  2px 0 4px rgba(232,146,12,0.35), inset 0  1px 2px rgba(232,146,12,0.1); }
+  50%  { box-shadow:  0   0 6px rgba(232,146,12,0.25), inset 0  0   3px rgba(232,146,12,0.08); }
+  75%  { box-shadow: -1px 0 4px rgba(232,146,12,0.35), inset 0 -1px 2px rgba(232,146,12,0.1); }
 }
 
 @theme {
@@ -133,7 +162,7 @@ body {
   height: 2px;
   background: repeating-linear-gradient(
     90deg,
-    #D35400 0px, #D35400 4px,
+    var(--accent) 0px, var(--accent) 4px,
     transparent 4px, transparent 12px
   );
 }
@@ -143,7 +172,7 @@ body {
   position: absolute;
   top: 50%;
   width: 8px; height: 8px;
-  background: #D35400;
+  background: var(--accent);
   transform: translateY(-50%) rotate(45deg);
 }
 .rail-divider::before { left:  -4px; }
@@ -151,10 +180,10 @@ body {
 
 .neon-chase {
   animation: neon-chase 4s ease-in-out infinite;
-  border: 1px solid rgba(211,84,0,0.1);
+  border: 1px solid rgba(232,146,12,0.15);
   transition: border-color 0.3s ease;
 }
-.neon-chase:hover { border-color: rgba(211,84,0,0.3); }
+.neon-chase:hover { border-color: rgba(232,146,12,0.45); }
 
 .glass {
   background: var(--glass-bg);
@@ -168,7 +197,7 @@ body {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(211, 84, 0, 0.15);
+  border: 1px solid rgba(20, 59, 100, 0.12);
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
 }
 
@@ -210,8 +239,8 @@ body {
       transform-origin: 0 50%;
       background: repeating-linear-gradient(
         90deg,
-        #D35400 0px, #D35400 7px,
-        rgba(211, 84, 0, 0.25) 7px, rgba(211, 84, 0, 0.25) 11px
+        var(--accent) 0px, var(--accent) 7px,
+        rgba(232, 146, 12, 0.25) 7px, rgba(232, 146, 12, 0.25) 11px
       );
       animation: rail-progress auto linear;
       animation-timeline: scroll(root block);
@@ -278,7 +307,7 @@ body {
   position: absolute;
   width: 14px;
   height: 14px;
-  border-color: #D35400;
+  border-color: var(--accent);
   opacity: 0;
   transition: opacity 0.35s var(--apple-ease), transform 0.35s var(--apple-ease);
   pointer-events: none;
@@ -312,7 +341,7 @@ body {
   position: absolute;
   left: 0; top: 0; bottom: 0;
   width: 2px;
-  background: #D35400;
+  background: var(--accent);
   transform: scaleY(0);
   transform-origin: 50% 0;
   transition: transform 0.3s var(--apple-ease);
