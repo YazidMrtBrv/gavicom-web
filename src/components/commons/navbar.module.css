@@ -1,0 +1,92 @@
+/* ============================================================
+   Movimiento propio del menú. Misma regla que el kit: el estado
+   de partida es el visible y todo lo que se mueve está dentro de
+   prefers-reduced-motion: no-preference.
+   ============================================================ */
+
+/* ---------- Enlace del menú: el texto "rueda" al pasar el cursor ---------- */
+/* La copia que sube desde abajo es un pseudoelemento con texto alternativo
+   vacío, no un segundo nodo de texto: ni el lector de pantalla ni el buscador
+   leen el nombre dos veces. Donde no se entiende ese texto alternativo no hay
+   copia ni rueda: el enlace solo cambia de color. */
+.rodillo {
+  position: relative;
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  line-height: 1.4;
+}
+
+.rodilloTexto {
+  display: block;
+}
+
+@supports (content: "a" / "") {
+  .rodillo::after {
+    content: attr(data-texto) / "";
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .rodilloTexto,
+    .rodillo::after {
+      transition: translate 0.45s var(--apple-ease);
+    }
+
+    .enlace:hover .rodilloTexto,
+    .enlace:hover .rodillo::after,
+    .enlace:focus-visible .rodilloTexto,
+    .enlace:focus-visible .rodillo::after {
+      translate: 0 -100%;
+    }
+  }
+}
+
+/* ---------- Contador de la cotización ---------- */
+.contador {
+  position: relative;
+}
+
+/* Solo cuando el visitante agrega algo (el componente cambia la key para
+   repetirla): late una vez y suelta una onda, sin moverse de su sitio. */
+@keyframes contador-late {
+  0% {
+    scale: 1;
+  }
+  35% {
+    scale: 1.3;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes contador-onda {
+  from {
+    scale: 1;
+    opacity: 0.9;
+  }
+  to {
+    scale: 2.1;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .contadorPulso {
+    animation: contador-late 0.5s var(--apple-ease);
+  }
+
+  .contadorPulso::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--brand-deep);
+    border-radius: inherit;
+    pointer-events: none;
+    animation: contador-onda 0.7s ease-out forwards;
+  }
+}

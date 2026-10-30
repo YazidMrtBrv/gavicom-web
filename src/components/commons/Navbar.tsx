@@ -1,139 +1,266 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { MotionConfig, motion } from "framer-motion";
+import Logo from "@/components/marca/Logo";
+import { useCotizacion } from "@/components/cotizacion/CotizacionProvider";
 import { COMPANIA_INFO } from "@/constants/productos";
+import { cn } from "@/lib/cn";
+import BotonCotizar from "./BotonCotizar";
+import MenuMovil from "./MenuMovil";
+import { ENLACES_PRINCIPALES, esRutaActiva, ID_MENU_MOVIL, textoReferencias } from "./navegacion";
+import { urlWhatsAppDeRuta } from "./whatsapp";
+import estilos from "./navbar.module.css";
 
-export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+// A partir de aquí el vidrio se vuelve más opaco.
+const UMBRAL_VIDRIO = 40;
+// Por encima de esta altura la barra de contacto se recoge al bajar y vuelve al subir.
+const UMBRAL_BARRA = 120;
+// Lenis entrega el desplazamiento en pasos muy finos: sin margen, la barra
+// parpadearía con cualquier temblor del trackpad.
+const SENSIBILIDAD = 6;
+
+interface EstadoDesplazamiento {
+  desplazado: boolean;
+  barraOculta: boolean;
+}
+
+function useEstadoDesplazamiento(): EstadoDesplazamiento {
+  const [estado, setEstado] = useState<EstadoDesplazamiento>({ desplazado: false, barraOculta: false });
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    let ultimoY = window.scrollY;
+    let frame = 0;
+
+    const medir = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const delta = y - ultimoY;
+      const decide = y <= UMBRAL_BARRA || Math.abs(delta) >= SENSIBILIDAD;
+      if (decide) ultimoY = y;
+
+      setEstado((previo) => {
+        const desplazado = y > UMBRAL_VIDRIO;
+        const barraOculta = y <= UMBRAL_BARRA ? false : decide ? delta > 0 : previo.barraOculta;
+        return previo.desplazado === desplazado && previo.barraOculta === barraOculta
+          ? previo
+          : { desplazado, barraOculta };
+      });
+    };
+
+    const pedirFotograma = () => {
+      frame ||= requestAnimationFrame(medir);
+    };
+
+    // Una página recargada a media altura arranca ya desplazada.
+    pedirFotograma();
+    window.addEventListener("scroll", pedirFotograma, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", pedirFotograma);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
-  const links = [
-    { label: "Inicio", href: "/" },
-    { label: "Catálogo Técnico", href: "/catalogo" },
-    { label: "Servicios", href: "/servicios" },
-    { label: "Contacto", href: "/contacto" },
-  ];
+  return estado;
+}
+
+function BarraContacto({ urlWhatsApp }: { urlWhatsApp: string }) {
+  return (
+    <div className="flex h-7 items-center justify-center gap-3 border-b border-brand/10 px-4 text-[10px] sm:px-5 lg:justify-between">
+      <p className="hidden items-center gap-2 font-semibold uppercase tracking-[0.22em] text-zinc-600 lg:flex">
+        <span aria-hidden="true" className="size-1.5 bg-accent" />
+        {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento} · Cobertura nacional
+      </p>
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="hidden font-semibold uppercase tracking-widest text-brand sm:inline">Contacto directo:</span>
+        <a
+          href={urlWhatsApp}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 font-semibold text-brand decoration-accent decoration-2 underline-offset-2 transition-colors hover:text-brand-deep hover:underline"
+        >
+          WhatsApp
+          <span className="sr-only"> (se abre en una pestaña nueva)</span>
+        </a>
+        <span aria-hidden="true" className="select-none text-zinc-300">
+          |
+        </span>
+        <a
+          href={`mailto:${COMPANIA_INFO.email}`}
+          className="truncate text-zinc-600 decoration-accent decoration-2 underline-offset-2 transition-colors hover:text-brand hover:underline"
+        >
+          {COMPANIA_INFO.email}
+        </a>
+      </div>
+    </div>
+  );
+}
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const { desplazado, barraOculta } = useEstadoDesplazamiento();
+  const { total, hidratado } = useCotizacion();
+  const [menuAbierto, setMenuAbierto] = useState(false);
+
+  // Volver atrás con el menú abierto también lo cierra, no solo pulsar un enlace.
+  const [rutaDelMenu, setRutaDelMenu] = useState(pathname);
+  if (rutaDelMenu !== pathname) {
+    setRutaDelMenu(pathname);
+    setMenuAbierto(false);
+  }
+
+  // Al hidratar, la lista guardada aparece de golpe: eso no es una acción del
+  // visitante y no debe latir ni anunciarse. Solo cuentan los cambios posteriores.
+  const [seguimiento, setSeguimiento] = useState({ total, hidratado, pulsos: 0, cambios: 0 });
+  if (seguimiento.total !== total || seguimiento.hidratado !== hidratado) {
+    const delVisitante = seguimiento.hidratado && hidratado;
+    setSeguimiento({
+      total,
+      hidratado,
+      pulsos: seguimiento.pulsos + (delVisitante && total > seguimiento.total ? 1 : 0),
+      cambios: seguimiento.cambios + (delVisitante ? 1 : 0),
+    });
+  }
+  const anuncio =
+    seguimiento.cambios === 0
+      ? ""
+      : total === 0
+        ? "Su lista de cotización está vacía."
+        : `Su lista de cotización tiene ${textoReferencias(total)}.`;
+
+  // El menú móvil no tiene sentido en escritorio: si la ventana crece, se cierra.
+  useEffect(() => {
+    const escritorio = window.matchMedia("(min-width: 1024px)");
+    const alCambiar = (evento: MediaQueryListEvent) => {
+      if (evento.matches) setMenuAbierto(false);
+    };
+    escritorio.addEventListener("change", alCambiar);
+    return () => escritorio.removeEventListener("change", alCambiar);
+  }, []);
+
+  const urlWhatsApp = urlWhatsAppDeRuta(pathname);
 
   return (
-    <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl">
-      <div
-        className={`relative rounded-[4px] transition-all duration-500 ${
-          scrolled ? "glass-strong shadow-lg" : "glass"
-        }`}
-      >
-        {/* Top bar */}
-        <div className="border-b border-brand/10 px-5 py-1.5 flex items-center justify-center gap-3 text-[10px]">
-          <span className="hidden sm:inline text-brand font-semibold uppercase tracking-widest">
-            Contacto Directo:
-          </span>
-          <a
-            href={`https://wa.me/${COMPANIA_INFO.whatsappSales.replace("+", "")}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-brand hover:text-brand-deep hover:underline decoration-accent decoration-2 underline-offset-2 transition-colors font-semibold"
+    <MotionConfig reducedMotion="user">
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-55 px-4 pt-4 sm:px-6">
+        <div
+          className={cn(
+            "pointer-events-auto mx-auto max-w-6xl rounded-[4px] transition-[background-color,box-shadow,border-color] duration-500",
+            desplazado ? "glass-strong" : "glass"
+          )}
+        >
+          {/* Se recoge al bajar y vuelve al subir; recogida queda inerte para que
+              el tabulador no entre en enlaces que no se ven. */}
+          <div
+            inert={barraOculta}
+            className={cn(
+              "grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none",
+              barraOculta ? "grid-rows-[0fr]" : "grid-rows-[1fr]"
+            )}
           >
-            WhatsApp
-          </a>
-          <span className="text-zinc-300 select-none">|</span>
-          <a
-            href={`mailto:${COMPANIA_INFO.email}`}
-            className="text-zinc-500 hover:text-brand transition-colors"
-          >
-            {COMPANIA_INFO.email}
-          </a>
-        </div>
-
-        {/* Main row */}
-        <div className="px-5 h-14 sm:h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="bg-brand p-1.5 rounded-lg group-hover:shadow-[0_0_16px_rgba(232,146,12,0.4)] transition-all duration-300">
-              <Image
-                src="/logo-gavicom.png"
-                alt="GAVICOM SAS"
-                width={36}
-                height={36}
-                className="object-contain"
-              />
+            <div className="min-h-0 overflow-hidden">
+              <BarraContacto urlWhatsApp={urlWhatsApp} />
             </div>
-            <span className="hidden sm:inline text-[8px] text-zinc-500 font-bold tracking-[0.25em] uppercase group-hover:text-zinc-600 transition-colors">
-              S.A.S
-            </span>
-          </Link>
+          </div>
 
-          <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-zinc-600">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="hover:text-brand transition-colors tracking-wide relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-accent after:transition-all hover:after:w-full"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
+          <div className="flex h-14 items-center justify-between gap-3 px-3 sm:h-16 sm:px-5">
             <Link
-              href="/contacto"
-              className="hidden sm:inline-flex items-center text-brand-deep text-xs font-bold uppercase tracking-wider px-5 py-2.5 bg-accent hover:bg-accent-strong transition-all active:scale-95 shiny-btn spotlight rounded-[4px]"
+              href="/"
+              data-inicio-sitio=""
+              aria-label={`${COMPANIA_INFO.nombre}, ir al inicio`}
+              className="flex shrink-0 items-center gap-3 rounded-[4px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
-              Solicitar Cotización
+              <Logo ancho={56} />
+              <span
+                aria-hidden="true"
+                className="hidden border-l border-zinc-200 pl-3 text-[9px] font-semibold uppercase leading-[1.7] tracking-[0.22em] text-zinc-500 xl:block"
+              >
+                Railway Solutions &amp; Supply
+                <br />
+                GAVICOM Energy
+              </span>
             </Link>
 
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden flex flex-col items-center justify-center w-10 h-10 gap-1 text-zinc-600 hover:text-brand transition-colors"
-              aria-label="Menú"
-            >
-              <span className={`block w-5 h-[1.5px] bg-current transition-all ${menuOpen ? "rotate-45 translate-y-[3.5px]" : ""}`} />
-              <span className={`block w-5 h-[1.5px] bg-current transition-all ${menuOpen ? "opacity-0" : ""}`} />
-              <span className={`block w-5 h-[1.5px] bg-current transition-all ${menuOpen ? "-rotate-45 -translate-y-[3.5px]" : ""}`} />
-            </button>
+            <nav aria-label="Principal" className="hidden lg:block">
+              <ul className="flex items-center gap-1 xl:gap-2">
+                {ENLACES_PRINCIPALES.map((enlace) => {
+                  const activo = esRutaActiva(pathname, enlace.href);
+                  return (
+                    <li key={enlace.href}>
+                      <Link
+                        href={enlace.href}
+                        aria-current={activo ? "page" : undefined}
+                        className={cn(
+                          estilos.enlace,
+                          "group/enlace relative flex items-center whitespace-nowrap rounded-[2px] px-3 py-2 text-[13px] font-medium tracking-wide text-zinc-600 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent aria-[current=page]:text-brand"
+                        )}
+                      >
+                        <span className={estilos.rodillo} data-texto={enlace.etiqueta}>
+                          <span className={estilos.rodilloTexto}>{enlace.etiqueta}</span>
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-x-3 bottom-0.5 h-0.5 origin-left scale-x-0 bg-accent transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/enlace:scale-x-100 motion-reduce:transition-none"
+                        />
+                        {/* El subrayado de la página actual se desliza hasta la nueva al navegar. */}
+                        {activo && (
+                          <motion.span
+                            layoutId="navbar-subrayado-activo"
+                            aria-hidden="true"
+                            className="absolute inset-x-3 bottom-0.5 h-0.5 bg-accent"
+                            transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                          />
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+
+            <div className="flex items-center gap-1.5 sm:gap-3">
+              <BotonCotizar total={total} pulsos={seguimiento.pulsos} activo={pathname === "/cotizar"} />
+
+              <span aria-hidden="true" className="hidden h-6 w-px bg-zinc-200 sm:block lg:hidden" />
+
+              <button
+                type="button"
+                onClick={() => setMenuAbierto(true)}
+                aria-label="Abrir menú"
+                aria-haspopup="dialog"
+                aria-expanded={menuAbierto}
+                aria-controls={ID_MENU_MOVIL}
+                className="group/menu -mr-1 flex min-h-11 min-w-11 items-center justify-center gap-2.5 rounded-[4px] px-2 text-brand transition-colors hover:text-brand-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:px-3 lg:hidden"
+              >
+                <span aria-hidden="true" className="hidden text-[11px] font-semibold uppercase tracking-[0.2em] sm:inline">
+                  Menú
+                </span>
+                <span aria-hidden="true" className="flex w-5 flex-col items-end gap-[5px]">
+                  <span className="h-[1.5px] w-5 bg-current" />
+                  <span className="h-[1.5px] w-3 bg-current transition-[width] duration-300 group-hover/menu:w-5 motion-reduce:transition-none" />
+                </span>
+              </button>
+            </div>
           </div>
         </div>
+      </header>
 
-        {/* Mobile menu */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="border-t border-brand/10 overflow-hidden lg:hidden"
-            >
-              <div className="px-5 py-4 flex flex-col gap-1">
-                {links.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="text-sm font-bold text-zinc-600 hover:text-brand uppercase tracking-wider py-3 border-b border-zinc-100 last:border-0 transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                <Link
-                  href="/contacto"
-                  onClick={() => setMenuOpen(false)}
-                  className="sm:hidden mt-2 w-full text-center text-brand-deep text-xs font-bold uppercase tracking-wider px-5 py-3 bg-accent hover:bg-accent-strong transition-all rounded-[4px]"
-                >
-                  Solicitar Cotización
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </header>
+      <MenuMovil
+        abierto={menuAbierto}
+        alCerrar={() => setMenuAbierto(false)}
+        ruta={pathname}
+        barraOculta={barraOculta}
+        total={total}
+        pulsos={seguimiento.pulsos}
+        urlWhatsApp={urlWhatsApp}
+      />
+
+      {/* Los botones "Agregar a cotización" no dicen cuántas referencias van: lo dice esta región. */}
+      <p role="status" className="sr-only">
+        {anuncio}
+      </p>
+    </MotionConfig>
   );
 }

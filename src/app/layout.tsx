@@ -12,6 +12,7 @@ import PointerSpotlight from "@/components/ui/PointerSpotlight";
 import PKRuler from "@/components/motion/PKRuler";
 import CotizacionProvider from "@/components/cotizacion/CotizacionProvider";
 import { Analytics } from "@vercel/analytics/next";
+import { NOMBRE_LINEA } from "@/lib/cotizacion";
 
 // Montserrat is the brand's secondary typeface (Manual de Identidad, sec. 03)
 // and stands in for headings too: the primary one, Batangas, has no web
@@ -25,6 +26,14 @@ const montserrat = Montserrat({
 const SITE_URL = "https://gavicomferroviario.com";
 const EMPRESA = "GAVICOM SAS";
 
+// La descripción suma la línea Energy sin quitar las palabras clave
+// ferroviarias, y el título por defecto sigue siendo el ferroviario: es el
+// posicionamiento que ya tiene el dominio.
+const DESCRIPCION =
+  "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía bajo estándares AREMA/UIC y señalización industrial. Con GAVICOM Energy, soluciones de energía solar fotovoltaica: cofres fotovoltaicos, instalación de sistemas solares y protecciones eléctricas AC y DC. Sede en Barranquilla con cobertura en toda Colombia.";
+const DESCRIPCION_CORTA =
+  "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas de vía bajo estándares AREMA/UIC. GAVICOM Energy: soluciones de energía solar fotovoltaica.";
+
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -37,8 +46,7 @@ export const metadata: Metadata = {
     default: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
     template: `%s | ${EMPRESA}`,
   },
-  description:
-    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía bajo estándares AREMA/UIC y señalización industrial. Sede en Barranquilla con cobertura en toda Colombia.",
+  description: DESCRIPCION,
   keywords: [
     "herramientas ferroviarias",
     "suministros ferroviarios",
@@ -54,6 +62,12 @@ export const metadata: Metadata = {
     "GAVICOM",
     "GAVICOM SAS",
     "GAVICOM ferroviario",
+    "GAVICOM Energy",
+    "energía solar fotovoltaica",
+    "cofres fotovoltaicos",
+    "instalación de sistemas solares",
+    "protecciones eléctricas AC y DC",
+    "energía solar Barranquilla",
   ],
   metadataBase: new URL(SITE_URL),
   verification: {
@@ -64,8 +78,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
-    description:
-      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas de vía bajo estándares AREMA/UIC.",
+    description: DESCRIPCION_CORTA,
     url: SITE_URL,
     siteName: EMPRESA,
     locale: "es_CO",
@@ -82,8 +95,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
     title: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
-    description:
-      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas de vía bajo estándares AREMA/UIC.",
+    description: DESCRIPCION_CORTA,
     images: ["/logo-gavicom.png"],
   },
   robots: {
@@ -119,8 +131,9 @@ const jsonLd = {
   sameAs: [
     `https://wa.me/573150509803`,
   ],
-  description:
-    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía bajo estándares AREMA/UIC y señalización industrial.",
+  description: DESCRIPCION,
+  // Las dos líneas de negocio, con los mismos nombres que usa el cotizador.
+  brand: Object.values(NOMBRE_LINEA).map((nombre) => ({ "@type": "Brand", name: nombre })),
   address: {
     "@type": "PostalAddress",
     addressLocality: "Barranquilla",
@@ -139,6 +152,11 @@ const jsonLd = {
     "Estudios topográficos con dron",
     "Consultoría ferroviaria",
     "Obras civiles para infraestructura de transporte",
+    "Energía solar fotovoltaica",
+    "Cofres fotovoltaicos metálicos rígidos",
+    "Montaje e instalación de sistemas solares residenciales, comerciales e industriales",
+    "Protecciones eléctricas AC y DC",
+    "Ensamble e integración de componentes eléctricos",
   ],
 };
 
@@ -155,7 +173,7 @@ export default function RootLayout({
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
       </head>
       <body className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col">
