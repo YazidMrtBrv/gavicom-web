@@ -359,7 +359,7 @@ function DesktopView() {
               Soluciones Integrales
             </h2>
             <p className="text-sm text-zinc-600 mt-4 max-w-xl">
-              Ofrecemos un portafolio completo de suministros y servicios certificados para la operación y
+              Ofrecemos un portafolio completo de suministros y servicios para la operación y
               mantenimiento de vía férrea en Colombia.
             </p>
           </motion.div>
@@ -370,7 +370,7 @@ function DesktopView() {
                 title: "Suministros Ferroviarios",
                 items: [
                   "Eclisas y fijaciones para rieles AREMA/UIC",
-                  "Sistemas elásticos de sujeción certificados",
+                  "Sistemas elásticos de sujeción",
                   "Componentes para superestructura de vía",
                   "Materiales para patios industriales y talleres",
                 ],

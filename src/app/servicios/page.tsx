@@ -273,7 +273,7 @@ export default function ServiciosPage() {
                   transition={{ duration: 0.6, delay: 0.4 }}
                   className="mt-6 text-sm font-mono text-zinc-500 leading-relaxed max-w-lg border-l-2 border-accent pl-4"
                 >
-                  Levantamientos topográficos, mantenimiento hidráulico, diseño de planos técnicos y operaciones logísticas certificadas para la infraestructura ferroviaria en Colombia.
+                  Levantamientos topográficos, mantenimiento hidráulico, diseño de planos técnicos y operaciones logísticas para la infraestructura ferroviaria en Colombia.
                 </motion.p>
                 
                 <motion.div 
@@ -313,7 +313,7 @@ export default function ServiciosPage() {
                     className="absolute inset-0 border-2 border-transparent border-t-accent/20 border-b-brand/10 rounded-full m-8"
                   />
                   <div className="text-center font-mono text-[9px] text-zinc-500 tracking-[0.3em] uppercase">
-                    <span className="block text-brand text-xl font-bold tracking-tighter mb-2">ISO / AREMA</span>
+                    <span className="block text-brand text-xl font-bold tracking-tighter mb-2">AREMA / UIC</span>
                     Estándares Operativos
                   </div>
                 </div>

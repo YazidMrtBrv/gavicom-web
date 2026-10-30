@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     template: `%s | ${EMPRESA}`,
   },
   description:
-    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía certificadas AREMA/UIC y señalización industrial. Sede en Barranquilla con cobertura en toda Colombia.",
+    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía bajo estándares AREMA/UIC y señalización industrial. Sede en Barranquilla con cobertura en toda Colombia.",
   keywords: [
     "herramientas ferroviarias",
     "suministros ferroviarios",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
     description:
-      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas certificadas para la industria del tren.",
+      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas de vía bajo estándares AREMA/UIC.",
     url: SITE_URL,
     siteName: EMPRESA,
     locale: "es_CO",
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
     description:
-      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas certificadas para la industria del tren.",
+      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas de vía bajo estándares AREMA/UIC.",
     images: ["/logo-gavicom.png"],
   },
   robots: {
@@ -118,7 +118,7 @@ const jsonLd = {
     `https://wa.me/573150509803`,
   ],
   description:
-    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía certificadas y señalización industrial.",
+    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía bajo estándares AREMA/UIC y señalización industrial.",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Barranquilla",
