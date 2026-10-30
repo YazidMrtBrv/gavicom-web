@@ -39,7 +39,7 @@ export default function Navbar() {
             href={`https://wa.me/${COMPANIA_INFO.whatsappSales.replace("+", "")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-brand hover:text-brand transition-colors font-semibold"
+            className="text-brand hover:text-brand-deep hover:underline decoration-accent decoration-2 underline-offset-2 transition-colors font-semibold"
           >
             WhatsApp
           </a>
