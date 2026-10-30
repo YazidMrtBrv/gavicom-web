@@ -11,6 +11,11 @@ export const metadata: Metadata = {
       "Portafolio de servicios técnicos para infraestructura férrea: topografía, mantenimiento, diseño de planos y consultoría especializada.",
     url: "/servicios",
     type: "website",
+    siteName: "GAVICOM SAS",
+    locale: "es_CO",
+    // Next replaces the root openGraph instead of merging it, so the shared
+    // image has to be repeated here or the link preview goes out without one.
+    images: [{ url: "/logo-gavicom.png", width: 652, height: 383, alt: "GAVICOM SAS" }],
   },
 };
 

@@ -86,8 +86,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/logo-gavicom.png",
-        width: 512,
-        height: 512,
+        width: 652,
+        height: 383,
         alt: EMPRESA,
       },
     ],

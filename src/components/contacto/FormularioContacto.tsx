@@ -171,6 +171,8 @@ export default function FormularioContacto() {
           ) : (
             <motion.form
               key="formulario"
+              method="post"
+              action="/api/contacto"
               noValidate
               onSubmit={enviar}
               aria-label="Formulario de contacto"

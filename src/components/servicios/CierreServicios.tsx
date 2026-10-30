@@ -66,7 +66,7 @@ export default function CierreServicios() {
               tono="oscuro"
               etiqueta="S.04 — COTIZACIÓN"
               titulo="¿Necesita una solución técnica a la medida de su vía?"
-              entradilla="Agregue los servicios a su cotización, indíquenos la ciudad y el alcance, y envíe la solicitud por WhatsApp: queda copia por correo."
+              entradilla="Agregue los servicios a su cotización, indíquenos la ciudad y el alcance, y envíe la solicitud por WhatsApp."
               acentos={["medida"]}
               id="titulo-cierre-servicios"
             />

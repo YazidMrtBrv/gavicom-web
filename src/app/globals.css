@@ -584,3 +584,13 @@ body {
 }
 .boton:hover .boton-enlace-texto,
 .boton:focus-visible .boton-enlace-texto { background-size: 100% 2px; }
+
+/* ============================================================
+   Foco visible sobre cualquier fondo. El contorno naranja del kit
+   no llega a 3:1 sobre blanco (2,46); un anillo azul oscuro pegado
+   al control sí (15:1). Sobre fondos azules el anillo se funde,
+   pero ahí el naranja ya cumple (6,23).
+   ============================================================ */
+.focus-visible\:outline-accent:focus-visible {
+  box-shadow: 0 0 0 2px var(--brand-deep);
+}

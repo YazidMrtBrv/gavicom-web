@@ -126,7 +126,7 @@ const PASOS: PasoCotizar[] = [
   {
     numero: "03",
     titulo: "Envíe la solicitud por WhatsApp",
-    descripcion: "La solicitud sale armada al WhatsApp comercial de GAVICOM y queda copia por correo.",
+    descripcion: "La solicitud sale armada, con toda la lista, al WhatsApp comercial de GAVICOM.",
     muestra: <MuestraMensaje />,
   },
 ];
