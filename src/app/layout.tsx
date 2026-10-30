@@ -9,6 +9,8 @@ import IntroWrapper from "@/components/IntroWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import Footer from "@/components/ui/Footer";
 import PointerSpotlight from "@/components/ui/PointerSpotlight";
+import PKRuler from "@/components/motion/PKRuler";
+import CotizacionProvider from "@/components/cotizacion/CotizacionProvider";
 import { Analytics } from "@vercel/analytics/next";
 
 // Montserrat is the brand's secondary typeface (Manual de Identidad, sec. 03)
@@ -158,13 +160,16 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col">
         <div className="rail-progress" aria-hidden="true" />
+        <PKRuler />
         <PointerSpotlight />
-        <IntroWrapper>
-          <Navbar />
-          <main className="flex-grow"><SmoothScrollProvider><ErrorBoundary><PageTransition>{children}</PageTransition></ErrorBoundary></SmoothScrollProvider></main>
-          <Footer />
-          <WhatsAppFloat />
-        </IntroWrapper>
+        <CotizacionProvider>
+          <IntroWrapper>
+            <Navbar />
+            <main className="flex-grow"><SmoothScrollProvider><ErrorBoundary><PageTransition>{children}</PageTransition></ErrorBoundary></SmoothScrollProvider></main>
+            <Footer />
+            <WhatsAppFloat />
+          </IntroWrapper>
+        </CotizacionProvider>
         <Analytics />
       </body>
     </html>

@@ -1,52 +1,32 @@
-"use client";
+import type { CSSProperties, ReactNode } from "react";
 
-import { motion } from "framer-motion";
+const PANELES = 5;
 
-export default function Template({ children }: { children: React.ReactNode }) {
-  const panels = 5;
+/*
+ * Cortina de entrada en CSS puro (globals.css, .cortina). Con framer-motion
+ * el estado inicial scaleY:1 viajaba en el HTML del servidor y las dos capas
+ * tapaban la página hasta que React hidrataba; así arranca al pintar. Como el
+ * template se vuelve a montar en cada navegación, la animación se repite.
+ */
+function Cortina({ capa }: { capa: "oscura" | "accent" }) {
+  return (
+    <div aria-hidden="true" className={`cortina cortina-${capa}`}>
+      {Array.from({ length: PANELES }, (_, i) => (
+        <span key={i} className="cortina-panel" style={{ "--i": i } as CSSProperties} />
+      ))}
+    </div>
+  );
+}
 
+export default function Template({ children }: { children: ReactNode }) {
   return (
     <>
-      {/* Black heavy machinery panels layer */}
-      <div className="fixed inset-0 z-[9999] pointer-events-none flex">
-        {Array.from({ length: panels }).map((_, i) => (
-          <motion.div
-            key={`black-${i}`}
-            initial={{ scaleY: 1 }}
-            animate={{ scaleY: 0 }}
-            transition={{
-              duration: 0.35,
-              ease: [0.77, 0, 0.175, 1], // Heavy Expo ease
-              delay: i * 0.03,
-            }}
-            style={{ originY: i % 2 === 0 ? 0 : 1 }}
-            className="flex-1 bg-brand-deep border-x border-[#ffffff10]"
-          />
-        ))}
-      </div>
-
-      {/* Orange high-vis panels layer */}
-      <div className="fixed inset-0 z-[9998] pointer-events-none flex">
-        {Array.from({ length: panels }).map((_, i) => (
-          <motion.div
-            key={`orange-${i}`}
-            initial={{ scaleY: 1 }}
-            animate={{ scaleY: 0 }}
-            transition={{
-              duration: 0.35,
-              ease: [0.77, 0, 0.175, 1], // Heavy Expo ease
-              delay: 0.06 + i * 0.03,
-            }}
-            style={{ originY: i % 2 === 0 ? 0 : 1 }}
-            className="flex-1 bg-accent shadow-[0_0_30px_var(--accent)]"
-          />
-        ))}
-      </div>
-
-      {/* The content is not wrapped in an entry animation here: its initial
-          opacity:0 shipped in the server HTML and left the page blank until
-          hydration finished. PageTransition fades it in from CSS instead. */}
-      {children}
+      <Cortina capa="oscura" />
+      <Cortina capa="accent" />
+      {/* La entrada de la página (.page-enter) va aquí y no envolviendo la
+          cortina: su transform/filter/opacity convertiría a la cortina fija en
+          una capa del alto de la página, translúcida y por debajo del menú. */}
+      <div className="page-enter">{children}</div>
     </>
   );
 }
