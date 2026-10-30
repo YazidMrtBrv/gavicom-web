@@ -1,0 +1,110 @@
+/* ============================================================
+   Cotizador (/cotizar). Misma regla que el kit de movimiento: el
+   estado de partida es el visible y todo lo que anima está dentro
+   de prefers-reduced-motion: no-preference. Lo que anima aquí
+   responde a una acción del visitante (cambiar de paso, agregar
+   un ítem, enviar), nunca esconde contenido del HTML del servidor.
+   ============================================================ */
+
+/* ---------- Cuadrícula de plano del encabezado ---------- */
+.cuadricula {
+  background-image:
+    linear-gradient(to right, rgb(20 59 100 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(20 59 100 / 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 65% 85% at 88% 18%, #000 18%, transparent 72%);
+}
+
+/* ---------- Indicador de pasos: una vía vista en planta ---------- */
+/* Dos rieles (líneas) sobre traviesas (marcas perpendiculares). El tramo
+   recorrido es la misma vía en color de marca, recortada con clip-path.
+   --avance (0..1) lleva de la primera estación a la última; --cola es el
+   tramo final hasta el tope, que solo se pinta al enviar (.viaCompleta). */
+.via {
+  --riel: var(--color-zinc-300, #d4d4d8);
+  --traviesa: var(--color-zinc-200, #e4e4e7);
+  height: 12px;
+  background:
+    linear-gradient(var(--riel) 0 0) 0 3px / 100% 1.5px no-repeat,
+    linear-gradient(var(--riel) 0 0) 0 calc(100% - 3px) / 100% 1.5px no-repeat,
+    repeating-linear-gradient(90deg, var(--traviesa) 0 2px, transparent 2px 9px);
+}
+.viaRecorrida {
+  --riel: var(--brand);
+  --traviesa: var(--accent);
+  clip-path: inset(0 calc(100% - var(--avance, 0) * (100% - var(--cola, 0px))) 0 0);
+  transition: clip-path 0.8s var(--apple-ease);
+}
+.viaCompleta { clip-path: inset(0 0 0 0); }
+
+/* Tope de vía al final del recorrido. */
+.tope {
+  width: 3px;
+  height: 18px;
+  background: var(--brand);
+}
+
+/* Estación actual: un anillo que late alrededor de la marca. */
+.estacionActual::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1.5px solid var(--accent);
+  pointer-events: none;
+}
+/* Keyframes propios y no los globales (pulse-ring): en un módulo CSS los
+   nombres de animación se renombran y uno global dejaría de coincidir. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes latido {
+    0%, 100% { scale: 1; opacity: 0.6; }
+    50% { scale: 1.5; opacity: 0; }
+  }
+  .estacionActual::after { animation: latido 2.4s ease-in-out infinite; }
+}
+
+/* ---------- Ficha de la solicitud: dato recién cambiado ---------- */
+/* Un subrayado accent que entra por la izquierda y sale por la derecha. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes dato-nuevo {
+    0% { background-size: 0% 2px; background-position: left bottom; }
+    45% { background-size: 100% 2px; background-position: left bottom; }
+    55% { background-size: 100% 2px; background-position: right bottom; }
+    100% { background-size: 0% 2px; background-position: right bottom; }
+  }
+  .datoNuevo {
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    animation: dato-nuevo 1.1s var(--apple-ease);
+  }
+}
+
+/* ---------- Ítem recién agregado ---------- */
+.filaNueva::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgb(232 146 12 / 0.1);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fila-nueva {
+    from { opacity: 1; }
+  }
+  .filaNueva::after { animation: fila-nueva 1.8s ease-out; }
+}
+
+/* ---------- Confirmación: la marca de verificación se dibuja ---------- */
+/* El trazo usa pathLength="1": 1 es su largo completo. */
+.trazo {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes dibuja-trazo {
+    from { stroke-dashoffset: 1; }
+  }
+  .trazo { animation: dibuja-trazo 0.7s var(--apple-ease) both; }
+  .trazoTarde { animation-delay: 0.35s; }
+}

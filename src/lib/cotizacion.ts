@@ -16,9 +16,29 @@ export type ItemNuevo = Omit<ItemCotizacion, "cantidad"> & { cantidad?: number }
 export interface DatosSolicitante {
   nombre?: string;
   empresa?: string;
+  cargo?: string;
+  nit?: string;
+  telefono?: string;
+  correo?: string;
   ciudad?: string;
+  /** Ciudad y departamento donde se entrega o se instala (cotizador de /cotizar). */
+  lugarEntrega?: string;
+  plazo?: string;
   comentario?: string;
+  /** Lo que el visitante pide y no está en el catálogo, en sus palabras. */
+  otroRequerimiento?: string;
 }
+
+export interface OpcionesMensaje {
+  /** Asteriscos de negrita de WhatsApp en los títulos. En un correo sobran. */
+  negritas?: boolean;
+}
+
+export const PLAZOS_COTIZACION = ["Inmediato", "1-2 semanas", "1 mes", "Por definir"] as const;
+export type PlazoCotizacion = (typeof PLAZOS_COTIZACION)[number];
+
+export const LARGO_MAXIMO_OTRO = 600;
+export const LARGO_MAXIMO_COMENTARIO = 1000;
 
 // Con versión en la clave: si cambia la forma del ítem, una lista vieja se
 // ignora en lugar de romper la página.
@@ -82,8 +102,10 @@ export function totalUnidades(items: readonly ItemCotizacion[]): number {
 /** Mensaje de WhatsApp agrupado por línea de negocio. */
 export function formatearMensajeCotizacion(
   items: readonly ItemCotizacion[],
-  solicitante: DatosSolicitante = {}
+  solicitante: DatosSolicitante = {},
+  { negritas = true }: OpcionesMensaje = {}
 ): string {
+  const titulo = (texto: string) => (negritas ? `*${texto}*` : texto);
   const lineas: string[] = [];
 
   if (items.length === 0) {
@@ -95,7 +117,7 @@ export function formatearMensajeCotizacion(
     for (const linea of Object.keys(NOMBRE_LINEA) as LineaNegocio[]) {
       const deLaLinea = items.filter((item) => item.linea === linea);
       if (deLaLinea.length === 0) continue;
-      lineas.push("", `*${NOMBRE_LINEA[linea]}*`);
+      lineas.push("", titulo(NOMBRE_LINEA[linea]));
       deLaLinea.forEach((item, i) => {
         lineas.push(`${i + 1}. ${item.nombre} (Ref. ${item.sku}) — Cantidad: ${item.cantidad}`);
         if (item.nota) lineas.push(`   Nota: ${item.nota}`);
@@ -103,10 +125,21 @@ export function formatearMensajeCotizacion(
     }
   }
 
+  const otro = solicitante.otroRequerimiento?.trim();
+  if (otro) lineas.push("", titulo("Otro requerimiento"), otro);
+
+  // Los campos nuevos van entre los de siempre sin cambiar el orden de estos:
+  // quien no los pasa recibe exactamente el mismo mensaje que antes.
   const datos: [string, string | undefined][] = [
     ["Nombre", solicitante.nombre],
     ["Empresa", solicitante.empresa],
+    ["Cargo", solicitante.cargo],
+    ["NIT", solicitante.nit],
+    ["Teléfono", solicitante.telefono],
+    ["Correo", solicitante.correo],
     ["Ciudad", solicitante.ciudad],
+    ["Lugar de entrega", solicitante.lugarEntrega],
+    ["Plazo requerido", solicitante.plazo],
     ["Comentarios", solicitante.comentario],
   ];
   const conValor = datos.flatMap(([etiqueta, valor]) => {
@@ -127,6 +160,25 @@ export function construirUrlWhatsApp(
   // El "+" sin codificar en una query se lee como espacio: solo van dígitos.
   const numero = telefono.replace(/\D/g, "");
   return `${COMPANIA_INFO.whatsappBaseUrl}?phone=${numero}&text=${encodeURIComponent(mensaje)}`;
+}
+
+/** mailto: con asunto y cuerpo ya codificados. Por defecto, al correo de gerencia. */
+export function construirUrlCorreo(
+  mensaje: string,
+  asunto: string,
+  destinatario: string = COMPANIA_INFO.email
+): string {
+  return `mailto:${destinatario}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(mensaje)}`;
+}
+
+/** Minúsculas, sin tildes y con espacios simples: "Señalización" ~ "senalizacion". */
+export function normalizarBusqueda(texto: string): string {
+  return texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export function urlWhatsAppCotizacion(
