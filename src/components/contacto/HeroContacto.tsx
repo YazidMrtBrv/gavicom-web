@@ -68,7 +68,7 @@ export default function HeroContacto() {
                     <a
                       href={canal.href}
                       {...(canal.externo ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                      className="spec-row group/canal flex items-center gap-4 py-5 pl-4 pr-1 transition-colors duration-300 hover:bg-surface focus-visible:bg-surface focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent sm:gap-6 sm:py-6 sm:pl-5 sm:pr-3"
+                      className="spec-row group/canal flex items-center gap-3 py-5 pl-3 pr-1 transition-colors duration-300 hover:bg-surface focus-visible:bg-surface focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent sm:gap-6 sm:py-6 sm:pl-5 sm:pr-3"
                     >
                       <span className="w-6 shrink-0 text-[11px] font-semibold tracking-[0.2em] text-zinc-600 tabular-nums">
                         {canal.codigo}
@@ -77,14 +77,14 @@ export default function HeroContacto() {
                         <span className="block text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-600">
                           {canal.etiqueta}
                         </span>
-                        <span className="mt-1.5 block break-words font-titulo text-xl font-light leading-tight text-brand tabular-nums transition-transform duration-500 ease-[var(--apple-ease)] group-hover/canal:translate-x-1 motion-reduce:transition-none sm:text-2xl lg:text-[1.75rem]">
+                        <span className="mt-1.5 block break-words font-titulo text-lg font-light leading-tight text-brand tabular-nums transition-transform duration-500 ease-[var(--apple-ease)] group-hover/canal:translate-x-1 motion-reduce:transition-none min-[400px]:text-xl sm:text-2xl lg:text-[1.75rem]">
                           {canal.valor}
                         </span>
                         {canal.aviso && <span className="sr-only">{canal.aviso}</span>}
                       </span>
                       <span
                         aria-hidden="true"
-                        className="flex size-10 shrink-0 items-center justify-center rounded-[4px] border border-zinc-200 text-brand transition-colors duration-300 group-hover/canal:border-brand group-hover/canal:bg-brand group-hover/canal:text-white"
+                        className="flex size-9 shrink-0 items-center justify-center rounded-[4px] border sm:size-10 border-zinc-200 text-brand transition-colors duration-300 group-hover/canal:border-brand group-hover/canal:bg-brand group-hover/canal:text-white"
                       >
                         <Flecha
                           className={cn(
@@ -101,6 +101,20 @@ export default function HeroContacto() {
               })}
             </ul>
           </nav>
+        </div>
+
+        {/* De la sede a la cobertura nacional: la vía que cierra el hero. */}
+        <div aria-hidden="true" className="mt-16 sm:mt-20 lg:mt-24">
+          <div className={cn(estilos.viaHero, "relative h-3")}>
+            <span className={estilos.tren} />
+          </div>
+          <div className="mt-3 flex items-baseline justify-between gap-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-600">
+            <span>
+              {COMPANIA_INFO.ciudad}
+              <span className="hidden sm:inline">, {COMPANIA_INFO.departamento}</span>
+            </span>
+            <span>Cobertura nacional</span>
+          </div>
         </div>
       </div>
     </section>

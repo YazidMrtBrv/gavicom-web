@@ -13,7 +13,7 @@ export const CONTROL_LINEA = cn(
 
 export const CONTROL_AREA = cn(
   estilos.control,
-  "block min-h-40 w-full resize-y rounded-none border border-zinc-300 bg-surface/60 px-4 py-3.5 text-base leading-relaxed text-ink placeholder:text-zinc-500 transition-colors duration-200 hover:border-zinc-400 focus:bg-white focus:outline-none aria-[invalid=true]:border-red-700"
+  "block min-h-40 w-full resize-y rounded-none border border-zinc-300 bg-white px-4 py-3.5 text-base leading-relaxed text-ink placeholder:text-zinc-500 transition-colors duration-200 hover:border-zinc-400 focus:outline-none aria-[invalid=true]:border-red-700"
 );
 
 // Versión <button> de <Boton>: aquí hacen falta botones de formulario, no enlaces.

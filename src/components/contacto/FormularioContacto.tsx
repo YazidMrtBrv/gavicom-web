@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState, type FormEvent } from "react";
+import { flushSync } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion, type Transition } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
@@ -84,7 +85,9 @@ export default function FormularioContacto() {
     const encontrados = validar(datos, autoriza);
     const primero = ORDEN_CAMPOS.find((campo) => encontrados[campo]);
     if (primero) {
-      setIntentado(true);
+      // Los errores se pintan antes de mover el foco: así el lector de pantalla
+      // lee el campo junto con su mensaje (aria-describedby ya apunta a él).
+      flushSync(() => setIntentado(true));
       enfocarVisible(document.getElementById(id(primero)));
       return;
     }

@@ -22,6 +22,42 @@
   mask-image: radial-gradient(ellipse 80% 80% at 80% 30%, #000 30%, transparent 85%);
 }
 
+/* ---------- Hero: vía de la sede a la cobertura nacional ---------- */
+/* Dos rieles sobre traviesas y un tren corto (cuerpo azul, testero accent)
+   que avanza con el scroll mientras la vía cruza la pantalla. Quieto, el
+   tren queda en el extremo de la sede. */
+.viaHero {
+  --riel: var(--color-zinc-300, #d4d4d8);
+  --traviesa: var(--color-zinc-200, #e4e4e7);
+  container-type: inline-size;
+  view-timeline: --contacto-via-hero block;
+  background:
+    linear-gradient(var(--riel) 0 0) 0 2px / 100% 1.5px no-repeat,
+    linear-gradient(var(--riel) 0 0) 0 calc(100% - 2px) / 100% 1.5px no-repeat,
+    repeating-linear-gradient(90deg, var(--traviesa) 0 2px, transparent 2px 10px);
+}
+.tren {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 64px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--brand) 0 calc(100% - 12px), var(--accent) calc(100% - 12px));
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes tren-avanza {
+      to { translate: calc(100cqw - 100%) 0; }
+    }
+    .tren {
+      animation: tren-avanza auto linear both;
+      animation-timeline: --contacto-via-hero;
+      animation-range: cover 20% exit 100%;
+    }
+  }
+}
+
 /* ---------- Campos: línea de marca que se tiende al enfocar ---------- */
 /* La línea crece desde la izquierda y una luz accent la recorre una vez,
    como un tren que pasa: es la micro-interacción del formulario anterior. */
