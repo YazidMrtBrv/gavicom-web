@@ -43,14 +43,23 @@ export default function EscenaCotizar({ encabezado, accion, pasos }: EscenaCotiz
     const escena = escenaRef.current;
     if (!escena) return;
 
+    // Si anclada no cabe entera en la pantalla (zoom del navegador, fuentes que
+    // llegan tarde), el último paso quedaría fuera de vista. Se mide el
+    // contenido y no la escena: anclada, GSAP le fija el alto.
+    const cabe = () => {
+      const contenido = escena.firstElementChild as HTMLElement | null;
+      if (!contenido) return true;
+      const estilo = getComputedStyle(escena);
+      const alto = contenido.offsetHeight + parseFloat(estilo.paddingTop) + parseFloat(estilo.paddingBottom);
+      return alto <= window.innerHeight + 1;
+    };
+
     const medios = gsap.matchMedia();
     medios.add(CONSULTA_ANCLAJE, () => {
       // Atributo y no estado de React: tiene que estar en el DOM antes de que
       // ScrollTrigger mida la escena, que pasa a ocupar el alto de la pantalla.
       escena.dataset.anclado = "true";
-      // Si anclada no cabe entera en la pantalla (zoom del navegador, textos
-      // más largos), el último paso quedaría fuera de vista: queda como lista.
-      if (escena.offsetHeight > window.innerHeight + 1) {
+      if (!cabe()) {
         delete escena.dataset.anclado;
         return;
       }
@@ -77,13 +86,7 @@ export default function EscenaCotizar({ encabezado, accion, pasos }: EscenaCotiz
       // (fuentes que llegan tarde, contenido que se despliega), se vuelve a medir
       // para que el anclaje no arranque corrido.
       let espera = 0;
-      const observador = new ResizeObserver(() => {
-        window.clearTimeout(espera);
-        espera = window.setTimeout(() => ScrollTrigger.refresh(), 200);
-      });
-      observador.observe(document.body);
-
-      return () => {
+      const soltar = () => {
         observador.disconnect();
         window.clearTimeout(espera);
         disparador.kill();
@@ -92,6 +95,19 @@ export default function EscenaCotizar({ encabezado, accion, pasos }: EscenaCotiz
         actualRef.current = 0;
         setActual(0);
       };
+      const observador = new ResizeObserver(() => {
+        window.clearTimeout(espera);
+        espera = window.setTimeout(() => {
+          if (cabe()) ScrollTrigger.refresh();
+          else soltar();
+        }, 200);
+      });
+      observador.observe(document.body);
+      // También el contenido: GSAP fija el alto del espaciador del anclaje y lo
+      // que crece dentro de la escena no cambia el alto de la página.
+      if (escena.firstElementChild) observador.observe(escena.firstElementChild);
+
+      return soltar;
     });
 
     return () => medios.revert();

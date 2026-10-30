@@ -110,10 +110,9 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
             <span className="sr-only"> categorías</span>
           </p>
 
+          {/* La pausa va primero (patrón de carrusel de la WAI) y, como solo
+              aparece al hidratar, a la izquierda: así no corre las flechas. */}
           <div className="flex shrink-0 gap-2">
-            <button type="button" onClick={() => ir(indice - 1)} aria-label="Categoría anterior" className={BOTON_CONTROL}>
-              <ChevronLeft aria-hidden="true" className="size-4" />
-            </button>
             {total > 1 && !movimientoReducido && (
               <button
                 type="button"
@@ -128,6 +127,9 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
                 )}
               </button>
             )}
+            <button type="button" onClick={() => ir(indice - 1)} aria-label="Categoría anterior" className={BOTON_CONTROL}>
+              <ChevronLeft aria-hidden="true" className="size-4" />
+            </button>
             <button type="button" onClick={() => ir(indice + 1)} aria-label="Categoría siguiente" className={BOTON_CONTROL}>
               <ChevronRight aria-hidden="true" className="size-4" />
             </button>
@@ -147,7 +149,14 @@ export default function TarjetaCategorias({ categorias, mapa, intervaloMs = 4000
               aria-current={i === indice ? "true" : undefined}
               className="group/segmento -my-2.5 flex h-11 min-w-0 flex-1 items-center focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
             >
-              <span className="relative block h-0.5 w-full overflow-clip bg-zinc-200 transition-colors group-hover/segmento:bg-zinc-300">
+              <span
+                className={cn(
+                  "relative block h-0.5 w-full overflow-clip transition-colors",
+                  // El segmento actual lleva fondo propio: con la rotación en pausa
+                  // (cursor o foco dentro) el relleno puede estar en cero.
+                  i === indice ? "bg-accent/30" : "bg-zinc-200 group-hover/segmento:bg-zinc-300"
+                )}
+              >
                 {i < indice && <span className="absolute inset-0 bg-brand" />}
                 {i === indice &&
                   (rota ? (

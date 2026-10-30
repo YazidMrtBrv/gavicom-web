@@ -6,7 +6,7 @@ import estilos from "./portada.module.css";
  * Plano en líneas de un arreglo fotovoltaico con la trayectoria solar encima.
  * Es una ilustración, no una foto: GAVICOM Energy todavía no tiene fotos
  * propias y una foto ajena sería engañosa. La geometría se calcula aquí con una
- * perspectiva simple (cámara a 2,6 m mirando al horizonte) para que las filas
+ * perspectiva simple (cámara a 3,4 m mirando al horizonte) para que las filas
  * de módulos fuguen de verdad hacia el mismo punto.
  */
 
