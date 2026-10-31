@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useCotizacion } from "@/lib/cotizacion";
 
@@ -21,15 +21,28 @@ export default function Encabezado() {
   const [abiertoEn, setAbiertoEn] = useState<string | null>(null);
   const abierto = abiertoEn === ruta;
   const { total } = useCotizacion();
+  // Over the home page's flight scene the bar is transparent with the white
+  // logo (the manual's white-on-blue version); it turns white once past it.
+  const [cieloEn, setCieloEn] = useState<string | null>(null);
+  const sobreCielo = cieloEn === ruta;
+  useEffect(() => {
+    const vuelo = document.getElementById("vuelo");
+    if (!vuelo) return;
+    const revisar = () => setCieloEn(vuelo.getBoundingClientRect().bottom > 72 ? ruta : null);
+    revisar();
+    window.addEventListener("scroll", revisar, { passive: true });
+    return () => window.removeEventListener("scroll", revisar);
+  }, [ruta]);
+  const oscuro = sobreCielo && !abierto;
 
   const activo = (href: string) => ruta === href || ruta.startsWith(`${href}/`);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-linea">
+    <header className={`${oscuro ? "fixed inset-x-0 bg-transparent border-transparent" : "sticky bg-white/95 backdrop-blur border-linea"} top-0 z-40 border-b transition-colors duration-300`}>
       <div className="mx-auto max-w-6xl px-4 sm:px-6 h-[72px] flex items-center gap-6">
         <Link href="/" className="shrink-0 py-2" aria-label="GAVICOM, inicio">
           {/* The manual sets 120 px as the minimum on screen. */}
-          <Image src="/marca/gavicom-azul.png" alt="GAVICOM" width={140} height={36} priority className="h-9 w-auto" />
+          <Image src={oscuro ? "/marca/gavicom-blanco.png" : "/marca/gavicom-azul.png"} alt="GAVICOM" width={140} height={36} priority className="h-9 w-auto" />
         </Link>
 
         <nav aria-label="Principal" className="hidden md:flex items-center gap-1 ml-auto">
@@ -39,7 +52,7 @@ export default function Encabezado() {
               href={e.href}
               aria-current={activo(e.href) ? "page" : undefined}
               className={`px-3 py-2 text-[15px] font-medium border-b-2 transition-colors ${
-                activo(e.href) ? "text-azul border-azul" : "text-tenue border-transparent hover:text-azul"
+                oscuro ? "text-white/85 border-transparent hover:text-white" : activo(e.href) ? "text-azul border-azul" : "text-tenue border-transparent hover:text-azul"
               }`}
             >
               {e.texto}
@@ -49,10 +62,10 @@ export default function Encabezado() {
 
         <Link
           href="/cotizacion"
-          className="ml-auto md:ml-2 inline-flex items-center gap-2 min-h-11 px-4 rounded bg-azul text-white text-sm font-semibold hover:bg-azul-hover transition-colors"
+          className={`ml-auto md:ml-2 inline-flex items-center gap-2 min-h-11 px-4 rounded text-sm font-semibold transition-colors ${oscuro ? "bg-white text-azul hover:bg-azul-suave" : "bg-azul text-white hover:bg-azul-hover"}`}
         >
           Cotización
-          <span className="min-w-6 h-6 px-1.5 rounded-full bg-white text-azul text-xs font-bold grid place-items-center tabular-nums" aria-label={`${total} unidades en la lista`}>
+          <span className={`min-w-6 h-6 px-1.5 rounded-full ${oscuro ? "bg-azul text-white" : "bg-white text-azul"} text-xs font-bold grid place-items-center tabular-nums`} aria-label={`${total} unidades en la lista`}>
             {total}
           </span>
         </Link>
@@ -60,7 +73,7 @@ export default function Encabezado() {
         <button
           type="button"
           onClick={() => setAbiertoEn(abierto ? null : ruta)}
-          className="md:hidden grid place-items-center w-11 h-11 -mr-2 text-azul"
+          className={`md:hidden grid place-items-center w-11 h-11 -mr-2 ${oscuro ? "text-white" : "text-azul"}`}
           aria-expanded={abierto}
           aria-controls="menu-movil"
           aria-label={abierto ? "Cerrar menú" : "Abrir menú"}

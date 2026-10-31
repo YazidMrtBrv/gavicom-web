@@ -46,12 +46,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1,
-h2,
-h3 {
-  font-family: var(--font-titulo);
-  text-wrap: balance;
-  color: var(--azul);
+/* In a layer so utility classes such as text-white can override it. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-titulo);
+    text-wrap: balance;
+    color: var(--azul);
+  }
 }
 
 ::selection {
@@ -68,6 +71,13 @@ h3 {
    raised wing in the logo, the one graphic device the site borrows from it. */
 .corte-ala {
   clip-path: polygon(16% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+@keyframes bajar {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
 @media (prefers-reduced-motion: reduce) {
