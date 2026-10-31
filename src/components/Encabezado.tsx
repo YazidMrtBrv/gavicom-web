@@ -10,6 +10,7 @@ import { useCotizacion } from "@/lib/cotizacion";
 const ENLACES = [
   { href: "/catalogo", texto: "Catálogo" },
   { href: "/servicios", texto: "Servicios" },
+  { href: "/energy", texto: "Energy" },
   { href: "/nosotros", texto: "Nosotros" },
   { href: "/contacto", texto: "Contacto" },
 ];

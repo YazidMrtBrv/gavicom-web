@@ -136,6 +136,7 @@ const jsonLd = {
     "Estudios topográficos con dron",
     "Consultoría ferroviaria",
     "Obras civiles para infraestructura de transporte",
+    "Energía solar fotovoltaica",
   ],
 };
 

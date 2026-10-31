@@ -84,7 +84,7 @@ export default function Cotizacion() {
           {lineas.map((l) => (
             <li key={l.sku} className="flex flex-wrap items-center gap-3 py-4 border-b border-linea">
               <div className="flex-1 min-w-[12rem]">
-                <Link href={`/catalogo/${slugProducto(l)}`} className="font-semibold hover:text-azul">
+                <Link href={l.sku.startsWith("GVC-ENR-") ? `/energy#${l.sku.toLowerCase()}` : `/catalogo/${slugProducto(l)}`} className="font-semibold hover:text-azul">
                   {l.nombre}
                 </Link>
                 <p className="font-mono text-xs text-azul mt-0.5">{l.sku}</p>

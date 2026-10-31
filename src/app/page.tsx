@@ -80,6 +80,15 @@ export default function Inicio() {
               </Link>
             </li>
           ))}
+          <li className="bg-azul sm:col-span-2 lg:col-span-1">
+            <Link href="/energy" className="group flex flex-col gap-1 h-full p-5 hover:bg-azul-hover">
+              <span className="flex items-center justify-between gap-2 font-semibold text-white">
+                GAVICOM Energy
+                <span className="text-sm font-normal text-white/70">Solar</span>
+              </span>
+              <span className="text-sm text-white/75">Cofres fotovoltaicos, instalación de sistemas solares, protecciones AC y DC y gabinetes.</span>
+            </Link>
+          </li>
           <li className="bg-white">
             <Link href="/servicios" className="group flex flex-col gap-1 h-full p-5 hover:bg-gris">
               <span className="flex items-center justify-between gap-2 font-semibold text-tinta group-hover:text-azul">

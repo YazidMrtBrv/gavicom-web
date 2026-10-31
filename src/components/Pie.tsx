@@ -31,6 +31,7 @@ export default function Pie() {
           {[
             ["/catalogo", "Catálogo"],
             ["/servicios", "Servicios"],
+            ["/energy", "GAVICOM Energy"],
             ["/nosotros", "Nosotros"],
             ["/cotizacion", "Mi cotización"],
             ["/contacto", "Contacto"],
