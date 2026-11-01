@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { DESTACADOS, LINEAS, PRODUCTOS, SERVICIOS } from "@/lib/catalogo";
 import TarjetaProducto from "@/components/TarjetaProducto";
 import Buscador from "@/components/Buscador";
-import Vuelo from "@/components/vuelo/Vuelo";
+import VideoVuelo from "@/components/vuelo/VideoVuelo";
 
 const destacados = DESTACADOS.map((sku) => PRODUCTOS.find((p) => p.sku === sku)).filter((p) => p !== undefined);
 
@@ -11,7 +11,7 @@ export default function Inicio() {
   return (
     <>
       <div id="vuelo">
-        <Vuelo />
+        <VideoVuelo />
       </div>
 
       <section aria-labelledby="h-buscar" className="mx-auto max-w-6xl px-4 sm:px-6 pt-16 pb-10 flex flex-col gap-4">
