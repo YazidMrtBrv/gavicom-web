@@ -9,17 +9,19 @@ import { useEffect, useRef } from "react";
  * instant; without that, scrubbing stutters on phones.
  */
 
-// Windows of scroll progress, matched to the 20 s clip: wide shot (0-4 s),
-// close-up (4-7 s), wide again, then the flight over the railway (10-20 s).
+// Windows of scroll progress, matched to the 30 s clip: sky (0-10 s, with a
+// close-up at 4-7 s), the flight over the railway (10-20 s) and the landing
+// on the rail (20-30 s), where it stays perched for the last chapter.
 const CAPITULOS = [
-  { de: 0, a: 0.15 },
-  { de: 0.21, a: 0.33 },
-  { de: 0.56, a: 0.78 },
-  { de: 0.86, a: 1.01 },
+  { de: 0, a: 0.1 },
+  { de: 0.15, a: 0.22 },
+  { de: 0.4, a: 0.6 },
+  { de: 0.72, a: 0.84 },
+  { de: 0.9, a: 1.01 },
 ];
 
 const opacidad = (p: number, de: number, a: number) => {
-  const borde = 0.05;
+  const borde = 0.03;
   if (p < de - borde || p > a + borde) return 0;
   if (p < de) return (p - (de - borde)) / borde;
   if (p > a) return 1 - (p - a) / borde;
@@ -78,7 +80,7 @@ export default function VideoVuelo() {
   }, []);
 
   return (
-    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[640vh] bg-azul">
+    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[900vh] bg-azul">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <video
           ref={video}
@@ -133,6 +135,13 @@ export default function VideoVuelo() {
           </div>
 
           <div ref={(el) => { capas.current[3] = el; }} className="absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
+            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+              <p className="text-white font-titulo font-bold text-4xl md:text-6xl max-w-2xl leading-tight">Y de cerca, cada pieza cuenta.</p>
+              <p className="mt-3 text-white/85 text-lg max-w-md">Eclisas, clips, placas de asiento y tirafondos con ficha técnica y código.</p>
+            </div>
+          </div>
+
+          <div ref={(el) => { capas.current[4] = el; }} className="absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 flex flex-col items-start gap-5">
               <p className="text-white font-titulo font-bold text-4xl md:text-6xl max-w-2xl leading-tight">Ferroviario y energía solar.</p>
               <div className="flex flex-wrap gap-3">
