@@ -73,6 +73,23 @@ body {
   clip-path: polygon(16% 0, 100% 0, 100% 100%, 0 100%);
 }
 
+/* Labels of the exploded rail joint; --etq goes 0..1 as it opens. */
+.etq {
+  font-size: 14px;
+  font-weight: 600;
+  fill: #0c2642;
+  opacity: var(--etq);
+  pointer-events: none;
+}
+
+/* Highlighted part in the exploded rail joint. */
+.via-activa {
+  filter: drop-shadow(0 0 0.5px #0c2642) drop-shadow(0 0 10px rgba(36, 104, 196, 0.75));
+}
+.via-activa :is(rect, polygon, path) {
+  stroke: #1d5fbf;
+}
+
 @keyframes bajar {
   0% { transform: scaleY(0); transform-origin: top; }
   45% { transform: scaleY(1); transform-origin: top; }

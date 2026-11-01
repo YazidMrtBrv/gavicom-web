@@ -1,11 +1,32 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { DESTACADOS, LINEAS, PRODUCTOS, SERVICIOS } from "@/lib/catalogo";
+import { DESTACADOS, LINEAS, PRODUCTOS, SERVICIOS, imagenProducto, slugProducto } from "@/lib/catalogo";
 import TarjetaProducto from "@/components/TarjetaProducto";
 import Buscador from "@/components/Buscador";
 import VideoVuelo from "@/components/vuelo/VideoVuelo";
+import ViaDesarmada, { type PiezaVia } from "@/components/via/ViaDesarmada";
 
 const destacados = DESTACADOS.map((sku) => PRODUCTOS.find((p) => p.sku === sku)).filter((p) => p !== undefined);
+
+// The parts of the drawn rail joint and the catalogue reference behind each.
+const PIEZAS_VIA: [PiezaVia["id"], string, string][] = [
+  ["clip", "GVC-AD-SKL14", "Clip elástico SKL-14"],
+  ["tirafondo", "GVC-AD-SS01", "Tirafondo"],
+  ["eclisa", "GVC-AK-JB115", "Eclisa 115 lb"],
+  ["perno", "GVC-AK-TB01", "Perno de cuello ovalado"],
+  ["almohadilla", "GVC-AD-RP02", "Almohadilla bajo riel"],
+  ["placa", "GVC-AK-TP03", "Placa de asiento"],
+];
+const piezasVia: PiezaVia[] = PIEZAS_VIA.flatMap(([id, sku, nombre]) => {
+  const p = PRODUCTOS.find((x) => x.sku === sku);
+  if (!p) return [];
+  return [{ id, nombre, sku, slug: slugProducto(p), imagen: imagenProducto(p), resumen: p.descripcion.split(". ")[0] + "." }];
+});
+
+// Tools GAVICOM sells to install and maintain those same parts.
+const PARA_MONTAR = ["GVC-FIJ-001", "GVC-FIJ-003", "GVC-MAN-003", "GVC-TM-07", "GVC-D-01"]
+  .map((sku) => PRODUCTOS.find((p) => p.sku === sku))
+  .filter((p) => p !== undefined);
 
 export default function Inicio() {
   return (
@@ -13,6 +34,18 @@ export default function Inicio() {
       <div id="vuelo">
         <VideoVuelo />
       </div>
+
+      <ViaDesarmada piezas={piezasVia} />
+
+      <section aria-labelledby="h-montar" className="mx-auto max-w-6xl px-4 sm:px-6 pt-16">
+        <h2 id="h-montar" className="text-2xl md:text-3xl font-bold">Y para montarla</h2>
+        <p className="text-tenue mt-2 mb-5 max-w-xl">Las herramientas para instalar y mantener esas mismas fijaciones.</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          {PARA_MONTAR.map((p) => (
+            <TarjetaProducto key={p.sku} producto={p} />
+          ))}
+        </div>
+      </section>
 
       <section aria-labelledby="h-buscar" className="mx-auto max-w-6xl px-4 sm:px-6 pt-16 pb-10 flex flex-col gap-4">
         <h2 id="h-buscar" className="text-3xl md:text-4xl font-bold">¿Qué referencia buscas?</h2>
