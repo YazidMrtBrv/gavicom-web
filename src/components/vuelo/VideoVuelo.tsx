@@ -9,10 +9,13 @@ import { useEffect, useRef } from "react";
  * instant; without that, scrubbing stutters on phones.
  */
 
+// Windows of scroll progress, matched to the 20 s clip: wide shot (0-4 s),
+// close-up (4-7 s), wide again, then the flight over the railway (10-20 s).
 const CAPITULOS = [
-  { de: 0, a: 0.3 },
-  { de: 0.36, a: 0.62 },
-  { de: 0.7, a: 1.01 },
+  { de: 0, a: 0.15 },
+  { de: 0.21, a: 0.33 },
+  { de: 0.56, a: 0.78 },
+  { de: 0.86, a: 1.01 },
 ];
 
 const opacidad = (p: number, de: number, a: number) => {
@@ -75,7 +78,7 @@ export default function VideoVuelo() {
   }, []);
 
   return (
-    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[420vh] bg-azul">
+    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[640vh] bg-azul">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <video
           ref={video}
@@ -92,6 +95,8 @@ export default function VideoVuelo() {
           <source src="/video/gaviota-1280.webm" type="video/webm" />
           <source src="/video/gaviota-1280.mp4" type="video/mp4" />
         </video>
+        {/* The railway shots have a pale sky: keep the white menu readable. */}
+        <div aria-hidden className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(12,38,66,0.65)_0%,rgba(12,38,66,0)_100%)]" />
         {/* Darkens the left and bottom just enough for white text on a bright sky. */}
         <div aria-hidden className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,38,66,0.75)_0%,rgba(12,38,66,0.1)_45%,rgba(12,38,66,0)_70%)] md:bg-[linear-gradient(90deg,rgba(12,38,66,0.7)_0%,rgba(12,38,66,0.25)_40%,rgba(12,38,66,0)_60%)]" />
 
@@ -120,7 +125,14 @@ export default function VideoVuelo() {
             </div>
           </div>
 
-          <div ref={(el) => { capas.current[2] = el; }} className="absolute inset-0 flex items-end md:items-center pb-[12vh] md:pb-0" style={{ opacity: 0 }}>
+          <div ref={(el) => { capas.current[2] = el; }} className="absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
+            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+              <p className="text-white font-titulo font-bold text-4xl md:text-6xl max-w-2xl leading-tight">Desde arriba se ve la vía completa.</p>
+              <p className="mt-3 text-white/85 text-lg max-w-md">Fijaciones, herramientas de vía, señalización y servicio técnico para construir y mantener corredores férreos.</p>
+            </div>
+          </div>
+
+          <div ref={(el) => { capas.current[3] = el; }} className="absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 flex flex-col items-start gap-5">
               <p className="text-white font-titulo font-bold text-4xl md:text-6xl max-w-2xl leading-tight">Ferroviario y energía solar.</p>
               <div className="flex flex-wrap gap-3">
