@@ -50,7 +50,7 @@ export const SERVICIOS: Producto[] = PRODUCTOS_Y_SERVICIOS.filter(
 // References shown on the home page. Chosen because they have clean product
 // photos, not because of sales volume: the site does not claim "best sellers"
 // until GAVICOM says which references sell most.
-export const DESTACADOS = ["GVC-AK-JB115", "GVC-AD-SKL14", "GVC-AD-E2055", "GVC-AD-SS01", "GVC-AK-TP03", "GVC-AK-RA04", "GVC-FIJ-001", "GVC-MAN-003"];
+export const DESTACADOS = ["GVC-AK-EA75", "GVC-AK-JB115", "GVC-AD-SKL14", "GVC-AD-SS01", "GVC-AK-TP03", "GVC-AK-CF01", "GVC-FIJ-001", "GVC-MAN-003"];
 
 export function slugProducto(p: Pick<Producto, "sku">): string {
   return p.sku.toLowerCase();

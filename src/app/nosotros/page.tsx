@@ -15,11 +15,16 @@ export default function Nosotros() {
       <section className="flex flex-col gap-4">
         <h1 className="text-3xl md:text-4xl font-bold">Nosotros</h1>
         <p className="text-lg leading-relaxed">
-          GAVICOM es una empresa de {COMPANIA_INFO.ciudad} que suministra materiales, herramientas y servicios para la construcción y el mantenimiento de vía férrea en Colombia.
+          GAVICOM es una empresa de {COMPANIA_INFO.ciudad} orientada a la fabricación metalmecánica, el suministro de componentes ferroviarios y la articulación de capacidades industriales para atender los requerimientos de sus clientes en todo el país.
         </p>
         <p className="leading-relaxed">
           Somos una empresa creada desde la experiencia directa en infraestructura férrea y el conocimiento de sus exigencias técnicas y operativas.
         </p>
+        <p className="leading-relaxed">
+          Fabricamos en Colombia con aliados industriales, desde la ingeniería inversa de la pieza hasta los planos, la fundición y el control de calidad, y coordinamos fabricantes especializados cuando el volumen o el plazo lo piden. También acompañamos proyectos en etapas de prefactibilidad y factibilidad con consultoría y modelación BIM.{" "}
+          <Link href="/fabricacion" className="font-semibold text-azul hover:underline">Ver cómo fabricamos</Link>.
+        </p>
+        <p className="leading-relaxed">Fuimos seleccionados por iNNpulsa Colombia en el programa En-Cadena, Mejores proveedores del sector ferroviario.</p>
         <p className="leading-relaxed text-tenue">
           Distribuimos fijaciones, sistemas elásticos de sujeción, herramientas de vía y señalización, y prestamos servicios de topografía con dron, mantenimiento de equipos, hidráulica, alquiler de motosoldadores, planos y consultoría.
         </p>

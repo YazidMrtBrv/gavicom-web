@@ -32,7 +32,7 @@ export const COMPANIA_INFO = {
   whatsappSales: "+573150509803",
   whatsappBaseUrl: "https://api.whatsapp.com/send",
   disclaimerLegal:
-    "GAVICOM SAS es comercializador y distribuidor independiente de componentes ferroviarios. Los nombres de normas, estándares (AREMA, UIC) o catálogos de fabricantes se mencionan exclusivamente como referencia técnica de compatibilidad y especificación de los materiales suministrados.",
+    "GAVICOM SAS suministra componentes ferroviarios y fabrica piezas en Colombia con aliados industriales. Los nombres de normas, estándares (AREMA, UIC) o catálogos de fabricantes se mencionan exclusivamente como referencia técnica de compatibilidad y especificación de los materiales suministrados.",
 };
 
 export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
@@ -50,6 +50,114 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       Estándar: "Conforme a especificaciones de vía pesada",
       Perforaciones: "Disponibles en configuraciones estándar de la industria",
       Suministro: "Kit completo o piezas individuales según proyecto",
+    },
+  },
+  {
+    sku: "GVC-AK-EA75",
+    nombre: "Eclisa Angular para Riel de 75 LB",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Fabricación en Colombia",
+    descripcion:
+      "Barra de unión angular para riel de 75 lb, desarrollada por GAVICOM con ingeniería inversa de la pieza original, planos de fabricación propios y fundición con aliado nacional. Ya entregamos 400 unidades (200 pares) para el corredor La Dorada – Chiriguaná.",
+    imagen: "eclisa-angular-75lb.webp",
+    especificaciones: {
+      Material: "Hierro nodular ASTM A536",
+      "Altura de la sección": "90,2 mm",
+      "Ancho de la sección": "78,6 mm",
+      "Espesor del ala": "18,2 mm",
+      Agujeros: "6, zona de agujero de 25,4 mm (1\")",
+      "Radios de acuerdo": "R6,4 y R12,7 mm",
+      Calidad: "Química, metalografía, dureza, dimensional y ensayos no destructivos",
+    },
+  },
+  {
+    sku: "GVC-AK-JB90",
+    nombre: "Eclisas para Riel de 90 LB",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Barra de unión para riel de 90 lb, fabricada en hierro nodular.",
+    imagen: "eclisa-90lb.webp",
+    especificaciones: {
+      Material: "Hierro nodular ASTM A536",
+      Riel: "90 lb",
+    },
+  },
+  {
+    sku: "GVC-AK-JB30",
+    nombre: "Eclisas 30KL",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Barra de unión para riel 30KL, fabricada en hierro nodular.",
+    imagen: "eclisa-30kg.webp",
+    especificaciones: {
+      Material: "Hierro nodular ASTM A536",
+      Riel: "30KL",
+    },
+  },
+  {
+    sku: "GVC-AK-PA01",
+    nombre: "Placa de Apoyo",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Placa de soporte que brinda sujeción al riel sobre el durmiente.",
+    imagen: "placa-apoyo.webp",
+    especificaciones: {
+      Material: "Acero ASTM A67",
+    },
+  },
+  {
+    sku: "GVC-AK-CA75",
+    nombre: "Cuña de Apoyo para Riel de 75 LB/YD",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Elemento de apoyo para riel de 75 lb/yd.",
+    imagen: "cuna-apoyo-75lb.webp",
+    especificaciones: {
+      Material: "Acero ASTM A67",
+      Riel: "75 lb/yd",
+    },
+  },
+  {
+    sku: "GVC-AK-ST01",
+    nombre: "Sujetador Tornillo Ferrovial",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Elementos de Sujeción",
+    origen: "Suministro GAVICOM",
+    descripcion: "Componentes que aseguran o fijan el riel o la placa al durmiente.",
+    imagen: "sujetador-tornillo-ferrovial.webp",
+    especificaciones: {
+      Material: "Acero ASTM A67",
+    },
+  },
+  {
+    sku: "GVC-AK-CF01",
+    nombre: "Calzo Fundido para Riel",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Calzo de soporte para riel ferroviario, fundido en hierro nodular.",
+    imagen: "calzo-fundido.webp",
+    especificaciones: {
+      Material: "Hierro nodular ASTM A536",
+      Medidas: "8 mm y 11 mm",
+    },
+  },
+  {
+    sku: "GVC-AK-CL01",
+    nombre: "Calzo en Lámina para Riel",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Calzo o soporte para riel ferroviario en lámina con corte láser.",
+    imagen: "calzo-lamina.webp",
+    especificaciones: {
+      Proceso: "Corte láser",
+      Espesores: "1/8\" y 3/16\"",
     },
   },
   {
@@ -140,8 +248,8 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     subcategoria: "Elementos de Sujeción",
     origen: "Fijación Elástica Complementaria",
     descripcion:
-      "Tornillos de rosca gruesa y alta resistencia para fijar placas base o placas elásticas a los durmientes, ofreciendo un agarre superior en comparación con las fijaciones tradicionales por impacto.",
-    imagen: "tirafondos.webp",
+      "Tornillos de rosca gruesa para fijar placas a los durmientes. Cabeza cuadrada o hexagonal y acabado galvanizado, natural o bicromatado. Los fabricamos según el plano o la muestra del cliente, con control dimensional y de dureza por lote, y capacidad de más de 2.000 tirafondos cada 10 días.",
+    imagen: "tirafondos-acabados.webp",
     especificaciones: {
       "Tipo de Rosca": "Diseño paso ancho para anclaje de madera/insertos de concreto",
       Cabeza: "Hexagonal o cuadrada para torque mecánico controlado",

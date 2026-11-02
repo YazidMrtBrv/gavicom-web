@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { DESTACADOS, LINEAS, PRODUCTOS, SERVICIOS, imagenProducto, slugProducto } from "@/lib/catalogo";
@@ -55,6 +56,45 @@ export default function Inicio() {
       <Franja items={[...LINEAS.map((l) => ({ texto: l.nombre, href: `/catalogo?linea=${l.slug}` })), { texto: "GAVICOM Energy", href: "/energy" }]} />
 
       <ViaDesarmada piezas={piezasVia} />
+
+      {/* Delivered work only; projects still in development stay off the
+          site until the client agrees to be named. */}
+      <section aria-labelledby="h-experiencia" className="mx-auto max-w-6xl px-4 sm:px-6 pt-16">
+        <div className="grid gap-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.3fr)] items-stretch">
+          <figure data-aparecer className="relative corte-ala overflow-hidden rounded min-h-[320px]">
+            <Image src="/images/fabricacion/corredor-la-dorada-chiriguana.webp" alt="Vía del corredor férreo La Dorada – Chiriguaná sobre un puente" fill sizes="(min-width:768px) 40vw, 100vw" className="object-cover" />
+            <figcaption className="absolute inset-x-0 bottom-0 p-5 pl-[18%] text-white bg-[linear-gradient(0deg,rgba(12,38,66,0.92),rgba(12,38,66,0))]">
+              <span className="block font-semibold">Corredor La Dorada – Chiriguaná</span>
+              <span className="text-sm text-white/75">Línea Férrea Central</span>
+            </figcaption>
+          </figure>
+          <div className="flex flex-col gap-5">
+            <h2 id="h-experiencia" data-aparecer className="text-3xl md:text-4xl font-bold">Ya trabajamos en la vía</h2>
+            <ul data-aparecer="grupo" className="flex flex-col gap-3">
+              <li className="foco rounded border border-linea p-5">
+                <p className="flex items-center justify-between gap-3">
+                  <span className="font-semibold text-lg text-tinta">Línea Férrea Central</span>
+                  <span className="text-xs font-semibold tracking-wide uppercase px-3 py-1 rounded-full bg-azul text-white">Proveedor</span>
+                </p>
+                <p className="mt-1 text-tenue">400 eclisas angulares de 75 lb fabricadas en Colombia y eclisas para puentes del corredor.</p>
+              </li>
+              <li className="foco rounded border border-linea p-5">
+                <p className="flex items-center justify-between gap-3">
+                  <span className="font-semibold text-lg text-tinta">Fenoco</span>
+                  <span className="text-xs font-semibold tracking-wide uppercase px-3 py-1 rounded-full bg-azul text-white">Proveedor</span>
+                </p>
+                <p className="mt-1 text-tenue">Más de 100 herramientas para mantenimiento de vía y suministro de eclisas.</p>
+              </li>
+            </ul>
+            <p data-aparecer className="text-sm text-tenue border-l-2 border-azul pl-3">
+              Empresa seleccionada por iNNpulsa Colombia en el programa En-Cadena, Mejores proveedores del sector ferroviario.
+            </p>
+            <Link data-aparecer href="/fabricacion" className="boton-iman self-start inline-flex items-center gap-2 min-h-12 px-6 rounded bg-azul text-white font-semibold hover:bg-azul-hover">
+              Así fabricamos en Colombia <ArrowRight size={18} aria-hidden />
+            </Link>
+          </div>
+        </div>
+      </section>
 
       <section aria-labelledby="h-montar" className="mx-auto max-w-6xl px-4 sm:px-6 pt-16">
         <h2 id="h-montar" data-aparecer className="text-2xl md:text-3xl font-bold">Y para montarla</h2>

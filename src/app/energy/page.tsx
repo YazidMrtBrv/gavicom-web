@@ -83,6 +83,24 @@ export default function Energy() {
         </ul>
       </section>
 
+      <section aria-labelledby="h-hecho" className="mx-auto max-w-6xl px-4 sm:px-6 pt-20">
+        <h2 id="h-hecho" data-aparecer className="text-3xl md:text-4xl font-bold">
+          Lo que ya hemos hecho
+        </h2>
+        <ul data-aparecer="grupo" className="mt-8 grid gap-4 sm:grid-cols-3">
+          {[
+            ["Suministro de gabinetes", "Gabinetes para sistemas fotovoltaicos."],
+            ["Ensamble de componentes DC y AC", "Armado de los componentes de corriente continua y alterna del sistema."],
+            ["Sistemas monopolares", "Configuración e instalación de sistemas monopolares."],
+          ].map(([t, d]) => (
+            <li key={t} className="foco rounded border border-linea p-5">
+              <p className="font-titulo text-xl font-bold text-azul">{t}</p>
+              <p className="mt-1 text-tenue">{d}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section aria-labelledby="h-datos" className="mx-auto max-w-6xl px-4 sm:px-6 pt-20">
         <h2 id="h-datos" data-aparecer className="text-3xl md:text-4xl font-bold">
           Qué necesitamos para cotizar

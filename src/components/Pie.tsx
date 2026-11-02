@@ -30,6 +30,7 @@ export default function Pie() {
           <p className="font-semibold">Sitio</p>
           {[
             ["/catalogo", "Catálogo"],
+            ["/fabricacion", "Fabricación"],
             ["/servicios", "Servicios"],
             ["/energy", "GAVICOM Energy"],
             ["/nosotros", "Nosotros"],

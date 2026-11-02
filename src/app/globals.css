@@ -186,3 +186,11 @@ body {
   .franja-pista > [aria-hidden] { display: none; }
   .boton-iman, .inclinar { transform: none !important; }
 }
+
+/* A panel that swaps content (e.g. the manufacturing steps) fades in. */
+.aparecer-rapido {
+  animation: aparecer-rapido 300ms ease-out;
+}
+@keyframes aparecer-rapido {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+}
