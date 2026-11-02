@@ -29,7 +29,7 @@ const FICHA = [
   ["Origen", "Fabricada en Colombia"],
   ["Calidad", "Cinco controles por lote"],
   ["Entregadas", "400 unidades (200 pares)"],
-  ["Cliente", "Línea Férrea Central"],
+  ["Cliente", "Operador ferroviario nacional"],
 ];
 
 // Rail profiles and standards GAVICOM can produce joint bars for.
@@ -88,7 +88,7 @@ export default function Fabricacion() {
       <section id="caso" aria-labelledby="h-caso" className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 scroll-mt-24">
         <p data-aparecer className="text-sm font-semibold tracking-[0.2em] uppercase text-tenue">Caso real</p>
         <h2 id="h-caso" data-aparecer className="mt-2 text-3xl md:text-4xl font-bold max-w-3xl">
-          Eclisa angular para riel de 75 lb, para el corredor La Dorada – Chiriguaná.
+          Eclisa angular para riel de 75 lb, fabricada en Colombia.
         </h2>
         <p data-aparecer className="mt-3 text-tenue max-w-2xl">Toca cada paso para ver cómo la desarrollamos.</p>
         <div data-aparecer className="mt-8">
@@ -108,10 +108,10 @@ export default function Fabricacion() {
             </dl>
           </div>
           <figure className="relative overflow-hidden rounded bg-azul text-white">
-            <Image src="/images/fabricacion/corredor-la-dorada-chiriguana.webp" alt="Vía del corredor férreo La Dorada – Chiriguaná sobre un puente" width={444} height={610} className="w-full h-[420px] object-cover" />
+            <Image src="/images/fabricacion/via-ferrea-puente.webp" alt="Vía férrea sobre un puente" width={444} height={610} className="w-full h-[420px] object-cover" />
             <figcaption className="absolute inset-x-0 bottom-0 p-5 bg-[linear-gradient(0deg,rgba(12,38,66,0.92),rgba(12,38,66,0))]">
-              <span className="block font-semibold">Corredor férreo La Dorada – Chiriguaná</span>
-              <span className="text-sm text-white/75">Línea Férrea Central</span>
+              <span className="block font-semibold">Vía férrea en Colombia</span>
+              <span className="text-sm text-white/75">Donde trabajan nuestras piezas</span>
             </figcaption>
           </figure>
         </div>

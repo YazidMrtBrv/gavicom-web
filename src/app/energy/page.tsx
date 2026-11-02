@@ -89,7 +89,7 @@ export default function Energy() {
         </h2>
         <ul data-aparecer="grupo" className="mt-8 grid gap-4 sm:grid-cols-3">
           {[
-            ["Suministro de gabinetes", "Gabinetes para sistemas fotovoltaicos."],
+            ["Suministro de gabinetes", "Gabinetes para sistemas fotovoltaicos, con certificados RETIE e IEC."],
             ["Ensamble de componentes DC y AC", "Armado de los componentes de corriente continua y alterna del sistema."],
             ["Sistemas monopolares", "Configuración e instalación de sistemas monopolares."],
           ].map(([t, d]) => (

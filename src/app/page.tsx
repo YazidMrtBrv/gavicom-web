@@ -57,15 +57,15 @@ export default function Inicio() {
 
       <ViaDesarmada piezas={piezasVia} />
 
-      {/* Delivered work only; projects still in development stay off the
-          site until the client agrees to be named. */}
+      {/* Delivered work only, and without naming clients: the company asked
+          to keep names off the site for now. */}
       <section aria-labelledby="h-experiencia" className="mx-auto max-w-6xl px-4 sm:px-6 pt-16">
         <div className="grid gap-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.3fr)] items-stretch">
           <figure data-aparecer className="relative corte-ala overflow-hidden rounded min-h-[320px]">
-            <Image src="/images/fabricacion/corredor-la-dorada-chiriguana.webp" alt="Vía del corredor férreo La Dorada – Chiriguaná sobre un puente" fill sizes="(min-width:768px) 40vw, 100vw" className="object-cover" />
+            <Image src="/images/fabricacion/via-ferrea-puente.webp" alt="Vía férrea sobre un puente" fill sizes="(min-width:768px) 40vw, 100vw" className="object-cover" />
             <figcaption className="absolute inset-x-0 bottom-0 p-5 pl-[18%] text-white bg-[linear-gradient(0deg,rgba(12,38,66,0.92),rgba(12,38,66,0))]">
-              <span className="block font-semibold">Corredor La Dorada – Chiriguaná</span>
-              <span className="text-sm text-white/75">Línea Férrea Central</span>
+              <span className="block font-semibold">Vía férrea en Colombia</span>
+              <span className="text-sm text-white/75">Donde trabajan nuestras piezas</span>
             </figcaption>
           </figure>
           <div className="flex flex-col gap-5">
@@ -73,14 +73,14 @@ export default function Inicio() {
             <ul data-aparecer="grupo" className="flex flex-col gap-3">
               <li className="foco rounded border border-linea p-5">
                 <p className="flex items-center justify-between gap-3">
-                  <span className="font-semibold text-lg text-tinta">Línea Férrea Central</span>
+                  <span className="font-semibold text-lg text-tinta">Operador ferroviario nacional</span>
                   <span className="text-xs font-semibold tracking-wide uppercase px-3 py-1 rounded-full bg-azul text-white">Proveedor</span>
                 </p>
                 <p className="mt-1 text-tenue">400 eclisas angulares de 75 lb fabricadas en Colombia y eclisas para puentes del corredor.</p>
               </li>
               <li className="foco rounded border border-linea p-5">
                 <p className="flex items-center justify-between gap-3">
-                  <span className="font-semibold text-lg text-tinta">Fenoco</span>
+                  <span className="font-semibold text-lg text-tinta">Operador ferroviario de carga</span>
                   <span className="text-xs font-semibold tracking-wide uppercase px-3 py-1 rounded-full bg-azul text-white">Proveedor</span>
                 </p>
                 <p className="mt-1 text-tenue">Más de 100 herramientas para mantenimiento de vía y suministro de eclisas.</p>

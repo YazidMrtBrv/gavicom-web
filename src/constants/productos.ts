@@ -59,7 +59,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     subcategoria: "Superestructura de Vía",
     origen: "Fabricación en Colombia",
     descripcion:
-      "Barra de unión angular para riel de 75 lb, desarrollada por GAVICOM con ingeniería inversa de la pieza original, planos de fabricación propios y fundición con aliado nacional. Ya entregamos 400 unidades (200 pares) para el corredor La Dorada – Chiriguaná.",
+      "Barra de unión angular para riel de 75 lb, desarrollada por GAVICOM con ingeniería inversa de la pieza original, planos de fabricación propios y fundición con aliado nacional. Ya entregamos 400 unidades (200 pares) a un operador ferroviario nacional.",
     imagen: "eclisa-angular-75lb.webp",
     especificaciones: {
       Material: "Hierro nodular ASTM A536",

@@ -34,7 +34,7 @@ const PASOS = [
   },
   {
     titulo: "Control y entrega",
-    texto: "Cada lote pasa cinco controles de calidad antes de salir. Entregamos 400 eclisas (200 pares) a Línea Férrea Central.",
+    texto: "Cada lote pasa cinco controles de calidad antes de salir. Entregamos 400 eclisas (200 pares) a un operador ferroviario nacional.",
     imagen: "/images/fabricacion/eclisa-angular-75.webp",
     alt: "Eclisa angular terminada",
     ancho: 623,
