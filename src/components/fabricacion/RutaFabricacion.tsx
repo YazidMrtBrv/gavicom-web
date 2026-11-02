@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { Lock } from "lucide-react";
 
 // The real case of the 75 lb angle bar, step by step: each step shows what
 // was done and the picture or drawing behind it.
@@ -16,9 +17,10 @@ const PASOS = [
   },
   {
     titulo: "Diseño y planos",
-    texto: "Con esas medidas levantamos los planos de fabricación: sección de 90,2 × 78,6 mm, ala de 18,2 mm y seis agujeros de 1\".",
-    imagen: "/images/fabricacion/plano-eclisa-angular-75.webp",
-    alt: "Plano de la sección transversal de la eclisa angular de 75 lb, con cotas en milímetros",
+    texto: "Con esas medidas levantamos nuestros propios planos de fabricación. Los compartimos con el cliente bajo acuerdo de confidencialidad.",
+    imagen: "/images/fabricacion/plano-reservado.webp",
+    alt: "Plano de fabricación difuminado, reservado",
+    reservado: true,
     ancho: 527,
     alto: 480,
   },
@@ -67,7 +69,12 @@ export default function RutaFabricacion() {
           </li>
         ))}
       </ol>
-      <figure key={paso} className="aparecer-rapido rounded border border-linea bg-white p-4 grid place-items-center min-h-[320px]">
+      <figure key={paso} className="aparecer-rapido relative rounded border border-linea bg-white p-4 grid place-items-center min-h-[320px]">
+        {"reservado" in p && (
+          <span className="absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-2 px-4 py-2 rounded bg-azul text-white text-sm font-semibold shadow-lg">
+            <Lock size={16} aria-hidden /> Planos bajo confidencialidad
+          </span>
+        )}
         <Image src={p.imagen} alt={p.alt} width={p.ancho} height={p.alto} className="w-full h-auto max-h-[420px] object-contain" />
         <figcaption className="mt-3 text-sm text-tenue">
           Paso {paso + 1} de {PASOS.length}: {p.titulo}

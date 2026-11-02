@@ -21,16 +21,15 @@ const CONTROLES = [
   ["ndt", "Ensayos no destructivos", "Ultrasonido y tintas penetrantes para detectar discontinuidades."],
 ];
 
+// Only what the client sees on delivery: the drawing's dimensions stay
+// private, they are GAVICOM's engineering work.
 const FICHA = [
   ["Pieza", "Eclisa angular, riel de 75 lb"],
   ["Material", "Hierro nodular ASTM A536"],
-  ["Altura de la sección", "90,2 mm"],
-  ["Ancho de la sección", "78,6 mm"],
-  ["Espesor del ala", "18,2 mm"],
-  ["Zona de agujero", "25,4 mm (1\")"],
-  ["Agujeros", "6"],
-  ["Radios de acuerdo", "R6,4 y R12,7 mm"],
+  ["Origen", "Fabricada en Colombia"],
+  ["Calidad", "Cinco controles por lote"],
   ["Entregadas", "400 unidades (200 pares)"],
+  ["Cliente", "Línea Férrea Central"],
 ];
 
 // Rail profiles and standards GAVICOM can produce joint bars for.
@@ -98,7 +97,7 @@ export default function Fabricacion() {
 
         <div data-aparecer className="mt-12 grid gap-8 md:grid-cols-[1fr_1fr] items-start">
           <div>
-            <h3 className="text-xl font-bold">Ficha de la pieza</h3>
+            <h3 className="text-xl font-bold">El caso en resumen</h3>
             <dl className="mt-4 border-t border-linea text-[15px]">
               {FICHA.map(([k, v]) => (
                 <div key={k} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-4 py-2.5 border-b border-linea hover:bg-gris transition-colors">

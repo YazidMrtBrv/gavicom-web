@@ -63,11 +63,8 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     imagen: "eclisa-angular-75lb.webp",
     especificaciones: {
       Material: "Hierro nodular ASTM A536",
-      "Altura de la sección": "90,2 mm",
-      "Ancho de la sección": "78,6 mm",
-      "Espesor del ala": "18,2 mm",
-      Agujeros: "6, zona de agujero de 25,4 mm (1\")",
-      "Radios de acuerdo": "R6,4 y R12,7 mm",
+      Riel: "75 lb",
+      Planos: "Propios; se comparten bajo acuerdo de confidencialidad",
       Calidad: "Química, metalografía, dureza, dimensional y ensayos no destructivos",
     },
   },
