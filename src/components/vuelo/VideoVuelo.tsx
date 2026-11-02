@@ -22,7 +22,7 @@ const ENCUADRE = ["50%", "50%", "50%", "50%", "22%"];
 // Time of the last frame; the reversed clip at time r shows FIN - r.
 const FIN = 29.958;
 // A stretch never takes much longer than this, however far apart the stops.
-const TRAMO_MAX = 3.5;
+const TRAMO_MAX = 2.8;
 
 export default function VideoVuelo() {
   const seccion = useRef<HTMLElement>(null);
@@ -118,6 +118,58 @@ export default function VideoVuelo() {
     ida.addEventListener("canplaythrough", cargarVuelta, { once: true });
     const espera = window.setTimeout(cargarVuelta, 6000);
 
+    // With a mouse wheel, trackpad or keyboard, each gesture moves exactly one
+    // scene and the page holds still until the flight gets there. Otherwise
+    // the scroll runs ahead of the video: the text and the next section show
+    // up before the gull does. Touch scrolling keeps the plain scroll mapping.
+    const ultima = PARADAS.length - 1;
+    const anclaje = (k: number) => {
+      const recorrido = cont.offsetHeight - window.innerHeight;
+      const inicio = cont.getBoundingClientRect().top + window.scrollY;
+      return inicio + (k === 0 ? 0 : k === ultima ? recorrido : (recorrido * (k + 0.5)) / PARADAS.length);
+    };
+    const enPista = () => {
+      const r = cont.getBoundingClientRect();
+      return r.top <= 1 && r.bottom >= window.innerHeight - 1;
+    };
+    const irEscena = (k: number) => {
+      window.scrollTo({ top: Math.round(anclaje(k)), behavior: "instant" });
+      leer();
+    };
+    let ultimoEvento = 0, gestoUsado = false, acumulado = 0;
+    // Returns true when the event was used to move between scenes.
+    const gesto = (dir: number, delta: number) => {
+      const ahora = performance.now();
+      // A trackpad keeps sending wheel events for a second after the swipe;
+      // a pause marks the start of a new gesture.
+      const nuevo = ahora - ultimoEvento > 200;
+      ultimoEvento = ahora;
+      if (nuevo) { gestoUsado = false; acumulado = 0; }
+      if (gestoUsado) return true;
+      const k = meta + dir;
+      // Past the first or last scene the page scrolls on as usual, but never
+      // while the flight is still on its way.
+      if (k < 0 || k > ultima) return destino !== null;
+      acumulado += delta;
+      if (Math.abs(acumulado) >= 30) { gestoUsado = true; irEscena(k); }
+      return true;
+    };
+    const rueda = (e: WheelEvent) => {
+      if (quieto || e.ctrlKey || !e.deltaY || !enPista()) return;
+      const delta = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+      if (gesto(Math.sign(e.deltaY), delta)) e.preventDefault();
+    };
+    const tecla = (e: KeyboardEvent) => {
+      if (quieto || e.altKey || e.ctrlKey || e.metaKey || !enPista()) return;
+      const t = e.target as HTMLElement | null;
+      if (t && t.closest("input, textarea, select, button, [contenteditable]")) return;
+      const abajo = ["ArrowDown", "PageDown"].includes(e.key) || (e.key === " " && !e.shiftKey);
+      const arriba = ["ArrowUp", "PageUp"].includes(e.key) || (e.key === " " && e.shiftKey);
+      if (!abajo && !arriba) return;
+      ultimoEvento = 0; // every key press is its own gesture
+      if (gesto(abajo ? 1 : -1, abajo ? 100 : -100)) e.preventDefault();
+    };
+
     const pintar = () => {
       id = requestAnimationFrame(pintar);
       if (!visible || !arrancado) return;
@@ -166,11 +218,15 @@ export default function VideoVuelo() {
     leer();
     id = requestAnimationFrame(pintar);
     window.addEventListener("scroll", leer, { passive: true });
+    window.addEventListener("wheel", rueda, { passive: false });
+    window.addEventListener("keydown", tecla);
     return () => {
       cancelAnimationFrame(id);
       window.clearTimeout(espera);
       io.disconnect();
       window.removeEventListener("scroll", leer);
+      window.removeEventListener("wheel", rueda);
+      window.removeEventListener("keydown", tecla);
     };
   }, []);
 
