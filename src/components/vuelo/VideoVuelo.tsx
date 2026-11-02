@@ -4,160 +4,198 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 /*
- * Home hero: a real-looking seagull flight, scrubbed by scroll. Instead of
- * seeking a <video> (which stutters, above all on iPhone, because every seek
- * makes the browser decode again), the clip is a sequence of WebP frames drawn
- * on a canvas. Between two frames the next one is blended in by the fraction
- * left over, so the motion stays continuous however slowly the page scrolls.
+ * Home hero: the seagull flight told in five scenes. The clip never follows
+ * the scroll frame by frame: scrubbed slowly, an AI-generated video shows its
+ * flaws. Instead each scene holds still on a clean frame while its text is
+ * read, and scrolling on plays the stretch to the next scene at normal speed.
+ * Going back plays a reversed copy of the clip, because browsers cannot play
+ * a video backwards. Both copies have a keyframe on every stop, so starting
+ * from one is instant.
  */
 
-const TOTAL = 450; // 30 s at 15 fps
-const SERIES = { h: "/video/cuadros/h/", v: "/video/cuadros/v/" };
-const nombre = (i: number) => String(i + 1).padStart(3, "0") + ".webp";
-
-// Coarse frames first (every 16th, then 8th...) so the whole flight can be
-// scrubbed early and the gaps fill in while the visitor reads the headline.
-const ordenCarga = () => {
-  const visto = new Set<number>(), orden: number[] = [];
-  for (const paso of [16, 8, 4, 2, 1])
-    for (let i = 0; i < TOTAL; i += paso) if (!visto.has(i)) { visto.add(i); orden.push(i); }
-  if (!visto.has(TOTAL - 1)) orden.splice(1, 0, TOTAL - 1);
-  return orden;
-};
-
-// Windows of scroll progress, matched to the 30 s clip: sky (0-10 s, with a
-// close-up at 4-7 s), the flight over the railway (10-20 s) and the landing
-// on the rail (20-30 s), where it stays perched for the last chapter.
-const CAPITULOS = [
-  { de: 0, a: 0.1 },
-  { de: 0.15, a: 0.22 },
-  { de: 0.4, a: 0.6 },
-  { de: 0.72, a: 0.84 },
-  { de: 0.9, a: 1.01 },
-];
-
-const opacidad = (p: number, de: number, a: number) => {
-  const borde = 0.03;
-  if (p < de - borde || p > a + borde) return 0;
-  if (p < de) return (p - (de - borde)) / borde;
-  if (p > a) return 1 - (p - a) / borde;
-  return 1;
-};
+// Seconds of the clip where each scene stops: sky, close-up, the railway
+// from above, the landing and the gull perched on the rail.
+const PARADAS = [2, 5.5, 13.5, 24.5, 29.5];
+// Horizontal framing per scene. On phones the vertical crop would cut the
+// perched gull's beak, so the last scene slides the frame to the left.
+const ENCUADRE = ["50%", "50%", "50%", "50%", "22%"];
+// Time of the last frame; the reversed clip at time r shows FIN - r.
+const FIN = 29.958;
+// A stretch never takes much longer than this, however far apart the stops.
+const TRAMO_MAX = 3.5;
 
 export default function VideoVuelo() {
   const seccion = useRef<HTMLElement>(null);
-  const lienzo = useRef<HTMLCanvasElement>(null);
+  const marco = useRef<HTMLDivElement>(null);
+  const idaRef = useRef<HTMLVideoElement>(null);
+  const vueltaRef = useRef<HTMLVideoElement>(null);
   const capas = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    const cont = seccion.current, cv = lienzo.current;
-    const ctx = cv?.getContext("2d");
-    if (!cont || !cv || !ctx) return;
+    const cont = seccion.current, caja = marco.current, ida = idaRef.current, vuelta = vueltaRef.current;
+    if (!cont || !caja || !ida || !vuelta) return;
     const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const serie = window.matchMedia("(max-aspect-ratio: 4/5)").matches ? SERIES.v : SERIES.h;
-    const cuadros: (HTMLImageElement | null)[] = new Array(TOTAL).fill(null);
-    let id = 0, objetivo = 0, actual = -1, pintado = -1, visible = true, vivo = true;
+    let id = 0, meta = 0, en = -1, destino: number | null = null, visible = true, ocupado = false, arrancado = false;
+    let activo = ida, quietoAntes: boolean | null = null;
 
-    // Up to six downloads at a time; each frame is decoded before it is used
-    // so drawing never waits on the decoder.
-    const cola = ordenCarga();
-    const bajar = () => {
-      const i = cola.shift();
-      if (i === undefined || !vivo) return;
-      const img = new Image();
-      img.src = serie + nombre(i);
-      img.decode().then(() => { cuadros[i] = img; pintado = -1; }).catch(() => {}).finally(bajar);
+    const tVis = () => (activo === ida ? ida.currentTime : FIN - vuelta.currentTime);
+    const mostrar = (el: HTMLVideoElement) => {
+      ida.style.opacity = el === ida ? "1" : "0";
+      vuelta.style.opacity = el === vuelta ? "1" : "0";
     };
-    for (let k = 0; k < 6; k++) bajar();
 
-    // Nearest frame already loaded, looking back first so the motion never
-    // jumps ahead of the scroll.
-    const cercano = (i: number) => {
-      for (let d = 0; d < TOTAL; d++) {
-        if (i - d >= 0 && cuadros[i - d]) return i - d;
-        if (i + d < TOTAL && cuadros[i + d]) return i + d;
+    // Lands on a stop with a still, exact frame.
+    const llegar = () => {
+      if (destino === null) return;
+      activo.pause();
+      en = destino;
+      destino = null;
+      if (activo === ida) ida.currentTime = PARADAS[en];
+      else vuelta.currentTime = FIN - PARADAS[en];
+    };
+    // Without playback (reduced motion, iOS low-power mode, reversed copy not
+    // loaded yet) the scene changes by cutting straight to its stop.
+    const saltar = (k: number) => {
+      activo.pause();
+      ida.currentTime = PARADAS[k];
+      activo = ida;
+      mostrar(ida);
+      destino = k;
+      llegar();
+    };
+
+    const iniciar = (k: number) => {
+      const t = tVis();
+      const adelante = PARADAS[k] > t;
+      const el = adelante ? ida : vuelta;
+      if (quieto || el.readyState < 2) {
+        if (el.readyState < 2 && el.preload !== "auto") { el.preload = "auto"; el.load(); }
+        saltar(k);
+        return;
       }
-      return -1;
-    };
-
-    const ajustar = () => {
-      // Never draw at more pixels than the frames have: past that it only
-      // costs GPU time on large screens without adding detail.
-      const tope = serie === SERIES.v ? 840 : 1280;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2, tope / Math.max(1, cv.clientWidth));
-      cv.width = Math.round(cv.clientWidth * dpr);
-      cv.height = Math.round(cv.clientHeight * dpr);
-      pintado = -1;
-    };
-    // Like object-fit: cover.
-    const dibujar = (img: HTMLImageElement) => {
-      const e = Math.max(cv.width / img.naturalWidth, cv.height / img.naturalHeight);
-      const w = img.naturalWidth * e, h = img.naturalHeight * e;
-      ctx.drawImage(img, (cv.width - w) / 2, (cv.height - h) / 2, w, h);
+      destino = k;
+      const pendientes = Math.abs(meta - k);
+      el.playbackRate = Math.min(4, Math.max(1, Math.abs(PARADAS[k] - t) / TRAMO_MAX) * (pendientes > 0 ? 1.6 : 1));
+      const reproducir = () => el.play().catch(() => saltar(k));
+      if (el === activo) { reproducir(); return; }
+      // Switch copies on the same frame, so the swap cannot be seen.
+      ocupado = true;
+      activo.pause();
+      el.currentTime = el === ida ? t : FIN - t;
+      el.addEventListener("seeked", () => {
+        activo = el;
+        mostrar(el);
+        ocupado = false;
+        reproducir();
+      }, { once: true });
     };
 
     const leer = () => {
       const r = cont.getBoundingClientRect();
       const recorrido = r.height - window.innerHeight;
-      objetivo = recorrido > 0 ? Math.min(1, Math.max(0, -r.top / recorrido)) : 0;
+      const p = recorrido > 0 ? Math.min(1, Math.max(0, -r.top / recorrido)) : 0;
+      meta = Math.min(PARADAS.length - 1, Math.floor(p * PARADAS.length));
     };
+
+    // The intro plays from the first frame to the first stop, unless the page
+    // opens already scrolled down, where it cuts to that scene.
+    const arrancar = () => {
+      if (arrancado) return;
+      arrancado = true;
+      if (meta === 0 && !quieto) {
+        destino = 0;
+        ida.play().catch(() => saltar(0));
+      } else saltar(meta);
+    };
+    if (ida.readyState >= 1) arrancar();
+    else ida.addEventListener("loadedmetadata", arrancar, { once: true });
+
+    // The reversed copy is only needed once the visitor scrolls back up, so
+    // it downloads after the forward clip.
+    const cargarVuelta = () => {
+      if (vuelta.preload !== "auto") { vuelta.preload = "auto"; vuelta.load(); }
+    };
+    ida.addEventListener("canplaythrough", cargarVuelta, { once: true });
+    const espera = window.setTimeout(cargarVuelta, 6000);
+
     const pintar = () => {
       id = requestAnimationFrame(pintar);
-      if (!visible) return;
-      actual = actual < 0 || quieto ? objetivo : actual + (objetivo - actual) * 0.14;
-      if (Math.abs(objetivo - actual) < 0.00005) actual = objetivo;
-
-      const pos = actual * (TOTAL - 1);
-      const llave = Math.round(pos * 100);
-      if (llave !== pintado) {
-        const base = Math.floor(pos), frac = pos - base;
-        const a = cercano(base);
-        if (a >= 0) {
-          ctx.globalAlpha = 1;
-          dibujar(cuadros[a]!);
-          const sig = cuadros[base + 1];
-          if (a === base && sig && frac > 0.01) {
-            ctx.globalAlpha = frac;
-            dibujar(sig);
-            ctx.globalAlpha = 1;
+      if (!visible || !arrancado) return;
+      if (!ocupado) {
+        if (destino !== null) {
+          const t = tVis(), adelante = activo === ida;
+          if ((adelante ? t >= PARADAS[destino] - 0.02 : t <= PARADAS[destino] + 0.02) || activo.ended) llegar();
+          // Scrolled back the other way mid-stretch: return to where it left.
+          else if (en >= 0 && ((destino > en && meta <= en) || (destino < en && meta >= en))) iniciar(en);
+          // Paused while off screen: carry on from where it stopped.
+          else if (activo.paused) {
+            const k = destino;
+            activo.play().catch(() => saltar(k));
           }
-          pintado = llave;
-        }
+        } else if (meta !== en) iniciar(en + Math.sign(meta - en));
       }
 
+      // Text shows while its scene holds still; the headline also shows during
+      // the intro.
+      const escena = destino === null ? en : en === -1 ? 0 : -1;
       capas.current.forEach((el, i) => {
         if (!el) return;
-        const o = opacidad(actual, CAPITULOS[i].de, CAPITULOS[i].a);
-        el.style.opacity = String(o);
-        el.style.transform = `translate3d(0, ${(1 - o) * 24}px, 0)`;
-        el.style.pointerEvents = o > 0.5 ? "auto" : "none";
+        const on = i === escena;
+        el.style.opacity = on ? "1" : "0";
+        el.style.transform = on ? "none" : "translate3d(0, 24px, 0)";
+        el.style.pointerEvents = on ? "auto" : "none";
       });
+      // A slow push-in keeps a held scene alive without moving the footage.
+      const encuadre = ENCUADRE[destino ?? Math.max(0, en)] + " 50%";
+      if (ida.style.objectPosition !== encuadre) {
+        ida.style.objectPosition = encuadre;
+        vuelta.style.objectPosition = encuadre;
+      }
+      const sosten = destino === null;
+      if (!quieto && sosten !== quietoAntes) {
+        quietoAntes = sosten;
+        caja.style.transition = sosten ? "transform 9s cubic-bezier(.2,.6,.3,1)" : "transform 1.2s ease-out";
+        caja.style.transform = sosten ? "scale(1.04)" : "scale(1)";
+      }
     };
-    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
+    const io = new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (!visible) activo.pause();
+    });
     io.observe(cont);
-    ajustar();
     leer();
     id = requestAnimationFrame(pintar);
     window.addEventListener("scroll", leer, { passive: true });
-    window.addEventListener("resize", ajustar);
     return () => {
-      vivo = false;
       cancelAnimationFrame(id);
+      window.clearTimeout(espera);
       io.disconnect();
       window.removeEventListener("scroll", leer);
-      window.removeEventListener("resize", ajustar);
     };
   }, []);
 
   return (
-    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[900vh] bg-azul">
+    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[560vh] bg-azul">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
-        {/* The poster shows until the first frames arrive. */}
-        <picture>
-          <source srcSet="/video/gaviota-poster-vertical.jpg" media="(max-aspect-ratio: 4/5)" />
-          <img src="/video/gaviota-poster.jpg" alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover" />
-        </picture>
-        <canvas ref={lienzo} aria-hidden className="absolute inset-0 w-full h-full" />
+        <div ref={marco} aria-hidden className="absolute inset-0 will-change-transform">
+          <video ref={idaRef} muted playsInline preload="auto" poster="/video/gaviota-poster.jpg" className="absolute inset-0 w-full h-full object-cover transition-[object-position] duration-[1500ms] ease-out">
+            {/* WebM first (lighter in Chrome and Android), MP4 for Safari. */}
+            <source src="/video/gaviota-ida-v.webm" type="video/webm" media="(max-aspect-ratio: 4/5)" />
+            <source src="/video/gaviota-ida-v.mp4" type="video/mp4" media="(max-aspect-ratio: 4/5)" />
+            <source src="/video/gaviota-ida.webm" type="video/webm" />
+            <source src="/video/gaviota-ida.mp4" type="video/mp4" />
+          </video>
+          <video ref={vueltaRef} muted playsInline preload="none" className="absolute inset-0 w-full h-full object-cover transition-[object-position] duration-[1500ms] ease-out" style={{ opacity: 0 }}>
+            <source src="/video/gaviota-vuelta-v.webm" type="video/webm" media="(max-aspect-ratio: 4/5)" />
+            <source src="/video/gaviota-vuelta-v.mp4" type="video/mp4" media="(max-aspect-ratio: 4/5)" />
+            <source src="/video/gaviota-vuelta.webm" type="video/webm" />
+            <source src="/video/gaviota-vuelta.mp4" type="video/mp4" />
+          </video>
+        </div>
+        {/* Fine film grain and a soft vignette: they hide compression and the
+            small flaws of generated footage. Static, so they cost nothing. */}
+        <div aria-hidden className="grano absolute inset-0 pointer-events-none" />
+        <div aria-hidden className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(12,38,66,0)_55%,rgba(12,38,66,0.45)_100%)]" />
         {/* The railway shots have a pale sky: keep the white menu readable. */}
         <div aria-hidden className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(12,38,66,0.65)_0%,rgba(12,38,66,0)_100%)]" />
         {/* Darkens the left and bottom just enough for white text on a bright sky. */}
@@ -166,7 +204,7 @@ export default function VideoVuelo() {
         <div className="absolute inset-0 pointer-events-none">
           {/* At the start the gull fills the lower left, so on wide screens the
               headline sits top right, over open sky. */}
-          <div ref={(el) => { capas.current[0] = el; }} className="absolute inset-0 flex items-end md:items-start pb-[12vh] md:pb-0 md:pt-[17vh]">
+          <div ref={(el) => { capas.current[0] = el; }} className="capa-vuelo absolute inset-0 flex items-end md:items-start pb-[12vh] md:pb-0 md:pt-[17vh]">
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 md:flex md:flex-col md:items-end md:text-right">
               <h1 className="text-white text-[44px] leading-[1.02] sm:text-6xl md:text-7xl font-bold tracking-tight max-w-xl lg:max-w-2xl">
                 Todo lo que la vía férrea necesita.
@@ -181,28 +219,28 @@ export default function VideoVuelo() {
             </div>
           </div>
 
-          <div ref={(el) => { capas.current[1] = el; }} className="absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
+          <div ref={(el) => { capas.current[1] = el; }} className="capa-vuelo absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
               <p className="text-white font-titulo font-bold text-4xl md:text-6xl max-w-2xl leading-tight">Mirada de cerca, visión de conjunto.</p>
               <p className="mt-3 text-white/85 text-lg max-w-md">Del clip elástico al corredor completo: suministro, servicio técnico y topografía con dron.</p>
             </div>
           </div>
 
-          <div ref={(el) => { capas.current[2] = el; }} className="absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
+          <div ref={(el) => { capas.current[2] = el; }} className="capa-vuelo absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
               <p className="text-white font-titulo font-bold text-4xl md:text-6xl max-w-2xl leading-tight">Desde arriba se ve la vía completa.</p>
               <p className="mt-3 text-white/85 text-lg max-w-md">Fijaciones, herramientas de vía, señalización y servicio técnico para construir y mantener corredores férreos.</p>
             </div>
           </div>
 
-          <div ref={(el) => { capas.current[3] = el; }} className="absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
+          <div ref={(el) => { capas.current[3] = el; }} className="capa-vuelo absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
               <p className="text-white font-titulo font-bold text-4xl md:text-6xl max-w-2xl leading-tight">Y de cerca, cada pieza cuenta.</p>
               <p className="mt-3 text-white/85 text-lg max-w-md">Eclisas, clips, placas de asiento y tirafondos con ficha técnica y código.</p>
             </div>
           </div>
 
-          <div ref={(el) => { capas.current[4] = el; }} className="absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
+          <div ref={(el) => { capas.current[4] = el; }} className="capa-vuelo absolute inset-0 flex items-end pb-[12vh]" style={{ opacity: 0 }}>
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 flex flex-col items-start gap-5">
               <p className="text-white font-titulo font-bold text-4xl md:text-6xl max-w-2xl leading-tight">Ferroviario y energía solar.</p>
               <div className="flex flex-wrap gap-3">
