@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ENERGY_INTRO, SERVICIOS_ENERGY } from "@/constants/energy";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
 import BotonCotizar from "@/components/BotonCotizar";
-import CieloSolar from "@/components/energia/CieloSolar";
+import VideoEnergia from "@/components/energia/VideoEnergia";
 import DatosParaCotizar from "@/components/energia/DatosParaCotizar";
 import RecorridoSolar from "@/components/energia/RecorridoSolar";
 import Calculadora from "@/components/energia/Calculadora";
@@ -31,16 +31,20 @@ export default function Energy() {
   return (
     <>
       <section id="vuelo" className="relative h-[100svh] min-h-[560px] overflow-hidden bg-azul">
-        <CieloSolar />
-        {/* Keeps the headline readable where it overlaps the sky and panels. */}
-        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,38,66,0.85)_0%,rgba(12,38,66,0.55)_45%,rgba(12,38,66,0)_70%)] md:bg-[linear-gradient(90deg,rgba(12,38,66,0.9)_0%,rgba(12,38,66,0.6)_40%,rgba(12,38,66,0)_65%)]" />
-        <div className="relative h-full mx-auto max-w-6xl px-4 sm:px-6 flex flex-col justify-start pt-[18vh] md:pt-[20vh]">
+        {/* On phones the gull lands in the middle of the vertical frame, so the
+            video takes the top and the text sits below it on the blue; on wide
+            screens the video fills the section and the text is on the left. */}
+        <div className="absolute inset-x-0 top-0 h-[60%] md:h-full">
+          <VideoEnergia />
+          <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,38,66,0.55)_0%,rgba(12,38,66,0)_25%,rgba(12,38,66,0)_70%,rgba(12,38,66,1)_100%)] md:bg-[linear-gradient(90deg,rgba(12,38,66,0.9)_0%,rgba(12,38,66,0.6)_40%,rgba(12,38,66,0)_65%)]" />
+        </div>
+        <div className="relative h-full mx-auto max-w-6xl px-4 sm:px-6 flex flex-col justify-end pb-8 md:justify-start md:pb-0 md:pt-[20vh]">
           <p className="text-white/70 font-semibold tracking-wide">GAVICOM Energy</p>
-          <h1 className="mt-3 text-white text-[44px] leading-[1.02] sm:text-6xl md:text-7xl font-bold tracking-tight max-w-3xl">
+          <h1 className="mt-3 text-white text-[36px] leading-[1.04] sm:text-6xl md:text-7xl font-bold tracking-tight max-w-3xl">
             Energía solar, del cofre al gabinete.
           </h1>
-          <p className="mt-5 text-white/85 text-lg md:text-xl max-w-lg">Fabricamos cofres fotovoltaicos, instalamos sistemas solares y sus protecciones, e integramos los gabinetes.</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <p className="mt-3 md:mt-5 text-white/85 text-base md:text-xl max-w-lg">Fabricamos cofres fotovoltaicos, instalamos sistemas solares y sus protecciones, e integramos los gabinetes.</p>
+          <div className="mt-5 md:mt-8 flex flex-wrap gap-3">
             <a href="#servicios" className="inline-flex items-center min-h-12 px-6 rounded bg-white text-azul font-semibold hover:bg-azul-suave">
               Ver servicios
             </a>
@@ -48,7 +52,8 @@ export default function Energy() {
               href={enlaceWhatsApp("Hola GAVICOM, me interesa cotizar un proyecto de energía solar con GAVICOM Energy.")}
               className="inline-flex items-center min-h-12 px-6 rounded border border-white/60 text-white font-semibold hover:bg-white/10"
             >
-              Escribir por WhatsApp
+              <span className="sm:hidden">WhatsApp</span>
+              <span className="hidden sm:inline">Escribir por WhatsApp</span>
             </a>
           </div>
         </div>
