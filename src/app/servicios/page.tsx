@@ -10,11 +10,11 @@ export default function Servicios() {
         Además del suministro, hacemos topografía con dron, mantenimiento de equipos, servicio hidráulico, alquiler de motosoldadores Lincoln, planos y consultoría ferroviaria.
       </p>
 
-      <ul className="mt-8 flex flex-col gap-px bg-linea border border-linea rounded overflow-hidden">
+      <ul data-aparecer="grupo" className="mt-8 flex flex-col gap-px bg-linea border border-linea rounded overflow-hidden">
         {SERVICIOS.map((s) => {
           const img = imagenProducto(s);
           return (
-            <li key={s.sku} id={s.sku.toLowerCase()} className="bg-white grid gap-5 p-5 md:p-6 md:grid-cols-[220px_1fr] items-start">
+            <li key={s.sku} id={s.sku.toLowerCase()} className="foco bg-white grid gap-5 p-5 md:p-6 md:grid-cols-[220px_1fr] items-start">
               <div className="relative aspect-[4/3] bg-gris rounded overflow-hidden">
                 {img && <Image src={img} alt={s.nombre} fill sizes="(min-width:768px) 220px, 100vw" className="object-cover" />}
               </div>

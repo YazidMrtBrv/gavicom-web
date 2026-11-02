@@ -53,11 +53,11 @@ export default function Energy() {
       </section>
 
       <section id="servicios" aria-labelledby="h-servicios" className="mx-auto max-w-6xl px-4 sm:px-6 pt-20">
-        <h2 id="h-servicios" className="text-3xl md:text-4xl font-bold">
+        <h2 id="h-servicios" data-aparecer className="text-3xl md:text-4xl font-bold">
           Servicios
         </h2>
         <p className="mt-3 text-tenue max-w-2xl">{ENERGY_INTRO}</p>
-        <ul className="mt-8 border-t border-linea">
+        <ul data-aparecer="grupo" className="mt-8 border-t border-linea">
           {SERVICIOS_ENERGY.map((s) => (
             <li key={s.codigo} id={s.codigo.toLowerCase()} className="group grid gap-4 md:grid-cols-[minmax(0,18rem)_minmax(0,1fr)_auto] py-8 border-b border-linea items-start">
               <div>
@@ -84,7 +84,7 @@ export default function Energy() {
       </section>
 
       <section aria-labelledby="h-datos" className="mx-auto max-w-6xl px-4 sm:px-6 pt-20">
-        <h2 id="h-datos" className="text-3xl md:text-4xl font-bold">
+        <h2 id="h-datos" data-aparecer className="text-3xl md:text-4xl font-bold">
           Qué necesitamos para cotizar
         </h2>
         <p className="text-tenue mt-2 max-w-2xl mb-8">Marca lo que ya tienes y te armamos el mensaje.</p>

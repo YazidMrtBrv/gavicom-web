@@ -27,7 +27,7 @@ export default function Nosotros() {
 
       {/* Text approved by the family, without the name, kept to this page on
           purpose: the logo already carries the seagull everywhere else. */}
-      <section aria-labelledby="h-gaviota" className="grid gap-6 sm:grid-cols-[200px_1fr] items-center border-y border-linea py-8">
+      <section data-aparecer aria-labelledby="h-gaviota" className="grid gap-6 sm:grid-cols-[200px_1fr] items-center border-y border-linea py-8">
         <Image src="/marca/gavicom-azul.png" alt="Logo de GAVICOM con la gaviota sobre la I" width={200} height={52} className="w-[200px] h-auto" />
         <div>
           <h2 id="h-gaviota" className="text-xl font-bold">
@@ -41,7 +41,7 @@ export default function Nosotros() {
         <h2 id="h-equipo" className="text-2xl font-bold">
           Con quién hablas
         </h2>
-        <ul className="grid gap-4 sm:grid-cols-2">
+        <ul data-aparecer="grupo" className="grid gap-4 sm:grid-cols-2">
           <li className="border border-linea rounded p-5">
             <p className="font-semibold">{COMPANIA_INFO.gerente}</p>
             <p className="text-sm text-tenue">{COMPANIA_INFO.cargo}</p>

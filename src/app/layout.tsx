@@ -4,6 +4,7 @@ import "./globals.css";
 import Encabezado from "@/components/Encabezado";
 import Pie from "@/components/Pie";
 import BotonWhatsApp from "@/components/BotonWhatsApp";
+import Interacciones from "@/components/movimiento/Interacciones";
 import { Analytics } from "@vercel/analytics/next";
 
 const montserrat = Montserrat({
@@ -163,6 +164,7 @@ export default function RootLayout({
         </main>
         <Pie />
         <BotonWhatsApp />
+        <Interacciones />
         <Analytics />
       </body>
     </html>

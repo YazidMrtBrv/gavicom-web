@@ -8,7 +8,7 @@ export default function TarjetaProducto({ producto, prioridad = false }: { produ
   const img = imagenProducto(producto);
   const href = `/catalogo/${slugProducto(producto)}`;
   return (
-    <article className="group flex flex-col border border-linea rounded bg-white hover:border-azul/40 transition-colors">
+    <article className="inclinar group flex flex-col border border-linea rounded bg-white hover:border-azul/40">
       <Link href={href} className="flex flex-col gap-3 p-3 pb-2 flex-1">
         <div className="relative aspect-square bg-white overflow-hidden">
           {img ? (

@@ -5,6 +5,8 @@ import TarjetaProducto from "@/components/TarjetaProducto";
 import Buscador from "@/components/Buscador";
 import VideoVuelo from "@/components/vuelo/VideoVuelo";
 import ViaDesarmada, { type PiezaVia } from "@/components/via/ViaDesarmada";
+import Cifras from "@/components/movimiento/Cifras";
+import Franja from "@/components/movimiento/Franja";
 
 const destacados = DESTACADOS.map((sku) => PRODUCTOS.find((p) => p.sku === sku)).filter((p) => p !== undefined);
 
@@ -35,12 +37,29 @@ export default function Inicio() {
         <VideoVuelo />
       </div>
 
+      <section aria-labelledby="h-cifras" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
+        <h2 id="h-cifras" data-aparecer className="text-2xl md:text-4xl font-bold max-w-2xl">
+          Un solo proveedor para la vía, del clip al corredor completo.
+        </h2>
+        <div data-aparecer className="mt-10">
+          <Cifras
+            cifras={[
+              { valor: PRODUCTOS.length, texto: "referencias en el catálogo" },
+              { valor: LINEAS.length, texto: "líneas de producto" },
+              { valor: SERVICIOS.length, texto: "servicios técnicos" },
+            ]}
+          />
+        </div>
+      </section>
+
+      <Franja items={[...LINEAS.map((l) => ({ texto: l.nombre, href: `/catalogo?linea=${l.slug}` })), { texto: "GAVICOM Energy", href: "/energy" }]} />
+
       <ViaDesarmada piezas={piezasVia} />
 
       <section aria-labelledby="h-montar" className="mx-auto max-w-6xl px-4 sm:px-6 pt-16">
-        <h2 id="h-montar" className="text-2xl md:text-3xl font-bold">Y para montarla</h2>
-        <p className="text-tenue mt-2 mb-5 max-w-xl">Las herramientas para instalar y mantener esas mismas fijaciones.</p>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <h2 id="h-montar" data-aparecer className="text-2xl md:text-3xl font-bold">Y para montarla</h2>
+        <p data-aparecer className="text-tenue mt-2 mb-5 max-w-xl">Las herramientas para instalar y mantener esas mismas fijaciones.</p>
+        <div data-aparecer="grupo" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           {PARA_MONTAR.map((p) => (
             <TarjetaProducto key={p.sku} producto={p} />
           ))}
@@ -48,9 +67,9 @@ export default function Inicio() {
       </section>
 
       <section aria-labelledby="h-buscar" className="mx-auto max-w-6xl px-4 sm:px-6 pt-16 pb-10 flex flex-col gap-4">
-        <h2 id="h-buscar" className="text-3xl md:text-4xl font-bold">¿Qué referencia buscas?</h2>
+        <h2 id="h-buscar" data-aparecer className="text-3xl md:text-4xl font-bold">¿Qué referencia buscas?</h2>
         <Buscador className="max-w-2xl" />
-        <ul className="flex flex-wrap gap-2" aria-label="Líneas del catálogo">
+        <ul data-aparecer="grupo" className="flex flex-wrap gap-2" aria-label="Líneas del catálogo">
           {LINEAS.map((l) => (
             <li key={l.slug}>
               <Link href={`/catalogo?linea=${l.slug}`} className="inline-flex items-center min-h-10 px-3 rounded border border-linea bg-gris text-sm text-tinta hover:border-azul hover:text-azul">
@@ -62,13 +81,13 @@ export default function Inicio() {
       </section>
 
       <section aria-labelledby="h-destacados" className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="flex items-end justify-between gap-4 mb-5">
+        <div data-aparecer className="flex items-end justify-between gap-4 mb-5">
           <h2 id="h-destacados" className="text-2xl font-bold">Referencias destacadas</h2>
           <Link href="/catalogo" className="inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-azul hover:underline">
             Ver las {PRODUCTOS.length} <ArrowRight size={16} aria-hidden />
           </Link>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div data-aparecer="grupo" className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {destacados.map((p) => (
             <TarjetaProducto key={p.sku} producto={p} />
           ))}
@@ -77,11 +96,11 @@ export default function Inicio() {
 
       <section aria-labelledby="h-cotizar" className="mt-16 bg-azul text-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 grid gap-8 md:grid-cols-[1fr_1.3fr] items-center">
-          <div className="flex flex-col gap-3">
+          <div data-aparecer className="flex flex-col gap-3">
             <h2 id="h-cotizar" className="text-3xl font-bold text-white">Cotizar toma tres pasos</h2>
             <p className="text-white/80">Sin formularios largos: armas la lista y nos llega completa, con códigos y cantidades.</p>
           </div>
-          <ol className="grid gap-5 sm:grid-cols-3">
+          <ol data-aparecer="grupo" className="grid gap-5 sm:grid-cols-3">
             {[
               ["Marca las piezas", "Desde el catálogo, con «Agregar a cotización»."],
               ["Pon cantidades", "Y la ciudad donde las necesitas."],
@@ -100,11 +119,11 @@ export default function Inicio() {
       </section>
 
       <section aria-labelledby="h-lineas" className="mx-auto max-w-6xl px-4 sm:px-6 mt-16">
-        <h2 id="h-lineas" className="text-2xl font-bold mb-5">Qué suministramos</h2>
-        <ul className="grid gap-px bg-linea border border-linea rounded overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
+        <h2 id="h-lineas" data-aparecer className="text-2xl font-bold mb-5">Qué suministramos</h2>
+        <ul data-aparecer="grupo" className="grid gap-px bg-linea border border-linea rounded overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
           {LINEAS.map((l) => (
             <li key={l.slug} className="bg-white">
-              <Link href={`/catalogo?linea=${l.slug}`} className="group flex flex-col gap-1 h-full p-5 hover:bg-gris">
+              <Link href={`/catalogo?linea=${l.slug}`} className="foco group flex flex-col gap-1 h-full p-5 hover:bg-gris">
                 <span className="flex items-center justify-between gap-2 font-semibold text-tinta group-hover:text-azul">
                   {l.nombre}
                   <span className="text-sm font-normal text-tenue tabular-nums">{PRODUCTOS.filter((p) => p.categoria === l.categoria).length} ref.</span>
@@ -114,7 +133,7 @@ export default function Inicio() {
             </li>
           ))}
           <li className="bg-azul sm:col-span-2 lg:col-span-1">
-            <Link href="/energy" className="group flex flex-col gap-1 h-full p-5 hover:bg-azul-hover">
+            <Link href="/energy" className="foco group flex flex-col gap-1 h-full p-5 hover:bg-azul-hover">
               <span className="flex items-center justify-between gap-2 font-semibold text-white">
                 GAVICOM Energy
                 <span className="text-sm font-normal text-white/70">Solar</span>
@@ -123,7 +142,7 @@ export default function Inicio() {
             </Link>
           </li>
           <li className="bg-white">
-            <Link href="/servicios" className="group flex flex-col gap-1 h-full p-5 hover:bg-gris">
+            <Link href="/servicios" className="foco group flex flex-col gap-1 h-full p-5 hover:bg-gris">
               <span className="flex items-center justify-between gap-2 font-semibold text-tinta group-hover:text-azul">
                 Servicios
                 <span className="text-sm font-normal text-tenue tabular-nums">{SERVICIOS.length}</span>
