@@ -4,10 +4,26 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 /*
- * Home hero: a real-looking seagull flight, scrubbed by scroll. The clips are
- * encoded with a keyframe on every frame (-g 1) so seeking to any point is
- * instant; without that, scrubbing stutters on phones.
+ * Home hero: a real-looking seagull flight, scrubbed by scroll. Instead of
+ * seeking a <video> (which stutters, above all on iPhone, because every seek
+ * makes the browser decode again), the clip is a sequence of WebP frames drawn
+ * on a canvas. Between two frames the next one is blended in by the fraction
+ * left over, so the motion stays continuous however slowly the page scrolls.
  */
+
+const TOTAL = 450; // 30 s at 15 fps
+const SERIES = { h: "/video/cuadros/h/", v: "/video/cuadros/v/" };
+const nombre = (i: number) => String(i + 1).padStart(3, "0") + ".webp";
+
+// Coarse frames first (every 16th, then 8th...) so the whole flight can be
+// scrubbed early and the gaps fill in while the visitor reads the headline.
+const ordenCarga = () => {
+  const visto = new Set<number>(), orden: number[] = [];
+  for (const paso of [16, 8, 4, 2, 1])
+    for (let i = 0; i < TOTAL; i += paso) if (!visto.has(i)) { visto.add(i); orden.push(i); }
+  if (!visto.has(TOTAL - 1)) orden.splice(1, 0, TOTAL - 1);
+  return orden;
+};
 
 // Windows of scroll progress, matched to the 30 s clip: sky (0-10 s, with a
 // close-up at 4-7 s), the flight over the railway (10-20 s) and the landing
@@ -30,20 +46,55 @@ const opacidad = (p: number, de: number, a: number) => {
 
 export default function VideoVuelo() {
   const seccion = useRef<HTMLElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
+  const lienzo = useRef<HTMLCanvasElement>(null);
   const capas = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    const cont = seccion.current, v = video.current;
-    if (!cont || !v) return;
+    const cont = seccion.current, cv = lienzo.current;
+    const ctx = cv?.getContext("2d");
+    if (!cont || !cv || !ctx) return;
     const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let id = 0, objetivo = 0, actual = 0, visible = true;
+    const serie = window.matchMedia("(max-aspect-ratio: 4/5)").matches ? SERIES.v : SERIES.h;
+    const cuadros: (HTMLImageElement | null)[] = new Array(TOTAL).fill(null);
+    let id = 0, objetivo = 0, actual = -1, pintado = -1, visible = true, vivo = true;
 
-    // iOS only lets a muted inline video seek once it has started playing.
-    const desbloquear = () => {
-      v.play().then(() => v.pause()).catch(() => {});
+    // Up to six downloads at a time; each frame is decoded before it is used
+    // so drawing never waits on the decoder.
+    const cola = ordenCarga();
+    const bajar = () => {
+      const i = cola.shift();
+      if (i === undefined || !vivo) return;
+      const img = new Image();
+      img.src = serie + nombre(i);
+      img.decode().then(() => { cuadros[i] = img; pintado = -1; }).catch(() => {}).finally(bajar);
     };
-    desbloquear();
+    for (let k = 0; k < 6; k++) bajar();
+
+    // Nearest frame already loaded, looking back first so the motion never
+    // jumps ahead of the scroll.
+    const cercano = (i: number) => {
+      for (let d = 0; d < TOTAL; d++) {
+        if (i - d >= 0 && cuadros[i - d]) return i - d;
+        if (i + d < TOTAL && cuadros[i + d]) return i + d;
+      }
+      return -1;
+    };
+
+    const ajustar = () => {
+      // Never draw at more pixels than the frames have: past that it only
+      // costs GPU time on large screens without adding detail.
+      const tope = serie === SERIES.v ? 840 : 1280;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2, tope / Math.max(1, cv.clientWidth));
+      cv.width = Math.round(cv.clientWidth * dpr);
+      cv.height = Math.round(cv.clientHeight * dpr);
+      pintado = -1;
+    };
+    // Like object-fit: cover.
+    const dibujar = (img: HTMLImageElement) => {
+      const e = Math.max(cv.width / img.naturalWidth, cv.height / img.naturalHeight);
+      const w = img.naturalWidth * e, h = img.naturalHeight * e;
+      ctx.drawImage(img, (cv.width - w) / 2, (cv.height - h) / 2, w, h);
+    };
 
     const leer = () => {
       const r = cont.getBoundingClientRect();
@@ -53,11 +104,27 @@ export default function VideoVuelo() {
     const pintar = () => {
       id = requestAnimationFrame(pintar);
       if (!visible) return;
-      actual += (objetivo - actual) * (quieto ? 1 : 0.12);
-      if (v.duration && Number.isFinite(v.duration)) {
-        const t = actual * (v.duration - 0.05);
-        if (Math.abs(v.currentTime - t) > 1 / 30) v.currentTime = t;
+      actual = actual < 0 || quieto ? objetivo : actual + (objetivo - actual) * 0.14;
+      if (Math.abs(objetivo - actual) < 0.00005) actual = objetivo;
+
+      const pos = actual * (TOTAL - 1);
+      const llave = Math.round(pos * 100);
+      if (llave !== pintado) {
+        const base = Math.floor(pos), frac = pos - base;
+        const a = cercano(base);
+        if (a >= 0) {
+          ctx.globalAlpha = 1;
+          dibujar(cuadros[a]!);
+          const sig = cuadros[base + 1];
+          if (a === base && sig && frac > 0.01) {
+            ctx.globalAlpha = frac;
+            dibujar(sig);
+            ctx.globalAlpha = 1;
+          }
+          pintado = llave;
+        }
       }
+
       capas.current.forEach((el, i) => {
         if (!el) return;
         const o = opacidad(actual, CAPITULOS[i].de, CAPITULOS[i].a);
@@ -68,35 +135,29 @@ export default function VideoVuelo() {
     };
     const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
     io.observe(cont);
+    ajustar();
     leer();
     id = requestAnimationFrame(pintar);
     window.addEventListener("scroll", leer, { passive: true });
-    window.addEventListener("touchstart", desbloquear, { once: true, passive: true });
+    window.addEventListener("resize", ajustar);
     return () => {
+      vivo = false;
       cancelAnimationFrame(id);
       io.disconnect();
       window.removeEventListener("scroll", leer);
+      window.removeEventListener("resize", ajustar);
     };
   }, []);
 
   return (
     <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[900vh] bg-azul">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
-        <video
-          ref={video}
-          muted
-          playsInline
-          preload="auto"
-          poster="/video/gaviota-poster.jpg"
-          aria-hidden
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          {/* WebM first (lighter in Chrome and Android), MP4 for Safari. */}
-          <source src="/video/gaviota-vertical.webm" type="video/webm" media="(max-aspect-ratio: 4/5)" />
-          <source src="/video/gaviota-vertical.mp4" type="video/mp4" media="(max-aspect-ratio: 4/5)" />
-          <source src="/video/gaviota-1280.webm" type="video/webm" />
-          <source src="/video/gaviota-1280.mp4" type="video/mp4" />
-        </video>
+        {/* The poster shows until the first frames arrive. */}
+        <picture>
+          <source srcSet="/video/gaviota-poster-vertical.jpg" media="(max-aspect-ratio: 4/5)" />
+          <img src="/video/gaviota-poster.jpg" alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover" />
+        </picture>
+        <canvas ref={lienzo} aria-hidden className="absolute inset-0 w-full h-full" />
         {/* The railway shots have a pale sky: keep the white menu readable. */}
         <div aria-hidden className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(12,38,66,0.65)_0%,rgba(12,38,66,0)_100%)]" />
         {/* Darkens the left and bottom just enough for white text on a bright sky. */}
