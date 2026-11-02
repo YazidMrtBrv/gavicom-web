@@ -4,6 +4,8 @@ import { enlaceWhatsApp } from "@/lib/whatsapp";
 import BotonCotizar from "@/components/BotonCotizar";
 import CieloSolar from "@/components/energia/CieloSolar";
 import DatosParaCotizar from "@/components/energia/DatosParaCotizar";
+import RecorridoSolar from "@/components/energia/RecorridoSolar";
+import Calculadora from "@/components/energia/Calculadora";
 
 const DESCRIPCION =
   "Cofres fotovoltaicos metálicos rígidos con cumplimiento de los requisitos aplicables del RETIE, montaje e instalación de sistemas solares, protecciones eléctricas AC y DC y ensamble de gabinetes. GAVICOM, Barranquilla.";
@@ -83,6 +85,26 @@ export default function Energy() {
         </ul>
       </section>
 
+      <section aria-labelledby="h-recorrido" className="mx-auto max-w-6xl px-4 sm:px-6 pt-20">
+        <h2 id="h-recorrido" data-aparecer className="text-3xl md:text-4xl font-bold">
+          Así funciona un sistema solar
+        </h2>
+        <p data-aparecer className="mt-2 text-tenue max-w-2xl">Sigue el camino de la energía del sol hasta tu operación. Toca cada paso para ver qué hacemos ahí.</p>
+        <div data-aparecer className="mt-10">
+          <RecorridoSolar />
+        </div>
+      </section>
+
+      <section aria-labelledby="h-calcula" className="mx-auto max-w-6xl px-4 sm:px-6 pt-20">
+        <h2 id="h-calcula" data-aparecer className="text-3xl md:text-4xl font-bold">
+          ¿Cuántos paneles necesitas?
+        </h2>
+        <p data-aparecer className="mt-2 text-tenue max-w-2xl">Un cálculo rápido con tu consumo. Después lo afinamos con una visita.</p>
+        <div data-aparecer className="mt-8">
+          <Calculadora />
+        </div>
+      </section>
+
       <section aria-labelledby="h-hecho" className="mx-auto max-w-6xl px-4 sm:px-6 pt-20">
         <h2 id="h-hecho" data-aparecer className="text-3xl md:text-4xl font-bold">
           Lo que ya hemos hecho
@@ -99,6 +121,18 @@ export default function Energy() {
             </li>
           ))}
         </ul>
+        <div data-aparecer className="mt-6 flex flex-wrap items-center gap-3 rounded bg-gris p-5">
+          <span className="font-semibold text-tinta mr-2">Gabinetes suministrados con certificados</span>
+          {[
+            ["RETIE", "Reglamento Técnico de Instalaciones Eléctricas"],
+            ["IEC", "Normas internacionales de equipos eléctricos"],
+          ].map(([sigla, nombre]) => (
+            <span key={sigla} className="inline-flex items-center gap-2 px-3 py-2 rounded border border-azul/30 bg-white">
+              <span className="font-mono font-bold text-azul">{sigla}</span>
+              <span className="text-sm text-tenue">{nombre}</span>
+            </span>
+          ))}
+        </div>
       </section>
 
       <section aria-labelledby="h-datos" className="mx-auto max-w-6xl px-4 sm:px-6 pt-20">
