@@ -1,0 +1,61 @@
+/*
+ * Manufacturing route. Kept out of globals.css on purpose: only marco-global
+ * edits that file, and these rules only matter on /fabricacion.
+ */
+
+/* Phone accordion: the active step's picture opens inside the step, so the
+   visitor never has to scroll down to a figure that changed out of view. */
+.ruta-acordeon {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms ease-out;
+}
+.ruta-acordeon[data-abierto="true"] {
+  grid-template-rows: 1fr;
+}
+.ruta-acordeon > * {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Four-segment progress bar: the filled part grows with the active step. */
+.ruta-segmento {
+  position: relative;
+  overflow: hidden;
+}
+.ruta-segmento::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--azul);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 300ms ease-out;
+}
+.ruta-segmento[data-lleno="true"]::after {
+  transform: scaleX(1);
+}
+
+/* Desktop figure swap. */
+.ruta-figura {
+  animation: ruta-entrar 250ms ease-out;
+}
+@keyframes ruta-entrar {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
+}
+
+/* Order form: the live preview flashes softly when its text changes, so the
+   visitor notices that each choice lands in the message. */
+.pedido-vista {
+  transition: background-color 200ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ruta-acordeon,
+  .ruta-segmento::after,
+  .ruta-figura,
+  .pedido-vista {
+    animation: none !important;
+    transition: none !important;
+  }
+}
