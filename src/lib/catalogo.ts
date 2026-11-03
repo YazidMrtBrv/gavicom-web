@@ -82,13 +82,62 @@ export function normalizar(texto: string): string {
     .trim();
 }
 
+// Turns "Herramientas de Mano" into "herramientas-de-mano" for ?sub=.
+export function slugTexto(texto: string): string {
+  return normalizar(texto).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+export function subcategoriasDe(productos: Producto[]): { slug: string; nombre: string; total: number }[] {
+  const mapa = new Map<string, { slug: string; nombre: string; total: number }>();
+  for (const p of productos) {
+    const slug = slugTexto(p.subcategoria);
+    const actual = mapa.get(slug);
+    if (actual) actual.total++;
+    else mapa.set(slug, { slug, nombre: p.subcategoria, total: 1 });
+  }
+  return [...mapa.values()];
+}
+
+// Words that name the same part in the field. A query word matches if the
+// text has it OR any synonym, so these only ever widen a search.
+const SINONIMOS: string[][] = [
+  ["eclisa", "joint bar", "jointbar"],
+  ["clip", "grapa"],
+  ["durmiente", "traviesa"],
+  ["tornillo", "perno"],
+];
+
+// Plural to singular, loosely: "eclisas" -> "eclisa", "rieles" -> "riel".
+// Matching is by substring, so a stem that is a bit short still works.
+function raiz(palabra: string): string {
+  if (palabra.length <= 4) return palabra;
+  if (palabra.endsWith("es") && !/[aeiou]es$/.test(palabra)) return palabra.slice(0, -2);
+  if (palabra.endsWith("s")) return palabra.slice(0, -1);
+  return palabra;
+}
+
+function alternativas(palabra: string): string[] {
+  const r = raiz(palabra);
+  const grupo = SINONIMOS.find((g) => g.some((s) => raiz(s) === r || s === palabra));
+  return grupo ? [r, ...grupo.map(raiz)] : [r];
+}
+
 export function buscar(productos: Producto[], consulta: string): Producto[] {
-  const palabras = normalizar(consulta).split(/\s+/).filter(Boolean);
+  // "joint bars" is one idea in two words: glue it before splitting.
+  const limpia = normalizar(consulta).replace(/joint\s+bars?/g, "jointbar");
+  const palabras = limpia.split(/\s+/).filter(Boolean).map(alternativas);
   if (!palabras.length) return productos;
-  return productos.filter((p) => {
-    const texto = normalizar(
-      [p.sku, p.nombre, p.categoria, p.subcategoria, p.descripcion, ...Object.values(p.especificaciones)].join(" ")
-    );
-    return palabras.every((w) => texto.includes(w));
-  });
+  const coincide = (texto: string) => palabras.every((alts) => alts.some((a) => texto.includes(a)));
+  const puntuados: { p: Producto; puntos: number }[] = [];
+  for (const p of productos) {
+    const titulo = normalizar(`${p.sku} ${p.nombre}`).replace(/joint\s+bars?/g, "jointbar");
+    const resto = normalizar(
+      [p.categoria, p.subcategoria, p.descripcion, ...Object.values(p.especificaciones)].join(" ")
+    ).replace(/joint\s+bars?/g, "jointbar");
+    // Code or name hits first, description-only hits after.
+    if (coincide(titulo)) puntuados.push({ p, puntos: 2 });
+    else if (coincide(`${titulo} ${resto}`)) puntuados.push({ p, puntos: 1 });
+  }
+  // Array.prototype.sort is stable, so ties keep catalogue order.
+  return puntuados.sort((a, b) => b.puntos - a.puntos).map((x) => x.p);
 }

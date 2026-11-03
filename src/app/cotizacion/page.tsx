@@ -1,49 +1,104 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { Trash2 } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
 import { slugProducto } from "@/lib/catalogo";
 import { useCotizacion } from "@/lib/cotizacion";
 import { enlaceWhatsApp, mensajeCotizacion, type DatosContacto } from "@/lib/whatsapp";
+import SelectorCantidad from "@/components/catalogo/SelectorCantidad";
 
-type EstadoCorreo = "nada" | "enviando" | "enviado" | "fallo";
+type EstadoCorreo = "nada" | "enviando" | "enviado" | "fallo" | "correo-invalido";
+type Campo = "nombre" | "empresa" | "ciudad" | "nota" | "correo" | "telefono";
+type Datos = Record<Campo, string> & { plazo: string };
+
+const PLAZOS = ["Urgente", "Este mes", "Proyecto futuro"];
+// Without a name and a delivery city every quote starts with a question
+// back, so both are asked before the message leaves.
+const OBLIGATORIOS: Campo[] = ["nombre", "ciudad"];
 
 export default function Cotizacion() {
   const { lineas, total, cambiarCantidad, quitar, vaciar } = useCotizacion();
-  const [datos, setDatos] = useState<DatosContacto & { correo: string; telefono: string }>({ nombre: "", empresa: "", ciudad: "", nota: "", correo: "", telefono: "" });
+  const [datos, setDatos] = useState<Datos>({ nombre: "", empresa: "", ciudad: "", nota: "", correo: "", telefono: "", plazo: "" });
+  const [errores, setErrores] = useState<Partial<Record<Campo, string>>>({});
   const [correo, setCorreo] = useState<EstadoCorreo>("nada");
-  const texto = mensajeCotizacion(lineas, datos);
+  // Honeypot: hidden from people, filled by bots; the API drops those posts.
+  const [trampa, setTrampa] = useState("");
+  const refs = useRef<Partial<Record<Campo, HTMLInputElement | null>>>({});
 
-  const campo = (id: keyof typeof datos, etiqueta: string, tipo = "text", auto?: string) => (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={`cot-${id}`} className="text-sm font-medium">
-        {etiqueta}
-      </label>
-      <input
-        id={`cot-${id}`}
-        type={tipo}
-        autoComplete={auto}
-        value={datos[id]}
-        onChange={(e) => setDatos((d) => ({ ...d, [id]: e.target.value }))}
-        className="min-h-11 px-3 rounded border border-linea bg-white focus:border-azul outline-none"
-      />
-    </div>
-  );
+  const contacto: DatosContacto = { nombre: datos.nombre.trim(), empresa: datos.empresa.trim(), ciudad: datos.ciudad.trim(), nota: datos.nota.trim(), plazo: datos.plazo };
+  const texto = mensajeCotizacion(lineas, contacto);
+
+  // Returns true when the required fields are filled; otherwise marks them
+  // and moves focus to the first empty one so the visitor sees what is missing.
+  function validar(): boolean {
+    const nuevos: Partial<Record<Campo, string>> = {};
+    if (!datos.nombre.trim()) nuevos.nombre = "Escribe tu nombre.";
+    if (!datos.ciudad.trim()) nuevos.ciudad = "Escribe la ciudad de entrega.";
+    setErrores(nuevos);
+    const primero = OBLIGATORIOS.find((c) => nuevos[c]);
+    if (primero) refs.current[primero]?.focus();
+    return !primero;
+  }
+
+  const campo = (id: Campo, etiqueta: string, opciones: { tipo?: string; auto?: string; obligatorio?: boolean } = {}) => {
+    const error = errores[id];
+    return (
+      <div className="flex flex-col gap-1">
+        <label htmlFor={`cot-${id}`} className="text-sm font-medium">
+          {etiqueta}
+          {opciones.obligatorio && (
+            <span className="text-tenue font-normal"> (obligatorio)</span>
+          )}
+        </label>
+        <input
+          id={`cot-${id}`}
+          ref={(el) => {
+            refs.current[id] = el;
+          }}
+          type={opciones.tipo ?? "text"}
+          autoComplete={opciones.auto}
+          required={opciones.obligatorio}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `cot-${id}-error` : undefined}
+          value={datos[id]}
+          onChange={(e) => {
+            const v = e.target.value;
+            setDatos((d) => ({ ...d, [id]: v }));
+            if (error && v.trim()) setErrores((x) => ({ ...x, [id]: undefined }));
+          }}
+          className={`min-h-11 px-3 rounded border bg-white outline-none focus:border-azul ${error ? "border-red-700" : "border-linea"}`}
+        />
+        {error && (
+          <p id={`cot-${id}-error`} className="text-sm text-red-700">
+            {error}
+          </p>
+        )}
+      </div>
+    );
+  };
 
   async function enviarCorreo() {
+    if (!validar()) return;
+    const entrada = refs.current.correo;
+    if (!datos.correo.trim() || (entrada && !entrada.checkValidity())) {
+      setCorreo("correo-invalido");
+      entrada?.focus();
+      return;
+    }
     setCorreo("enviando");
     try {
       const r = await fetch("/api/contacto", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          nombre: [datos.nombre, datos.empresa].filter(Boolean).join(", "),
+          nombre: [contacto.nombre, contacto.empresa].filter(Boolean).join(", "),
           telefono: datos.telefono,
-          email: datos.correo,
+          email: datos.correo.trim(),
           tipo: "Cotización",
           mensaje: texto,
+          empresa_web: trampa,
         }),
       });
       const j = await r.json().catch(() => ({}));
@@ -62,7 +117,7 @@ export default function Cotizacion() {
         <div className="mt-6 border border-linea rounded bg-gris p-6 flex flex-col gap-3 items-start">
           <p className="font-semibold">Tu lista está vacía.</p>
           <p className="text-tenue text-sm">En el catálogo, toca «Agregar a cotización» en cada referencia que necesites. La lista se guarda en este navegador.</p>
-          <Link href="/catalogo" className="inline-flex items-center min-h-11 px-4 rounded bg-azul text-white font-semibold">
+          <Link href="/catalogo" className="inline-flex items-center min-h-11 px-4 rounded bg-azul text-white font-semibold hover:bg-azul-hover">
             Ir al catálogo
           </Link>
         </div>
@@ -81,37 +136,29 @@ export default function Cotizacion() {
 
       <div className="mt-6 grid gap-10 lg:grid-cols-[1.3fr_1fr] items-start">
         <ul className="border-t border-linea">
-          {lineas.map((l) => (
-            <li key={l.sku} className="flex flex-wrap items-center gap-3 py-4 border-b border-linea">
-              <div className="flex-1 min-w-[12rem]">
-                <Link href={l.sku.startsWith("GVC-ENR-") ? `/energy#${l.sku.toLowerCase()}` : `/catalogo/${slugProducto(l)}`} className="font-semibold hover:text-azul">
-                  {l.nombre}
-                </Link>
-                <p className="font-mono text-xs text-azul mt-0.5">{l.sku}</p>
-              </div>
-              <div className="flex items-center border border-linea rounded">
-                <button type="button" onClick={() => cambiarCantidad(l.sku, l.cantidad - 1)} disabled={l.cantidad <= 1} className="grid place-items-center w-11 h-11 disabled:text-linea" aria-label={`Una menos de ${l.nombre}`}>
-                  <Minus size={16} />
-                </button>
-                <label htmlFor={`cant-${l.sku}`} className="sr-only">
-                  Cantidad de {l.nombre}
-                </label>
-                <input
-                  id={`cant-${l.sku}`}
-                  inputMode="numeric"
-                  value={l.cantidad}
-                  onChange={(e) => cambiarCantidad(l.sku, Number(e.target.value.replace(/\D/g, "")))}
-                  className="w-14 h-11 text-center tabular-nums outline-none"
-                />
-                <button type="button" onClick={() => cambiarCantidad(l.sku, l.cantidad + 1)} className="grid place-items-center w-11 h-11" aria-label={`Una más de ${l.nombre}`}>
-                  <Plus size={16} />
-                </button>
-              </div>
-              <button type="button" onClick={() => quitar(l.sku)} className="grid place-items-center w-11 h-11 text-tenue hover:text-red-700" aria-label={`Quitar ${l.nombre}`}>
-                <Trash2 size={18} />
-              </button>
-            </li>
-          ))}
+          {lineas.map((l) => {
+            const clave = `${l.sku}|${l.variante ?? ""}`;
+            const nombreCompleto = l.variante ? `${l.nombre}, ${l.variante}` : l.nombre;
+            return (
+              // Phone: name on its own line, quantity and delete in one row
+              // below; from sm up, all on one line.
+              <li key={clave} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 py-4 border-b border-linea">
+                <div className="flex-1 min-w-0">
+                  <Link href={l.sku.startsWith("GVC-ENR-") ? `/energy#${l.sku.toLowerCase()}` : `/catalogo/${slugProducto(l)}`} className="font-semibold hover:text-azul">
+                    {l.nombre}
+                  </Link>
+                  {l.variante && <p className="text-sm text-tinta">{l.variante}</p>}
+                  <p className="font-mono text-xs text-azul mt-0.5">{l.sku}</p>
+                </div>
+                <div className="flex items-center justify-between gap-3 sm:justify-end">
+                  <SelectorCantidad id={`cant-${clave}`} valor={l.cantidad} cambiar={(n) => cambiarCantidad(l.sku, n, l.variante)} etiqueta={`Cantidad de ${nombreCompleto}`} />
+                  <button type="button" onClick={() => quitar(l.sku, l.variante)} className="grid place-items-center w-11 h-11 text-tenue hover:text-red-700" aria-label={`Quitar ${nombreCompleto}`}>
+                    <Trash2 size={18} aria-hidden />
+                  </button>
+                </div>
+              </li>
+            );
+          })}
           <li className="pt-3 flex justify-between gap-3">
             <Link href="/catalogo" className="inline-flex items-center min-h-11 text-sm font-semibold text-azul hover:underline">
               Agregar más referencias
@@ -127,13 +174,52 @@ export default function Cotizacion() {
             Enviar
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            {campo("nombre", "Tu nombre", "text", "name")}
-            {campo("empresa", "Empresa (opcional)", "text", "organization")}
-            {campo("ciudad", "Ciudad de entrega", "text", "address-level2")}
+            {campo("nombre", "Tu nombre", { auto: "name", obligatorio: true })}
+            {campo("ciudad", "Ciudad de entrega", { auto: "address-level2", obligatorio: true })}
+            {campo("empresa", "NIT o empresa (opcional)", { auto: "organization" })}
             {campo("nota", "Nota (opcional)")}
           </div>
+
+          <fieldset className="flex flex-col gap-2">
+            <legend className="text-sm font-medium mb-1">¿Para cuándo lo necesitas? <span className="text-tenue font-normal">(opcional)</span></legend>
+            <div className="flex flex-wrap gap-2">
+              {PLAZOS.map((p) => {
+                const activo = datos.plazo === p;
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    aria-pressed={activo}
+                    onClick={() => setDatos((d) => ({ ...d, plazo: activo ? "" : p }))}
+                    className={`min-h-11 px-4 rounded border text-sm font-medium transition-colors ${
+                      activo ? "bg-azul text-white border-azul" : "bg-white text-tinta border-linea hover:border-azul hover:text-azul"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
+
+          {/* Bots fill every input they find; people never see this one. */}
+          <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+            <label htmlFor="cot-empresa-web">No llenar este campo</label>
+            <input id="cot-empresa-web" name="empresa_web" tabIndex={-1} autoComplete="off" value={trampa} onChange={(e) => setTrampa(e.target.value)} />
+          </div>
+
+          <details open className="text-sm border border-linea rounded bg-white">
+            <summary className="cursor-pointer min-h-11 flex items-center px-3 font-medium text-azul">Así se verá tu mensaje</summary>
+            <pre className="px-3 pb-3 whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-tinta">{texto}</pre>
+          </details>
+
           <a
             href={enlaceWhatsApp(texto)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              if (!validar()) e.preventDefault();
+            }}
             className="inline-flex items-center justify-center min-h-12 px-5 rounded bg-whatsapp text-white font-semibold hover:brightness-110"
           >
             Enviar por WhatsApp
@@ -141,18 +227,19 @@ export default function Cotizacion() {
           <details className="text-sm">
             <summary className="cursor-pointer min-h-11 flex items-center font-medium text-azul">Prefiero enviarla por correo</summary>
             <div className="flex flex-col gap-3 pt-2">
-              {campo("correo", "Tu correo", "email", "email")}
-              {campo("telefono", "Teléfono (opcional)", "tel", "tel")}
+              {campo("correo", "Tu correo", { tipo: "email", auto: "email" })}
+              {campo("telefono", "Teléfono (opcional)", { tipo: "tel", auto: "tel" })}
               <button
                 type="button"
                 onClick={enviarCorreo}
-                disabled={!datos.correo.includes("@") || correo === "enviando"}
-                className="min-h-11 px-4 rounded bg-azul text-white font-semibold disabled:opacity-50"
+                disabled={correo === "enviando"}
+                className="min-h-11 px-4 rounded bg-azul text-white font-semibold hover:bg-azul-hover disabled:opacity-50"
               >
                 {correo === "enviando" ? "Enviando…" : "Enviar por correo"}
               </button>
               <p role="status" className="text-sm">
                 {correo === "enviado" && "Listo, la recibimos. Te respondemos a tu correo."}
+                {correo === "correo-invalido" && "Revisa tu correo: debe tener la forma nombre@empresa.com."}
                 {correo === "fallo" && `No se pudo enviar por correo. Envíala por WhatsApp o escribe a ${COMPANIA_INFO.email}.`}
               </p>
             </div>
