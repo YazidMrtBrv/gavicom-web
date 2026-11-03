@@ -1,0 +1,115 @@
+/*
+ * "Asi se arma una via" (ViaDesarmada). Kept out of globals.css so this
+ * piece owns its own look; only the brand blue, white and grays are used.
+ */
+
+/* Phones get bigger labels: the drawing is cropped to the joint there, so
+   20+ drawing units still render at 13 px or more on a 390 px screen. */
+.via-lienzo[data-movil] .etq {
+  font-size: 21px;
+}
+
+/* Invisible hit area, larger than the drawn part, so a thumb can hit a
+   7-unit-thin pad on a phone. Never outlined or highlighted. */
+.via-lienzo .via-toque {
+  fill: transparent;
+  stroke: none;
+}
+
+/* Focus mode: once the joint is open, the other parts step back so the
+   active one reads on its own. */
+.via-lienzo [data-pieza] {
+  transition: filter 200ms ease-out;
+}
+.via-lienzo :is(rect, polygon, path, line):not(.via-toque):not(.via-guia) {
+  transition: opacity 200ms ease-out;
+}
+.via-lienzo[data-abierta] [data-pieza]:not(.via-pieza-activa) :is(rect, polygon, path, line):not(.via-toque) {
+  opacity: 0.3;
+}
+/* Labels of the parts in the background stay legible (AA on the gray). */
+.via-lienzo[data-abierta] [data-pieza]:not(.via-pieza-activa) .etq {
+  fill: #5b5f68;
+}
+
+/* Active part keeps its own color; it only gains a blue outline and a
+   white halo that separates it from the gray background. */
+.via-pieza-activa {
+  filter: drop-shadow(0 0 2px #ffffff) drop-shadow(0 0 6px #ffffff);
+}
+.via-pieza-activa :is(rect, polygon, path):not(.via-toque):not([fill="none"]) {
+  stroke: #0c2642;
+  stroke-width: 2.5;
+}
+.via-pieza-activa .etq {
+  font-weight: 800;
+}
+
+/* Dotted leader from the active label to its part. */
+.via-guia {
+  stroke: #0c2642;
+  stroke-width: 1.5;
+  stroke-dasharray: 2 4;
+  fill: none;
+  opacity: 0;
+  pointer-events: none;
+}
+.via-pieza-activa .via-guia {
+  opacity: var(--etq);
+}
+
+/* Visible keyboard focus inside the SVG, where outline does not apply. */
+.via-lienzo [data-pieza]:focus-visible {
+  outline: none;
+}
+.via-lienzo [data-pieza]:focus-visible .via-toque {
+  stroke: #0c2642;
+  stroke-width: 3;
+  stroke-dasharray: 6 4;
+}
+
+/* "Desliza para desarmar" hint: a short nudge, gone once scrolling starts. */
+.via-pista {
+  transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+.via-pista[data-oculta] {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}
+.via-pista-flecha {
+  animation: via-pista 1.4s ease-in-out infinite;
+}
+@keyframes via-pista {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* Photo band before the drawing: fades into it as the section starts. */
+.via-foto {
+  transition: opacity 150ms linear;
+}
+
+/* Six-step tour indicator. */
+.via-paso {
+  transition: background-color 200ms ease-out;
+}
+
+/* Reduced motion: the joint is shown open and still, the hint never shows
+   and nothing animates or transitions. */
+@media (prefers-reduced-motion: reduce) {
+  .via-lienzo [data-pieza],
+  .via-lienzo :is(rect, polygon, path, line),
+  .via-pista,
+  .via-pista-flecha,
+  .via-foto,
+  .via-paso {
+    animation: none;
+    transition: none;
+  }
+}
