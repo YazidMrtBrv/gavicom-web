@@ -4,6 +4,33 @@ const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 const DESTINATARIO = "gerencia@gavicom.com";
 const MAX_LEN = 2000;
 
+// Rate limit: 5 posts per IP every 10 minutes. This counter lives in the
+// memory of one server instance, so on Vercel serverless each instance keeps
+// its own count and a cold start resets it: it is only a partial mitigation
+// against a single noisy client. The real limit belongs in a Vercel Firewall
+// rate-limit rule on POST /api/contacto (requested from GAVICOM's admin).
+const LIMITE = 5;
+const VENTANA_MS = 10 * 60 * 1000;
+const envios = new Map<string, number[]>();
+
+function ipDe(request: Request): string {
+  const reenviada = request.headers.get("x-forwarded-for");
+  return reenviada?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "desconocida";
+}
+
+function superaLimite(ip: string, ahora: number): boolean {
+  // Drop stale entries on every call so the map cannot grow without bound.
+  for (const [clave, marcas] of envios) {
+    const vivas = marcas.filter((t) => ahora - t < VENTANA_MS);
+    if (vivas.length) envios.set(clave, vivas);
+    else envios.delete(clave);
+  }
+  const marcas = envios.get(ip) ?? [];
+  if (marcas.length >= LIMITE) return true;
+  envios.set(ip, [...marcas, ahora]);
+  return false;
+}
+
 function limpiar(valor: unknown): string {
   return typeof valor === "string" ? valor.trim().slice(0, MAX_LEN) : "";
 }
@@ -16,7 +43,15 @@ function escaparHtml(texto: string): string {
     .replace(/"/g, "&quot;");
 }
 
+// Loose check: Brevo rejects the whole message when replyTo is malformed, so
+// a bad address must not cost us the lead.
+const emailValido = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
 export async function POST(request: Request) {
+  if (superaLimite(ipDe(request), Date.now())) {
+    return NextResponse.json({ enviado: false, error: "Demasiados envíos, escríbenos por WhatsApp" }, { status: 429 });
+  }
+
   const apiKey = process.env.BREVO_API_KEY;
   const remitente = process.env.BREVO_SENDER;
 
@@ -27,7 +62,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 });
   }
 
-  const datos = cuerpo as Record<string, unknown>;
+  const datos = (cuerpo ?? {}) as Record<string, unknown>;
+
+  // Honeypot filled: a bot. Answer as if it worked so it does not retry.
+  if (limpiar(datos.empresa_web)) {
+    return NextResponse.json({ enviado: true });
+  }
+
   const nombre = limpiar(datos.nombre);
   const telefono = limpiar(datos.telefono);
   const email = limpiar(datos.email);
@@ -49,7 +90,7 @@ export async function POST(request: Request) {
     ["Nombre / Empresa", nombre],
     ["Teléfono", telefono],
     ["Correo", email],
-    ["Departamento", tipo],
+    ["Tema", tipo],
     ["Requerimiento", mensaje],
   ]
     .filter(([, valor]) => valor)
@@ -69,7 +110,7 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         sender: { name: "Web GAVICOM", email: remitente },
         to: [{ email: DESTINATARIO }],
-        replyTo: email ? { email } : undefined,
+        replyTo: emailValido(email) ? { email } : undefined,
         subject: `Nueva solicitud desde la web${nombre ? ` — ${nombre}` : ""}`,
         htmlContent: `<h2>Solicitud recibida desde gavicomferroviario.com</h2><table>${filas}</table>`,
       }),
