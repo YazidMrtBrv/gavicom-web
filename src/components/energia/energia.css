@@ -1,0 +1,191 @@
+/*
+ * GAVICOM Energy page styles. Kept out of globals.css so this line can carry
+ * its own details (energy path, hero fade) without touching the site frame.
+ */
+
+/* Hero video fades over the still poster once it can play. */
+.energia-video {
+  transition: opacity 300ms ease-out;
+}
+
+/* ---- Energy path (RecorridoSolar) ----
+   Phones: a vertical timeline, one 64 px row per stop, tracks on the left.
+   sm and up: six columns, tracks run across the stop centres. */
+.recorrido {
+  --fila: 64px;
+  --punto: 48px;
+}
+.recorrido-lista {
+  display: flex;
+  flex-direction: column;
+}
+.recorrido-parada {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: var(--fila);
+  text-align: left;
+  border-radius: 2px;
+}
+.recorrido-punto {
+  width: var(--punto);
+  height: var(--punto);
+  flex-shrink: 0;
+  transition: background-color 200ms, border-color 200ms, color 200ms, transform 200ms;
+}
+.recorrido-parada[aria-selected="true"] .recorrido-punto {
+  transform: scale(1.08);
+}
+
+.recorrido-base,
+.recorrido-tramo {
+  position: absolute;
+}
+.recorrido-base {
+  left: calc(var(--punto) / 2 - 1.5px);
+  width: 3px;
+}
+/* On phones a track box spans the row width so its label can sit at the
+   right edge, clear of the stop names; the line itself is the fill. */
+.recorrido-tramo {
+  left: 0;
+  right: 0;
+}
+.recorrido-base {
+  top: calc(var(--fila) / 2);
+  height: calc(var(--fila) * 5);
+  background: rgba(255, 255, 255, 0.18);
+}
+.recorrido-dc {
+  top: calc(var(--fila) * 1.5);
+  height: calc(var(--fila) * 2);
+}
+.recorrido-ac {
+  top: calc(var(--fila) * 3.5);
+  height: calc(var(--fila) * 2);
+}
+.recorrido-relleno {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--punto) / 2 - 1.5px);
+  width: 3px;
+  transform-origin: top;
+  transform: scaleY(var(--fill));
+  transition: transform 300ms ease-out;
+}
+.recorrido-dc .recorrido-relleno {
+  --fill: var(--dc);
+  /* Long dashes for direct current. */
+  background: repeating-linear-gradient(180deg, #fff 0 14px, transparent 14px 20px);
+}
+.recorrido-ac .recorrido-relleno {
+  --fill: var(--ac);
+  /* Short dashes for alternating current. */
+  background: repeating-linear-gradient(180deg, #fff 0 4px, transparent 4px 8px);
+}
+.recorrido-rotulo {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  /* Two right-aligned lines on phones, so long stop names never collide. */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.3;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.75);
+}
+.recorrido-rotulo-sep {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .recorrido {
+    --punto: 64px;
+    --rotulo: 32px;
+    padding-top: var(--rotulo);
+  }
+  .recorrido-lista {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .recorrido-parada {
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 4px 4px;
+    text-align: center;
+  }
+  .recorrido-base,
+  .recorrido-tramo {
+    top: calc(var(--rotulo) + var(--punto) / 2 - 1.5px);
+    right: auto;
+    height: 3px;
+  }
+  .recorrido-base {
+    left: calc(100% / 12);
+    width: calc(100% * 5 / 6);
+  }
+  .recorrido-dc {
+    left: calc(100% * 1.5 / 6);
+    width: calc(100% / 3);
+  }
+  .recorrido-ac {
+    left: calc(100% * 3.5 / 6);
+    width: calc(100% / 3);
+  }
+  .recorrido-relleno {
+    inset: 0;
+    width: auto;
+    transform-origin: left;
+    transform: scaleX(var(--fill));
+  }
+  .recorrido-dc .recorrido-relleno {
+    background: repeating-linear-gradient(90deg, #fff 0 14px, transparent 14px 20px);
+  }
+  .recorrido-ac .recorrido-relleno {
+    background: repeating-linear-gradient(90deg, #fff 0 4px, transparent 4px 8px);
+  }
+  .recorrido-rotulo {
+    /* Above the stop circles, in the band reserved by padding-top. */
+    top: calc(-1 * (var(--punto) / 2 + var(--rotulo)) + 1.5px);
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    display: block;
+    font-size: 12px;
+  }
+  .recorrido-rotulo-sep {
+    display: inline;
+  }
+}
+
+/* Calculator slider in the brand blue. */
+.energia-rango {
+  accent-color: var(--azul);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .energia-video,
+  .recorrido-punto,
+  .recorrido-relleno {
+    animation: none;
+    transition: none;
+  }
+  .recorrido-parada[aria-selected="true"] .recorrido-punto {
+    transform: none;
+  }
+}
+
+/* Double focus ring on the blue sections: white outline for the blue
+   background, blue inner ring for white cards inside them. Same recipe as
+   the site frame's .sobre-azul, scoped here so it works on its own. */
+.energia-azul :focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--azul);
+}
