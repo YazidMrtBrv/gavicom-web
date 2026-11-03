@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
-import Calculadora, { REGIONES, estimar, fmt, type Region } from "./Calculadora";
+import Calculadora, { PRESETS, REGIONES, estimar, fmt, type Region } from "./Calculadora";
+import { EVENTO_SEGMENTO } from "./PorQueSolar";
 import DatosParaCotizar, { DATOS, type Tipo } from "./DatosParaCotizar";
 
 /*
@@ -30,6 +31,22 @@ export default function CotizadorEnergia() {
     setCalculado(true);
     setTengo((prev) => new Set(prev).add("consumo"));
   };
+
+  // Arriving from the "why solar" tabs: start from that kind of project.
+  useEffect(() => {
+    const tipos = { hogar: "Residencial", comercio: "Comercial", industria: "Industrial" } as const;
+    const alElegir = (e: Event) => {
+      const id = (e as CustomEvent<keyof typeof tipos>).detail;
+      const preset = PRESETS.find((p) => p.segmento === id);
+      if (!preset) return;
+      setKwh(preset.kwh);
+      setTipo(tipos[id]);
+      setCalculado(true);
+      setTengo((prev) => new Set(prev).add("consumo"));
+    };
+    window.addEventListener(EVENTO_SEGMENTO, alElegir);
+    return () => window.removeEventListener(EVENTO_SEGMENTO, alElegir);
+  }, []);
 
   const est = estimar(kwh, region);
   const consumoCalculado =

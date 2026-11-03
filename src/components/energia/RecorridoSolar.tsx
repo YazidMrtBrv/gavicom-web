@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { Box, Building2, Cable, SolarPanel, Sun, Zap, type LucideIcon } from "lucide-react";
 import BotonCotizar from "@/components/BotonCotizar";
 
@@ -25,7 +25,7 @@ interface Parada {
   servicio?: { sku: string; nombre: string };
 }
 
-const PARADAS: Parada[] = [
+export const PARADAS: Parada[] = [
   {
     id: "sol",
     nombre: "Sol",
@@ -91,6 +91,19 @@ export default function RecorridoSolar() {
   const p = PARADAS[activa];
   const Icono = p.icono;
 
+  // The hero drawing links to each stop as #paso-<id>: the browser scrolls to
+  // the tab and this selects it, also when the page is opened with that hash.
+  useEffect(() => {
+    const leer = () => {
+      const m = window.location.hash.match(/^#paso-(.+)$/);
+      const i = m ? PARADAS.findIndex((x) => x.id === m[1]) : -1;
+      if (i >= 0) setActiva(i);
+    };
+    leer();
+    window.addEventListener("hashchange", leer);
+    return () => window.removeEventListener("hashchange", leer);
+  }, []);
+
   const ir = (i: number) => {
     const n = (i + PARADAS.length) % PARADAS.length;
     setActiva(n);
@@ -149,7 +162,8 @@ export default function RecorridoSolar() {
                 }}
                 type="button"
                 role="tab"
-                id={`tab-${x.id}`}
+                id={`paso-${x.id}`}
+                style={{ "--i": i } as CSSProperties}
                 aria-selected={on}
                 aria-controls="panel-recorrido"
                 tabIndex={on ? 0 : -1}
@@ -176,7 +190,7 @@ export default function RecorridoSolar() {
       <div
         id="panel-recorrido"
         role="tabpanel"
-        aria-labelledby={`tab-${p.id}`}
+        aria-labelledby={`paso-${p.id}`}
         tabIndex={0}
         className="rounded-sm bg-white text-tinta p-5 md:p-6 grid gap-4 md:grid-cols-[auto_1fr_auto] md:items-center"
       >
