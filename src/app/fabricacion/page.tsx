@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 import Cifras from "@/components/movimiento/Cifras";
 import RutaFabricacion from "@/components/fabricacion/RutaFabricacion";
 import ArmaTuPedido, { BotonPerfil } from "@/components/fabricacion/ArmaTuPedido";
-import { BandaCotizar, BotonWhatsAppVenta, FranjaConfianza, LineaHorario } from "@/components/venta/Venta";
+import { BotonWhatsAppVenta, LineaHorario } from "@/components/venta/Venta";
 import { PERFILES_ECLISA } from "@/constants/perfilesEclisa";
 
 const TITULO = "Fabricación de piezas ferroviarias en Colombia";
@@ -103,8 +103,6 @@ export default function Fabricacion() {
           </figure>
         </div>
       </section>
-
-      <FranjaConfianza />
 
       <section aria-label="Capacidad" className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
         <div data-aparecer>
@@ -256,17 +254,9 @@ export default function Fabricacion() {
         </div>
       </section>
 
-      <BandaCotizar
-        titulo="Cinco controles por lote, antes de que la pieza salga."
-        texto="Cuéntanos qué pieza necesitas y en qué cantidad: te respondemos con la cotización."
-        mensaje="Hola GAVICOM, necesito fabricar una pieza ferroviaria: "
-        boton="Cotizar fabricación"
-        secundario={{ href: "#arma-tu-pedido", texto: "Arma tu pedido" }}
-      />
-
       {/* Import figures stay apart from the 600 t own capacity and are not
           animated: GAVICOM still has to confirm whose capacity they are. */}
-      <section aria-labelledby="h-volumen" className="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-28">
+      <section aria-labelledby="h-volumen" className="mx-auto max-w-6xl px-4 sm:px-6 pb-20 md:pb-28">
         <div data-aparecer className="rounded border-2 border-azul p-6 md:p-10 grid gap-8 md:grid-cols-[1.2fr_1fr_1fr] items-center">
           <div>
             <p className={`${ANTETITULO} text-tenue`}>Para volúmenes mayores</p>

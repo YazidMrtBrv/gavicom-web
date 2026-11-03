@@ -55,9 +55,11 @@ export function BotonPerfil({ perfil }: { perfil: string }) {
     <a
       href="#arma-tu-pedido"
       onClick={() => window.dispatchEvent(new CustomEvent(EVENTO_PERFIL, { detail: perfil }))}
-      className="inline-flex items-center min-h-11 px-3 rounded border border-azul text-azul text-sm font-semibold hover:bg-azul-suave whitespace-nowrap"
+      // A quiet text link, not a button: a table of seven "Cotizar" buttons
+      // read as pressure; this just preselects the profile in the form.
+      className="inline-flex items-center min-h-11 text-sm font-semibold text-azul underline underline-offset-4 decoration-azul/40 hover:decoration-azul whitespace-nowrap"
     >
-      Cotizar para este perfil
+      Elegir este perfil
     </a>
   );
 }

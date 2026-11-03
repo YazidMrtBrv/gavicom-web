@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { IMAGEN_COMPARTIR, alternas } from "@/lib/meta";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Mail, MessageCircle } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
-import { enlaceWhatsApp } from "@/lib/whatsapp";
-import { BotonWhatsAppVenta, FranjaConfianza, LineaHorario } from "@/components/venta/Venta";
+import { BotonWhatsAppVenta, LineaHorario } from "@/components/venta/Venta";
 import "./nosotros.css";
 
 const TITULO = "Nosotros | GAVICOM SAS";
@@ -72,8 +71,6 @@ export default function Nosotros() {
           <LineaHorario />
         </div>
       </section>
-
-      <FranjaConfianza />
 
       {/* Family-approved text, without the name, kept to this page on purpose:
           the logo already carries the seagull everywhere else. The photo sits
@@ -156,20 +153,12 @@ export default function Nosotros() {
           </li>
         </ul>
         <p className="mt-6 text-tenue">
-          {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento}. {COMPANIA_INFO.cobertura}. Atención {COMPANIA_INFO.horario.charAt(0).toLowerCase() + COMPANIA_INFO.horario.slice(1)}
+          {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento}. {COMPANIA_INFO.cobertura}.
         </p>
-        {/* One sales line for the whole team: a per-person WhatsApp button that
-            lands on the same sales number would mislead. */}
+        {/* Email only here: WhatsApp is in the hero, the floating button and
+            the closing band, and a per-person button that lands on the same
+            sales number would mislead. */}
         <div className="mt-6 flex flex-col sm:flex-row gap-3">
-          <a
-            href={enlaceWhatsApp("Hola GAVICOM, quiero hacer una consulta.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 min-h-12 px-6 rounded bg-whatsapp text-white font-semibold hover:brightness-110"
-          >
-            <MessageCircle aria-hidden="true" className="size-5" />
-            Escribir a ventas por WhatsApp
-          </a>
           <a
             href={`mailto:${COMPANIA_INFO.email}`}
             className="inline-flex items-center justify-center gap-2 min-h-12 px-6 rounded border border-azul text-azul font-semibold hover:bg-azul-suave"

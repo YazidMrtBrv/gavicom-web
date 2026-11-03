@@ -6,7 +6,6 @@ import {
   DraftingCompass,
   Drone,
   Factory,
-  MessageCircle,
   MessagesSquare,
   Package,
   Wrench,
@@ -15,57 +14,49 @@ import {
 } from "lucide-react";
 import type { Producto } from "@/constants/productos";
 import { SERVICIOS, normalizar } from "@/lib/catalogo";
-import { enlaceWhatsApp } from "@/lib/whatsapp";
-import { BotonWhatsAppVenta, FranjaConfianza, LineaHorario, IconoWhatsApp } from "@/components/venta/Venta";
+import { BotonWhatsAppVenta, LineaHorario } from "@/components/venta/Venta";
 
 // Per-service presentation. The deliverable line is lifted from each
-// service's own text in productos.ts; the follow-up question is what sales
-// asks first anyway, so the visitor answers it in the first message.
+// service's own text in productos.ts. No per-service button: the hero and
+// the closing band carry the ask, so the list reads as a capability list.
 const PRESENTACION: Record<
   string,
-  { icono: LucideIcon; entregable: string; pregunta: string }
+  { icono: LucideIcon; entregable: string }
 > = {
   "GVC-SRV-TOP01": {
     icono: Drone,
     entregable:
       "Ortomosaicos, modelos digitales y curvas de nivel del corredor.",
-    pregunta: "Longitud aproximada del tramo y municipio: ",
   },
   "GVC-SRV-MT01": {
     icono: Wrench,
     entregable:
       "Mantenimiento preventivo y correctivo de maquinaria y herramientas de vía.",
-    pregunta: "Ubicación y fecha estimada: ",
   },
   "GVC-SRV-HD01": {
     icono: Cable,
     entregable:
       "Cambio y reforzamiento de mangueras hidráulicas con acoples estandarizados.",
-    pregunta: "Ubicación y fecha estimada: ",
   },
   "GVC-SRV-LC01": {
     icono: Zap,
     entregable:
       "Motosoldadores autónomos Lincoln Electric, en alquiler por proyecto.",
-    pregunta: "Cantidad de equipos y fecha de inicio: ",
   },
   "GVC-SRV-PL01": {
     icono: DraftingCompass,
     entregable:
       "Planos de cambiavías, cruces de diamante y pasos a nivel, listos para construcción.",
-    pregunta: "Ubicación y fecha estimada: ",
   },
   "GVC-SRV-3D01": {
     icono: Box,
     entregable:
       "Modelos 3D de la vía para visualizar y planificar el proyecto.",
-    pregunta: "Ubicación y fecha estimada: ",
   },
   "GVC-SRV-CON01": {
     icono: MessagesSquare,
     entregable:
       "Diagnóstico de vía, especificación técnica y planes de mantenimiento.",
-    pregunta: "Ubicación y fecha estimada: ",
   },
 };
 
@@ -76,7 +67,6 @@ function presentacion(s: Producto) {
     PRESENTACION[s.sku] ?? {
       icono: Wrench,
       entregable: s.descripcion.split(". ")[0].replace(/\.?$/, "."),
-      pregunta: "Ubicación y fecha estimada: ",
     }
   );
 }
@@ -163,8 +153,6 @@ export default function Servicios() {
         </div>
       </section>
 
-      <FranjaConfianza />
-
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-8 md:pt-16 flex flex-col gap-8 md:gap-16">
         {grupos.map((g) => (
           <section
@@ -181,7 +169,7 @@ export default function Servicios() {
             </h2>
             <ul className="mt-4 border-t border-linea">
               {g.lista.map(({ s, numero }) => {
-                const { icono: Icono, entregable, pregunta } = presentacion(s);
+                const { icono: Icono, entregable } = presentacion(s);
                 const topografia = s.sku === "GVC-SRV-TOP01";
                 return (
                   <li
@@ -209,9 +197,8 @@ export default function Servicios() {
                       </h3>
                       <p className="mt-1 text-tinta">{entregable}</p>
                     </div>
-                    {/* Scope toggle and button share a row (full width on
-                        phones so both fit); an opened scope takes the whole
-                        row and pushes the button below. */}
+                    {/* Scope toggle, full width on phones; an opened scope
+                        takes the whole row. */}
                     <div className="col-span-2 md:col-span-1 md:col-start-2 mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
                       <details className="group open:basis-full">
                         <summary className="inline-flex items-center gap-1 min-h-11 cursor-pointer font-semibold text-azul list-none [&::-webkit-details-marker]:hidden">
@@ -238,18 +225,6 @@ export default function Servicios() {
                           </dl>
                         </div>
                       </details>
-                      <a
-                        href={enlaceWhatsApp(
-                          `Hola GAVICOM, quiero información sobre: ${s.nombre}.\n${pregunta}`,
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 min-h-11 px-4 rounded bg-whatsapp text-white text-sm font-semibold hover:brightness-110 whitespace-nowrap"
-                      >
-                        <IconoWhatsApp size={18} />
-                        Cotizar este servicio
-                        <span className="sr-only"> (abre WhatsApp)</span>
-                      </a>
                     </div>
                   </li>
                 );
@@ -284,18 +259,6 @@ export default function Servicios() {
               >
                 <Package size={18} aria-hidden /> Necesito materiales de vía
               </Link>
-            </li>
-            <li>
-              <a
-                href={enlaceWhatsApp(
-                  "Hola GAVICOM, quiero información sobre sus servicios técnicos.",
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 min-h-11 font-semibold text-azul hover:underline"
-              >
-                <MessageCircle size={18} aria-hidden /> Escribir por WhatsApp
-              </a>
             </li>
             <li>
               <Link
