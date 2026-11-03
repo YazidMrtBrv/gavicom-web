@@ -31,7 +31,7 @@ export default function Buscador({ className = "", inicial = "" }: { className?:
         className="flex-1 min-w-0 px-4 py-3 text-base bg-transparent outline-none placeholder:text-tenue/80"
         autoComplete="off"
       />
-      <button type="submit" className="inline-flex items-center gap-2 px-5 bg-azul text-white font-semibold hover:bg-azul-hover">
+      <button type="submit" className="inline-flex items-center justify-center gap-2 min-h-12 min-w-11 px-4 sm:px-5 bg-azul text-white font-semibold hover:bg-azul-hover">
         <Search size={18} aria-hidden />
         <span className="hidden sm:inline">Buscar</span>
         <span className="sr-only sm:hidden">Buscar</span>
