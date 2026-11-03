@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { IMAGEN_COMPARTIR } from "@/lib/meta";
+import { IMAGEN_COMPARTIR, alternas } from "@/lib/meta";
 import { NOMBRE_SITIO } from "@/lib/sitio";
 
-const TITULO = "Catálogo Técnico de Componentes y Suministros Ferroviarios";
+const TITULO = "Catálogo de suministros ferroviarios";
 const DESCRIPCION =
-  "Eclisas, pernos, clavos de vía, placas de asiento, anclas de riel, clips elásticos, tirafondos, herramientas de vía y señalización ferroviaria. Fichas técnicas y cotización directa por WhatsApp.";
+  "Eclisas, pernos, placas de asiento, anclas de riel, clips, tirafondos, herramientas de vía y señalización. Fichas técnicas y cotización por WhatsApp.";
 
+// A plain string title here would stop the root " | GAVICOM SAS" template
+// from reaching the product and line pages below, so the template is
+// declared again for them and this page's own title is spelled out.
 export const metadata: Metadata = {
-  title: TITULO,
+  title: { absolute: `${TITULO} | ${NOMBRE_SITIO}`, template: `%s | ${NOMBRE_SITIO}` },
   description: DESCRIPCION,
-  alternates: { canonical: "/catalogo" },
+  alternates: alternas("/catalogo"),
   openGraph: {
     title: `${TITULO} | ${NOMBRE_SITIO}`,
     description: DESCRIPCION,

@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, ChevronRight, FileText } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
-import { esFabricacionPropia, imagenPrincipal, vistasFicha } from "@/constants/catalogoExtra";
-import { PRODUCTOS, lineaDe, productoPorSlug, slugProducto } from "@/lib/catalogo";
+import { esFabricacionPropia, vistasFicha } from "@/constants/catalogoExtra";
+import { PRODUCTOS, lineaDe, productoPorSlug, rutaLinea, slugProducto } from "@/lib/catalogo";
+import { MAX_TITULO, alternas, recortar } from "@/lib/meta";
 import { NOMBRE_SITIO, urlAbsoluta } from "@/lib/sitio";
 import { enlaceWhatsApp, mensajeFichaTecnica } from "@/lib/whatsapp";
 import TarjetaProducto from "@/components/TarjetaProducto";
@@ -28,21 +29,35 @@ export const dynamicParams = false;
 // site cannot back up.
 const FILAS_DE_ORIGEN = new Set(["Fabricación", "Origen"]);
 
-const resumen = (texto: string) => (texto.length > 160 ? `${texto.slice(0, 157).trimEnd()}…` : texto);
+// Long names lose the code first, then get cut, so the full title with the
+// " | GAVICOM SAS" suffix stays inside the ~60 characters a result shows.
+function tituloFicha(nombre: string, sku: string): string {
+  const conCodigo = `${nombre} (${sku})`;
+  if (conCodigo.length <= MAX_TITULO) return conCodigo;
+  if (nombre.length <= MAX_TITULO) return nombre;
+  // "Escalera para Camioneta – Acceso y Carga…": the part before the dash
+  // already names the product.
+  const principal = nombre.split(/\s[–-]\s/)[0];
+  return principal.length <= MAX_TITULO ? principal : recortar(principal, MAX_TITULO);
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const p = productoPorSlug(slug);
   if (!p) return {};
-  const titulo = `${p.nombre} (${p.sku})`;
-  const descripcion = resumen(p.descripcion);
+  const titulo = tituloFicha(p.nombre, p.sku);
+  // Some fichas have a one-line description; a snippet that short says
+  // nothing about who sells it, so the code and how to quote are added.
+  const descripcion = recortar(
+    p.descripcion.length < 90 ? `${p.descripcion} Ref. ${p.sku}. Cotiza con ${NOMBRE_SITIO} por WhatsApp desde Barranquilla.` : p.descripcion
+  );
   const url = `/catalogo/${slug}`;
   // The share image comes from ./opengraph-image.tsx, which Next adds to
   // both og:image and twitter:image on its own.
   return {
     title: titulo,
     description: descripcion,
-    alternates: { canonical: url },
+    alternates: alternas(url),
     openGraph: {
       title: `${titulo} | ${NOMBRE_SITIO}`,
       description: descripcion,
@@ -66,7 +81,6 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
   const linea = lineaDe(p);
   const propia = esFabricacionPropia(p.sku);
   const vistas = vistasFicha(p);
-  const principal = imagenPrincipal(p);
   const filas = Object.entries(p.especificaciones).filter(([k]) => propia || !FILAS_DE_ORIGEN.has(k));
 
   // Related: same sub-line first, starting right after this product and
@@ -78,7 +92,7 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
   const relacionados = [...rotados, ...relleno].slice(0, 4);
 
   const urlFicha = urlAbsoluta(`/catalogo/${slug}`);
-  const urlLinea = linea ? `/catalogo?linea=${linea.slug}` : "/catalogo";
+  const urlLinea = linea ? rutaLinea(linea) : "/catalogo";
   const material = p.especificaciones.Material ?? p.especificaciones["Material Base"];
   // No offers, price, availability or reviews on purpose: GAVICOM quotes each
   // order and has published no reviews, and structured data must match what
@@ -87,12 +101,15 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
   const productoJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
+    "@id": `${urlFicha}#producto`,
     name: p.nombre,
     sku: p.sku,
     url: urlFicha,
     description: p.descripcion,
     category: p.categoria,
-    image: principal ? urlAbsoluta(principal.src) : undefined,
+    // Every visible model photo, main one first; none for brochure-only
+    // references, which show a placeholder instead of a picture.
+    image: vistas.length ? vistas.map((v) => urlAbsoluta(v.src)) : undefined,
     material,
     // GAVICOM is the brand only of what it manufactures; for supplied
     // references the brand is the one the ficha states, or none at all.
@@ -107,9 +124,10 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Catálogo", item: urlAbsoluta("/catalogo") },
-      ...(linea ? [{ "@type": "ListItem", position: 2, name: linea.nombre, item: urlAbsoluta(urlLinea) }] : []),
-      { "@type": "ListItem", position: linea ? 3 : 2, name: p.nombre, item: urlFicha },
+      { "@type": "ListItem", position: 1, name: "Inicio", item: urlAbsoluta("/") },
+      { "@type": "ListItem", position: 2, name: "Catálogo", item: urlAbsoluta("/catalogo") },
+      ...(linea ? [{ "@type": "ListItem", position: 3, name: linea.nombre, item: urlAbsoluta(urlLinea) }] : []),
+      { "@type": "ListItem", position: linea ? 4 : 3, name: p.nombre, item: urlFicha },
     ],
   };
 
@@ -208,6 +226,19 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
 
         <BarraAccionFicha />
       </ProveedorFicha>
+
+      {/* Plain links to the line guide and the FAQ: the guide explains the
+          whole family of parts, which a single ficha cannot. */}
+      <nav aria-label="Más información" className="mt-10 flex flex-wrap gap-x-6 gap-y-1 border-t border-linea pt-4">
+        {linea && (
+          <Link href={urlLinea} className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-azul hover:underline">
+            Guía de {linea.nombre.toLowerCase()} <ArrowRight size={16} aria-hidden />
+          </Link>
+        )}
+        <Link href="/preguntas-frecuentes" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-azul hover:underline">
+          Preguntas frecuentes <ArrowRight size={16} aria-hidden />
+        </Link>
+      </nav>
 
       {relacionados.length > 0 && (
         <section aria-labelledby="h-relacionados" className="mt-14">

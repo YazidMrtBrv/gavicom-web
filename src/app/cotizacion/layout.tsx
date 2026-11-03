@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IMAGEN_COMPARTIR } from "@/lib/meta";
+import { IMAGEN_COMPARTIR, alternas } from "@/lib/meta";
 import { NOMBRE_SITIO } from "@/lib/sitio";
 
 const TITULO = "Mi cotización";
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: DESCRIPCION,
   // The list lives in each visitor's browser: an indexed copy would be empty.
   robots: { index: false },
-  alternates: { canonical: "/cotizacion" },
+  alternates: alternas("/cotizacion"),
   openGraph: {
     title: `${TITULO} | ${NOMBRE_SITIO}`,
     description: DESCRIPCION,

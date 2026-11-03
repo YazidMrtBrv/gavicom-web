@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IMAGEN_COMPARTIR } from "@/lib/meta";
+import { IMAGEN_COMPARTIR, alternas } from "@/lib/meta";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Mail, MessageCircle } from "lucide-react";
@@ -8,12 +8,12 @@ import { enlaceWhatsApp } from "@/lib/whatsapp";
 import "./nosotros.css";
 
 const TITULO = "Nosotros | GAVICOM SAS";
-const DESCRIPCION = `${COMPANIA_INFO.nombre}: experiencia en vía férrea y fabricación en Colombia. Suministro, fabricación de piezas con aliados industriales y GAVICOM Energy, desde ${COMPANIA_INFO.ciudad}.`;
+const DESCRIPCION = `${COMPANIA_INFO.nombre}: experiencia en vía férrea. Suministro férreo, piezas fabricadas en Colombia con aliados industriales y GAVICOM Energy, desde ${COMPANIA_INFO.ciudad}.`;
 
 export const metadata: Metadata = {
   title: "Nosotros",
   description: DESCRIPCION,
-  alternates: { canonical: "/nosotros" },
+  alternates: alternas("/nosotros"),
   openGraph: {
     title: TITULO,
     description: DESCRIPCION,
