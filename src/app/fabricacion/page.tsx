@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Cifras from "@/components/movimiento/Cifras";
 import RutaFabricacion from "@/components/fabricacion/RutaFabricacion";
+import ImportarVsFabricar from "@/components/fabricacion/ImportarVsFabricar";
 import ArmaTuPedido, { BotonPerfil } from "@/components/fabricacion/ArmaTuPedido";
 import { BotonWhatsAppVenta, LineaHorario } from "@/components/venta/Venta";
 import { PERFILES_ECLISA } from "@/constants/perfilesEclisa";
@@ -114,6 +115,15 @@ export default function Fabricacion() {
               { valor: 5, texto: "controles de calidad por lote" },
             ]}
           />
+        </div>
+      </section>
+
+      <section aria-labelledby="h-comparar" className="mx-auto max-w-6xl px-4 sm:px-6 pb-20 md:pb-28">
+        <p data-aparecer className={`${ANTETITULO} text-tenue`}>Compara</p>
+        <h2 id="h-comparar" data-aparecer className={`mt-2 max-w-3xl ${H2}`}>¿Importar la pieza o fabricarla aquí?</h2>
+        <p data-aparecer className="mt-3 text-tenue max-w-2xl">Cambia de ruta y mira por dónde pasa tu pieza en cada caso.</p>
+        <div data-aparecer className="mt-8">
+          <ImportarVsFabricar />
         </div>
       </section>
 

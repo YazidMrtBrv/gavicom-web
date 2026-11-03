@@ -59,3 +59,14 @@
     transition: none !important;
   }
 }
+
+/* Import vs local route: each step enters after the previous one. */
+.ruta-paso {
+  animation: ruta-paso 260ms cubic-bezier(.2, .7, .2, 1) backwards;
+}
+@keyframes ruta-paso {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ruta-paso { animation: none; transition: none; }
+}
