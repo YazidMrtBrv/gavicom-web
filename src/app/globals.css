@@ -156,13 +156,6 @@ body:has(#vuelo) .espaciador-encabezado {
   pointer-events: none;
 }
 
-/* Highlighted part in the exploded rail joint. */
-.via-activa {
-  filter: drop-shadow(0 0 0.5px #0c2642) drop-shadow(0 0 10px rgba(36, 104, 196, 0.75));
-}
-.via-activa :is(rect, polygon, path) {
-  stroke: #1d5fbf;
-}
 
 @keyframes bajar {
   0% { transform: scaleY(0); transform-origin: top; }

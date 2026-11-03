@@ -18,13 +18,13 @@ function mensajeDeRuta(ruta: string): string {
 }
 
 // On a product page the name and code come from the page itself
-// ([data-ficha-sku] / [data-ficha-nombre], set by the catalog), instead of
+// ([data-producto-sku] / [data-producto-nombre], set by the catalog), instead of
 // importing the whole catalog into a component every page loads. Without
 // those attributes the page's h1 is the product name.
 function mensajeDeFicha(): string {
-  const ficha = document.querySelector<HTMLElement>("[data-ficha-sku]");
-  const nombre = ficha?.dataset.fichaNombre?.trim() || document.querySelector("main h1")?.textContent?.trim();
-  const sku = ficha?.dataset.fichaSku?.trim();
+  const ficha = document.querySelector<HTMLElement>("[data-producto-sku]");
+  const nombre = ficha?.dataset.productoNombre?.trim() || document.querySelector("main h1")?.textContent?.trim();
+  const sku = ficha?.dataset.productoSku?.trim();
   if (!nombre) return GENERICO;
   return sku ? `Hola GAVICOM, quiero cotizar ${nombre} (${sku}).` : `Hola GAVICOM, quiero cotizar ${nombre}.`;
 }

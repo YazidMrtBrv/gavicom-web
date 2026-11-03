@@ -11,7 +11,7 @@ export const contentType = "image/png";
 // the repo so the build never depends on the network.
 export default async function Imagen() {
   const [poppins, logo] = await Promise.all([
-    readFile(join(process.cwd(), "src/app/fabricacion/fuentes/Poppins-Bold.ttf")),
+    readFile(join(process.cwd(), "assets/fuentes/Poppins-Bold.ttf")),
     readFile(join(process.cwd(), "public/marca/gavicom-blanco.png")),
   ]);
   const logoSrc = `data:image/png;base64,${logo.toString("base64")}`;

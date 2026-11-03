@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Factory, Truck } from "lucide-react";
 import { LINEAS, PRODUCTOS, SERVICIOS, imagenProducto, slugProducto } from "@/lib/catalogo";
 import TarjetaProducto from "@/components/TarjetaProducto";
+import { tieneFotoFolleto } from "@/constants/catalogoExtra";
 import Buscador from "@/components/Buscador";
 import VideoVuelo, { type FuenteVuelo } from "@/components/vuelo/VideoVuelo";
 import ViaDesarmada, { type PiezaVia } from "@/components/via/ViaDesarmada";
@@ -30,7 +31,14 @@ const piezasVia: PiezaVia[] = PIEZAS_VIA.flatMap(([id, sku, nombre]) => {
 // is in the rail joint above, so no reference shows twice on the page.
 const PARA_MONTAR = ["GVC-FIJ-001", "GVC-FIJ-003", "GVC-MAN-003", "GVC-TM-07", "GVC-D-01"]
   .map((sku) => PRODUCTOS.find((p) => p.sku === sku))
-  .filter((p) => p !== undefined);
+  .filter((p) => p !== undefined)
+  // A brochure page is not a product photo; those stay in the catalogue
+  // (with their honest no-photo card) but not in this showcase.
+  .filter((p) => !tieneFotoFolleto(p.sku));
+
+// Full rows only: five columns on wide screens when all five have a clean
+// photo, otherwise as many columns as cards.
+const COLUMNAS_MONTAR = PARA_MONTAR.length >= 5 ? "lg:grid-cols-5" : "lg:grid-cols-3";
 
 // Links of the two delivered jobs, built from the catalogue so a renamed SKU
 // or line slug breaks loudly here instead of leaving a dead link.
@@ -152,7 +160,7 @@ export default function Inicio() {
         <ul
           data-aparecer="grupo"
           aria-label="Herramientas para montar la vía"
-          className="-mx-4 px-4 flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-px-4 pb-2 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 lg:grid-cols-5 sm:gap-4 sm:overflow-visible sm:pb-0"
+          className={`-mx-4 px-4 flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-px-4 pb-2 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 ${COLUMNAS_MONTAR} sm:gap-4 sm:overflow-visible sm:pb-0`}
         >
           {PARA_MONTAR.map((p) => (
             <li key={p.sku} className="w-[70%] shrink-0 snap-start flex sm:w-auto [&>article]:w-full">

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import { IMAGEN_COMPARTIR } from "@/lib/meta";
 import { NOMBRE_SITIO } from "@/lib/sitio";
-import AvisoCotizacion from "@/components/catalogo/AvisoCotizacion";
 
 const TITULO = "Catálogo Técnico de Componentes y Suministros Ferroviarios";
 const DESCRIPCION =
@@ -17,22 +17,18 @@ export const metadata: Metadata = {
     siteName: NOMBRE_SITIO,
     locale: "es_CO",
     type: "website",
+    images: [IMAGEN_COMPARTIR],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary_large_image", images: [IMAGEN_COMPARTIR],
     title: `${TITULO} | ${NOMBRE_SITIO}`,
     description: DESCRIPCION,
   },
 };
 
 export default function CatalogoLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      {children}
-      {/* Add confirmation for the catalogue and product pages. Other pages
-          with add buttons (home, energy) need it mounted in the root layout,
-          which belongs to another change set. */}
-      <AvisoCotizacion />
-    </>
-  );
+  // The add confirmation (AvisoCotizacion) lives in the root layout so home,
+  // energy and the catalogue share one live region; mounting it here too
+  // would announce every addition twice.
+  return children;
 }

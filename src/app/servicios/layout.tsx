@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { IMAGEN_COMPARTIR } from "@/lib/meta";
 
 const TITULO = "Servicios técnicos para vía férrea";
 const DESCRIPCION =
@@ -17,9 +18,10 @@ export const metadata: Metadata = {
     siteName: "GAVICOM SAS",
     locale: "es_CO",
     type: "website",
+    images: [IMAGEN_COMPARTIR],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary_large_image", images: [IMAGEN_COMPARTIR],
     title: `${TITULO} | GAVICOM SAS`,
     description: DESCRIPCION,
   },

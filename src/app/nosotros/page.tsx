@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { IMAGEN_COMPARTIR } from "@/lib/meta";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Mail, MessageCircle } from "lucide-react";
@@ -20,8 +21,9 @@ export const metadata: Metadata = {
     siteName: "GAVICOM SAS",
     locale: "es_CO",
     type: "website",
+    images: [IMAGEN_COMPARTIR],
   },
-  twitter: { card: "summary_large_image", title: TITULO, description: DESCRIPCION },
+  twitter: { card: "summary_large_image", images: [IMAGEN_COMPARTIR], title: TITULO, description: DESCRIPCION },
 };
 
 // Every line here is text that was already on the site; the cards only

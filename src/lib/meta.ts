@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const SITE_URL = "https://gavicomferroviario.com";
 export const EMPRESA = "GAVICOM SAS";
 
-const IMAGEN = {
+// Exported so pages that still write their own metadata keep the shared preview.
+export const IMAGEN_COMPARTIR = {
   url: "/opengraph-image",
   width: 1200,
   height: 630,
@@ -37,13 +38,13 @@ export function metaPagina({ titulo, descripcion, ruta }: Entrada): Metadata {
       siteName: EMPRESA,
       locale: "es_CO",
       type: "website",
-      images: [IMAGEN],
+      images: [IMAGEN_COMPARTIR],
     },
     twitter: {
       card: "summary_large_image",
       title: `${titulo} | ${EMPRESA}`,
       description: descripcion,
-      images: [IMAGEN],
+      images: [IMAGEN_COMPARTIR],
     },
   };
 }

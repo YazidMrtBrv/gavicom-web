@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { IMAGEN_COMPARTIR } from "@/lib/meta";
 
 const TITULO = "Contacto | GAVICOM SAS";
 const DESCRIPCION =
@@ -17,8 +18,9 @@ export const metadata: Metadata = {
     siteName: "GAVICOM SAS",
     locale: "es_CO",
     type: "website",
+    images: [IMAGEN_COMPARTIR],
   },
-  twitter: { card: "summary_large_image", title: TITULO, description: DESCRIPCION },
+  twitter: { card: "summary_large_image", images: [IMAGEN_COMPARTIR], title: TITULO, description: DESCRIPCION },
 };
 
 export default function ContactoLayout({ children }: { children: React.ReactNode }) {
