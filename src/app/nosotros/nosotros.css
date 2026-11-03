@@ -1,0 +1,20 @@
+/* Line-by-line reveal of the seagull phrase. Interacciones adds .por-aparecer
+   and staggers children through --retardo; this only shortens the timing to
+   the 500 ms agreed for this block (the global rule uses 700 ms). */
+.frase-gaviota.por-aparecer[data-aparecer="grupo"] > * {
+  transform: translate3d(0, 0.6em, 0);
+  transition-duration: 500ms, 500ms;
+  transition-delay: calc(var(--retardo, 0ms) * 2.5);
+}
+.frase-gaviota.por-aparecer.aparecio[data-aparecer="grupo"] > * {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frase-gaviota > * {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

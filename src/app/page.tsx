@@ -1,781 +1,262 @@
-"use client";
-
-import { useRef, useEffect, useState } from "react";
-import Link from "next/link";
+import { statSync } from "node:fs";
+import path from "node:path";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { COMPANIA_INFO, PRODUCTOS_Y_SERVICIOS } from "@/constants/productos";
-import ColombiaMap from "@/components/ui/ColombiaMap";
-import ColombiaProud from "@/components/ui/ColombiaProud";
+import Link from "next/link";
+import { ArrowRight, Factory, Truck } from "lucide-react";
+import { LINEAS, PRODUCTOS, SERVICIOS, imagenProducto, rutaLinea, slugProducto } from "@/lib/catalogo";
+import TarjetaProducto from "@/components/TarjetaProducto";
+import FilaDeslizable from "@/components/FilaDeslizable";
+import { tieneFotoFolleto } from "@/constants/catalogoExtra";
+import Buscador from "@/components/Buscador";
+import VideoVuelo, { type FuenteVuelo } from "@/components/vuelo/VideoVuelo";
+import ViaDesarmada, { type PiezaVia } from "@/components/via/ViaDesarmada";
+import Cifras from "@/components/movimiento/Cifras";
+import Franja from "@/components/movimiento/Franja";
 
-gsap.registerPlugin(ScrollTrigger);
-
-// Derived from the catalogue itself so the figures on the homepage can never
-// drift away from what the catalogue actually offers.
-const TOTAL_REFERENCIAS = PRODUCTOS_Y_SERVICIOS.length;
-const TOTAL_LINEAS = new Set(PRODUCTOS_Y_SERVICIOS.map((p) => p.categoria)).size;
-
-// Operating reach, not a client list: naming third parties as customers needs
-// contracts to back it up. Declared once so desktop and mobile cannot diverge.
-const ZONAS_COBERTURA = [
-  { zona: "Caribe", desc: "Corredor minero y logística portuaria" },
-  { zona: "Centro", desc: "Corredor central y zonas de taller" },
-  { zona: "Pacífico", desc: "Conexión férrea hacia el Pacífico" },
-  { zona: "Orinoquía", desc: "Plataformas de carga del piedemonte" },
-  { zona: "Sur", desc: "Eje férreo Tolima–Huila–Nariño" },
+// The parts of the drawn rail joint and the catalogue reference behind each.
+const PIEZAS_VIA: [PiezaVia["id"], string, string][] = [
+  ["clip", "GVC-AD-SKL14", "Clip elástico SKL-14"],
+  ["tirafondo", "GVC-AD-SS01", "Tirafondo"],
+  ["eclisa", "GVC-AK-JB115", "Eclisa 115 lb"],
+  ["perno", "GVC-AK-TB01", "Perno de cuello ovalado"],
+  ["almohadilla", "GVC-AD-RP02", "Almohadilla bajo riel"],
+  ["placa", "GVC-AK-TP03", "Placa de asiento"],
 ];
+const piezasVia: PiezaVia[] = PIEZAS_VIA.flatMap(([id, sku, nombre]) => {
+  const p = PRODUCTOS.find((x) => x.sku === sku);
+  if (!p) return [];
+  return [{ id, nombre, sku, slug: slugProducto(p), imagen: imagenProducto(p), resumen: p.descripcion.split(". ")[0] + "." }];
+});
 
-// ─── Animated counter ─────────────────────────────────────────────────────────
-function AnimatedCounter({
-  to,
-  suffix = "",
-  delay = 0,
-}: {
-  to: number;
-  suffix?: string;
-  delay?: number;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref as React.RefObject<Element>, { once: true });
+// Tools GAVICOM sells to install and maintain those same parts. None of them
+// is in the rail joint above, so no reference shows twice on the page.
+const PARA_MONTAR = ["GVC-FIJ-001", "GVC-FIJ-003", "GVC-MAN-003", "GVC-TM-07", "GVC-D-01"]
+  .map((sku) => PRODUCTOS.find((p) => p.sku === sku))
+  .filter((p) => p !== undefined)
+  // A brochure page is not a product photo; those stay in the catalogue
+  // (with their honest no-photo card) but not in this showcase.
+  .filter((p) => !tieneFotoFolleto(p.sku));
 
-  useEffect(() => {
-    if (!inView) return;
-    const timer = setTimeout(() => {
-      const duration = 1600;
-      const start = performance.now();
-      const animate = (now: number) => {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const val = Math.floor(eased * to);
-        if (ref.current) ref.current.textContent = `${val}${suffix}`;
-        if (progress < 1) requestAnimationFrame(animate);
-      };
-      requestAnimationFrame(animate);
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [inView, to, delay, suffix]);
+// Full rows only: five columns on wide screens when all five have a clean
+// photo, otherwise as many columns as cards.
+const COLUMNAS_MONTAR = PARA_MONTAR.length >= 5 ? "lg:grid-cols-5" : "lg:grid-cols-3";
 
-  // Rendered with the final figure so crawlers and assistants, which do not run
-  // the animation, read the real number instead of a zero. The count-up starts
-  // from zero once the element scrolls into view.
+// Links of the two delivered jobs, built from the catalogue so a renamed SKU
+// or line slug breaks loudly here instead of leaving a dead link.
+const eclisa75 = PRODUCTOS.find((p) => p.sku === "GVC-AK-EA75");
+const herramientas = LINEAS.find((l) => l.slug === "herramientas-de-via");
+
+// Light re-encodes first; the originals stay as the fallback for a browser
+// that cannot decode them. The weight is read from the file at build time so
+// the "Ver el vuelo (X MB)" button never states a stale figure.
+const VIDEOS: Omit<FuenteVuelo, "bytes">[] = [
+  { src: "/video/gaviota-ida-v-ligero.webm", tipo: 'video/webm; codecs="vp9"', vertical: true },
+  { src: "/video/gaviota-ida-v-ligero.mp4", tipo: 'video/mp4; codecs="avc1.4D401E"', vertical: true },
+  { src: "/video/gaviota-ida-ligero.webm", tipo: 'video/webm; codecs="vp9"', vertical: false },
+  { src: "/video/gaviota-ida-ligero.mp4", tipo: 'video/mp4; codecs="avc1.4D401F"', vertical: false },
+];
+function conPeso(v: Omit<FuenteVuelo, "bytes">): FuenteVuelo {
+  try {
+    return { ...v, bytes: statSync(path.join(process.cwd(), "public", v.src)).size };
+  } catch {
+    return { ...v, bytes: null };
+  }
+}
+const fuentesVuelo = VIDEOS.map(conPeso);
+
+const H2 = "text-3xl md:text-5xl font-bold tracking-tight";
+
+function Antetitulo({ n, children, claro = false }: { n: string; children: string; claro?: boolean }) {
   return (
-    <span ref={ref}>
-      {to}
-      {suffix}
-    </span>
+    <p data-aparecer className={`font-mono text-xs sm:text-sm uppercase tracking-[0.14em] ${claro ? "text-white/75" : "text-tenue"}`}>
+      {n} / {children}
+    </p>
   );
 }
 
-// ─── Shiny CTA button ────────────────────────────────────────────────────────
-function ShinyButton({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="shiny-btn spotlight relative w-full sm:w-auto text-center text-[#030303] text-xs font-mono font-bold uppercase tracking-[0.2em] px-10 py-4 bg-[#CC4C00] hover:bg-[#D95800] border border-[#CC4C00] transition-colors active:scale-[0.97] overflow-hidden inline-block"
-    >
-      <span className="relative z-10">{children}</span>
-    </Link>
-  );
-}
-
-// ─── Ghost CTA button with animated arrow ────────────────────────────────────
-function GhostButton({
-  href,
-  target,
-  rel,
-  children,
-}: {
-  href: string;
-  target?: string;
-  rel?: string;
-  children: React.ReactNode;
-}) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <a
-      href={href}
-      target={target}
-      rel={rel}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="w-full sm:w-auto text-center text-[#1a1a2e] text-xs font-bold uppercase tracking-[0.2em] border border-zinc-300 hover:border-[#D35400] px-10 py-4 transition-all active:scale-[0.97] inline-flex items-center justify-center gap-2.5 group"
-    >
-      <span>{children}</span>
-      <motion.span
-        animate={{ x: hovered ? 5 : 0 }}
-        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-        className="text-[#CC4C00] text-sm leading-none"
-      >
-        →
-      </motion.span>
-    </a>
-  );
-}
-
-// ─── DESKTOP VIEW ─────────────────────────────────────────────────────────────
-function DesktopView() {
-  const heroRef = useRef<HTMLElement>(null);
-  const linesRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLHeadingElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Rail lines parallax on scroll
-      ScrollTrigger.create({
-        trigger: heroRef.current,
-        start: "top top",
-        end: "bottom top",
-        onUpdate: (self) => {
-          if (linesRef.current) {
-            linesRef.current.style.transform = `translateX(-${self.progress * 30}px)`;
-            linesRef.current.style.opacity = `${1 - self.progress * 1.4}`;
-          }
-        },
-      });
-
-      // GSAP glitch on hero heading
-      ScrollTrigger.create({
-        trigger: heroRef.current,
-        start: "top top",
-        end: "+=400",
-        scrub: 0.5,
-        onUpdate: (self) => {
-          if (textRef.current && self.progress > 0.5) {
-            const intensity = (self.progress - 0.5) * 2;
-            if (intensity > 0.8) {
-              textRef.current.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
-              textRef.current.style.clipPath = `inset(${Math.random() * 20}% 0 ${Math.random() * 20}% 0)`;
-            }
-          } else if (textRef.current) {
-            textRef.current.style.transform = "translate(0, 0)";
-            textRef.current.style.clipPath = "inset(0)";
-          }
-        },
-      });
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const mensajeInicio = encodeURIComponent(
-    "Hola GAVICOM SAS, requiero atención personalizada para el suministro de materiales ferroviarios."
-  );
-  const enlaceWhatsApp = `${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=${mensajeInicio}`;
-
-  return (
-    <div className="flex flex-col">
-      {/* ── HERO ── */}
-      <section
-        ref={heroRef}
-        className="relative bg-[#f8f9fa] min-h-screen flex items-center overflow-hidden border-b border-[#D35400]/10"
-      >
-        <div className="absolute inset-0">
-          <Image
-            src="/images/gemini-hero.webp"
-            alt="GAVICOM — Maquinaria ferroviaria en entorno natural"
-            fill
-            className="object-cover object-center"
-            sizes="100vw"
-            loading="eager"
-            fetchPriority="high"
-          />
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                "linear-gradient(to right, #f8f9fa 0%, #f8f9fa 30%, rgba(248,249,250,0.6) 55%, transparent 100%)",
-            }}
-          />
-        </div>
-
-        {/* Perspective rail lines */}
-        <div ref={linesRef} className="absolute inset-0 opacity-[0.045] pointer-events-none">
-          <svg className="w-[200%] h-full" viewBox="0 0 2880 900" preserveAspectRatio="none">
-            <line x1="0" y1="900" x2="720" y2="0" stroke="#D35400" strokeWidth="0.5" />
-            <line x1="1440" y1="900" x2="720" y2="0" stroke="#D35400" strokeWidth="0.5" />
-            <line x1="200" y1="900" x2="900" y2="0" stroke="#D35400" strokeWidth="0.3" />
-            <line x1="1640" y1="900" x2="900" y2="0" stroke="#D35400" strokeWidth="0.3" />
-            <line x1="400" y1="900" x2="1080" y2="0" stroke="#D35400" strokeWidth="0.2" />
-            <line x1="1840" y1="900" x2="1080" y2="0" stroke="#D35400" strokeWidth="0.2" />
-          </svg>
-        </div>
-
-        {/* Content */}
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full py-32 lg:py-40">
-          <div className="grid grid-cols-1 items-end">
-            <div>
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
-                className="text-[10px] font-mono font-bold tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/30 px-3 py-1.5 inline-block"
-              >
-                Suministros · Fabricación · Obras Civiles
-              </motion.span>
-
-              <h1 ref={textRef} className="mt-8" style={{ letterSpacing: "-0.05em" }}>
-                <motion.span
-                  initial={{ opacity: 0, y: 80 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1], delay: 0.2 }}
-                  className="block text-6xl sm:text-7xl lg:text-8xl xl:text-[9rem] font-black leading-[0.82] text-[#1a1a2e]"
-                >
-                  GAVICOM
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0, y: 60 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1], delay: 0.35 }}
-                  className="block text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-zinc-400 mt-3"
-                >
-                  Infraestructura Ferroviaria
-                </motion.span>
-              </h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1], delay: 0.5 }}
-                className="mt-6 text-sm text-zinc-600 max-w-xl leading-relaxed"
-              >
-                Especialistas en suministro de componentes ferroviarios, fabricación de herramientas
-                especializadas y ejecución de obras civiles para infraestructura de transporte en Colombia.
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1], delay: 0.65 }}
-                className="mt-10 flex flex-col sm:flex-row items-center justify-start gap-4"
-              >
-                <ShinyButton href="/catalogo">Explorar Catálogo</ShinyButton>
-                <GhostButton href={enlaceWhatsApp} target="_blank" rel="noopener noreferrer">
-                  Contacto Directo
-                </GhostButton>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <span className="text-[9px] font-mono text-zinc-700 uppercase tracking-[0.3em]">
-              SCROLL ↓
-            </span>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── STATS BAND ── */}
-      <section className="border-b border-[#D35400]/10 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
-          >
-            <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase">
-              Trazabilidad
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-[#1a1a2e] mt-3">
-              Cifras que Respaldan
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-3 gap-8 md:gap-12 mt-12">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, ease: [0.65, 0, 0.35, 1] }}
-            >
-              <ColombiaProud />
-            </motion.div>
-
-            {[
-              {
-                to: TOTAL_REFERENCIAS,
-                label: "Referencias en Catálogo",
-                sub: "componentes, herramientas y señalización",
-              },
-              {
-                to: TOTAL_LINEAS,
-                label: "Líneas de Suministro",
-                sub: "especificadas según referencias AREMA y UIC",
-              },
-            ].map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: (i + 1) * 0.12, ease: [0.65, 0, 0.35, 1] }}
-              >
-                <div
-                  className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#1a1a2e]"
-                  style={{ letterSpacing: "-0.05em" }}
-                >
-                  <AnimatedCounter to={stat.to} delay={(i + 1) * 120} />
-                </div>
-                <div className="mt-2">
-                  <span className="text-xs font-bold text-zinc-600 tracking-wide uppercase">
-                    {stat.label}
-                  </span>
-                  <span className="text-[10px] text-zinc-400 block mt-0.5">{stat.sub}</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── SERVICES PREVIEW ── */}
-      <section className="border-b border-[#D35400]/10 bg-[#f8f9fa]">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
-            className="mb-16"
-          >
-            <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase">
-              Capacidades
-            </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter leading-[0.9] text-[#1a1a2e] mt-4">
-              Soluciones Integrales
-            </h2>
-            <p className="text-sm text-zinc-600 mt-4 max-w-xl">
-              Ofrecemos un portafolio completo de suministros y servicios certificados para la operación y
-              mantenimiento de vía férrea en Colombia.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-zinc-200">
-            {[
-              {
-                title: "Suministros Ferroviarios",
-                items: [
-                  "Eclisas y fijaciones para rieles AREMA/UIC",
-                  "Sistemas elásticos de sujeción certificados",
-                  "Componentes para superestructura de vía",
-                  "Materiales para patios industriales y talleres",
-                ],
-              },
-              {
-                title: "Fabricación de Herramientas",
-                items: [
-                  "Herramientas manuales para montaje y mantenimiento",
-                  "Equipos de señalización ferroviaria propios",
-                  "Carpa y protectores para soldadura aluminotérmica",
-                  "Troleys y plataformas de carga sobre medida",
-                ],
-              },
-              {
-                title: "Obras Civiles",
-                items: [
-                  "Estudios topográficos con drones y modelado 3D",
-                  "Movimiento de tierras y adecuación de plataformas",
-                  "Obras de drenaje y sub-drenaje ferroviario",
-                  "Diseño y planos técnicos para infraestructura",
-                ],
-              },
-            ].map((svc, i) => (
-              <motion.div
-                key={svc.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.12, ease: [0.65, 0, 0.35, 1] }}
-                className="neon-chase bg-white p-8 hover:bg-[#f0f2f5] transition-colors group"
-              >
-                <span className="text-[10px] font-bold text-[#D35400] tracking-widest uppercase">
-                  {`0${i + 1}`}
-                </span>
-                <h3 className="text-lg font-bold text-[#1a1a2e] mt-3 mb-4">{svc.title}</h3>
-                <ul className="space-y-2">
-                  {svc.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-xs text-zinc-600">
-                      <span className="text-[#D35400] mt-0.5 shrink-0">▸</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-6 pt-4 border-t border-zinc-100">
-                  <Link
-                    href="/servicios"
-                    className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[#D35400] hover:text-[#1a1a2e] transition-colors uppercase tracking-wider"
-                  >
-                    Ver servicios
-                    <span className="text-xs">→</span>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-12 text-center"
-          >
-            <Link
-              href="/catalogo"
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#D35400] hover:text-[#1a1a2e] transition-colors uppercase tracking-wider border border-[#D35400]/30 hover:border-[#D35400]/60 px-8 py-3.5"
-            >
-              Ver catálogo completo de productos
-              <span className="text-sm">→</span>
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── COVERAGE MAP ── */}
-      <section className="border-b border-[#D35400]/10 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
-            className="mb-16"
-          >
-            <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase">
-              Cobertura Nacional
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-[#1a1a2e] mt-3">
-              Cobertura en las Principales Zonas Ferroviarias
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <ColombiaMap />
-
-            <div className="space-y-5">
-              {ZONAS_COBERTURA.map((item, i) => (
-                <motion.div
-                  key={item.zona}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.08 }}
-                  className="flex items-center gap-4 border-l-2 border-[#D35400]/40 pl-4 hover:border-[#D35400] transition-colors group"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-sm font-bold text-[#1a1a2e] tracking-tight">
-                        {item.zona}
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-zinc-500 mt-0.5 block">{item.desc}</span>
-                  </div>
-                  <motion.span
-                    animate={{ x: 0 }}
-                    whileHover={{ x: 4 }}
-                    className="text-zinc-300 group-hover:text-[#D35400] text-xs transition-colors"
-                  >
-                    →
-                  </motion.span>
-                </motion.div>
-              ))}
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className="mt-6 border border-[#D35400]/20 px-5 py-4 flex items-center justify-between bg-white/50"
-              >
-                <span className="text-[10px] text-zinc-600 uppercase tracking-widest">
-                  Cobertura operativa
-                </span>
-                <span className="text-sm font-black text-[#1a1a2e] uppercase tracking-tight">
-                  Nacional
-                </span>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-// ─── MOBILE VIEW (100% NATIVE MOBILE EXPERIENCE) ─────────────────────────────
-function MobileView() {
-  const mensajeInicio = encodeURIComponent(
-    "Hola GAVICOM SAS, requiero atención personalizada para el suministro de materiales ferroviarios."
-  );
-  const enlaceWhatsApp = `${COMPANIA_INFO.whatsappBaseUrl}?phone=${COMPANIA_INFO.whatsappSales}&text=${mensajeInicio}`;
-
-  return (
-    <div className="flex flex-col bg-[#f8f9fa] overflow-x-hidden">
-      {/* ── MOBILE HERO ── */}
-      <section className="relative min-h-[100dvh] flex flex-col justify-end pb-16 px-6">
-        {/* Background Image Optimized for Mobile */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/gemini-hero.webp"
-            alt="GAVICOM Maquinaria"
-            fill
-            className="object-cover object-[80%_center]"
-            loading="eager"
-            fetchPriority="high"
-          />
-          {/* Vertical gradient overlay to ensure text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#f8f9fa] via-[#f8f9fa]/90 to-transparent" />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <span className="text-[10px] font-mono font-bold tracking-[0.3em] text-[#D35400] uppercase border border-[#D35400]/30 px-3 py-1.5 inline-block mb-5">
-              Suministros · Obras
-            </span>
-            <h1 className="text-[3.5rem] font-black leading-[0.85] text-[#1a1a2e] tracking-tighter drop-shadow-sm">
-              GAVICOM
-            </h1>
-            <h2 className="text-2xl font-black text-zinc-600 mt-3 leading-tight">
-              Infraestructura<br />Ferroviaria
-            </h2>
-            <p className="mt-5 text-sm text-zinc-700 leading-relaxed max-w-[95%]">
-              Especialistas en componentes, herramientas y obras civiles para infraestructura de transporte en todo el país.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="mt-8 flex flex-col gap-3 w-full"
-          >
-            <ShinyButton href="/catalogo">Explorar Catálogo</ShinyButton>
-            <GhostButton href={enlaceWhatsApp} target="_blank" rel="noopener noreferrer">
-              Contacto Directo
-            </GhostButton>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── MOBILE STATS (VERTICAL CARDS) ── */}
-      <section className="py-20 px-6 bg-white border-y border-[#D35400]/10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-12 text-center"
-        >
-          <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase block mb-2">
-            Trazabilidad
-          </span>
-          <h2 className="text-3xl font-black tracking-tighter text-[#1a1a2e]">
-            Cifras que Respaldan
-          </h2>
-        </motion.div>
-
-        <div className="flex flex-col gap-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
-          >
-            <div className="scale-125 mb-4"><ColombiaProud /></div>
-            <span className="text-sm font-bold text-zinc-800 uppercase mt-4">Orgullo Colombiano</span>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
-          >
-            <div className="text-6xl font-black text-[#1a1a2e] tracking-tighter">
-              <AnimatedCounter to={TOTAL_REFERENCIAS} suffix="" />
-            </div>
-            <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Referencias en Catálogo</span>
-            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">componentes, herramientas y señalización</span>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 flex flex-col items-center text-center shadow-sm"
-          >
-            <div className="text-6xl font-black text-[#1a1a2e] tracking-tighter">
-              <AnimatedCounter to={TOTAL_LINEAS} suffix="" />
-            </div>
-            <span className="text-sm font-bold text-zinc-800 uppercase mt-3">Líneas de Suministro</span>
-            <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">especificadas según referencias AREMA y UIC</span>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── MOBILE SERVICES (STACKED LIST) ── */}
-      <section className="py-20 px-6 bg-[#f8f9fa]">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-10"
-        >
-          <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase block mb-2">
-            Capacidades
-          </span>
-          <h2 className="text-4xl font-black tracking-tighter leading-[0.9] text-[#1a1a2e]">
-            Soluciones<br />Integrales
-          </h2>
-        </motion.div>
-
-        <div className="flex flex-col gap-4">
-          {[
-            {
-              title: "Suministros Ferroviarios",
-              items: ["Eclisas y fijaciones AREMA/UIC", "Sistemas elásticos de sujeción", "Materiales para patios"],
-            },
-            {
-              title: "Fabricación de Herramientas",
-              items: ["Equipos de señalización propios", "Protección aluminotérmica", "Troleys sobre medida"],
-            },
-            {
-              title: "Obras Civiles",
-              items: ["Estudios con drones y 3D", "Obras de drenaje ferroviario", "Adecuación de plataformas"],
-            },
-          ].map((svc, i) => (
-            <motion.div
-              key={svc.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-base font-bold text-[#1a1a2e]">{svc.title}</h3>
-                <span className="text-[10px] font-bold text-[#D35400] tracking-widest bg-[#D35400]/10 px-2 py-1 rounded">
-                  0{i + 1}
-                </span>
-              </div>
-              <ul className="space-y-3">
-                {svc.items.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-xs text-zinc-600 leading-snug">
-                    <span className="text-[#D35400] shrink-0 font-bold">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-10 w-full"
-        >
-          <Link
-            href="/catalogo"
-            className="flex items-center justify-center w-full bg-white border border-[#D35400]/30 text-[#D35400] text-xs font-bold uppercase tracking-wider py-5 rounded-xl shadow-sm active:scale-[0.98] transition-transform"
-          >
-            Ver catálogo completo →
-          </Link>
-        </motion.div>
-      </section>
-
-      {/* ── MOBILE MAP ── */}
-      <section className="py-20 px-6 bg-white border-t border-[#D35400]/10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-10 text-center"
-        >
-          <span className="text-[10px] font-bold tracking-[0.3em] text-[#D35400] uppercase block mb-2">
-            Cobertura Nacional
-          </span>
-          <h2 className="text-3xl font-black tracking-tighter text-[#1a1a2e]">
-            Cobertura Operativa
-          </h2>
-        </motion.div>
-
-        {/* Map Container scaled for mobile */}
-        <div className="w-full flex justify-center mb-12">
-          <div className="scale-[0.8] origin-center">
-            <ColombiaMap />
-          </div>
-        </div>
-
-        <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100">
-          <div className="space-y-5">
-            {ZONAS_COBERTURA.map((item, i) => (
-              <motion.div
-                key={item.zona}
-                initial={{ opacity: 0, x: -10 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="flex items-start gap-3 border-b border-zinc-200 pb-4 last:border-0 last:pb-0"
-              >
-                <div className="mt-1 w-2 h-2 rounded-full bg-[#D35400] shrink-0" />
-                <div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-sm font-bold text-[#1a1a2e]">{item.zona}</span>
-                  </div>
-                  <span className="text-[11px] text-zinc-500 mt-1 block leading-tight">{item.desc}</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-          
-          <div className="mt-8 pt-5 border-t border-zinc-200 flex justify-between items-center">
-            <span className="text-[10px] text-zinc-600 uppercase tracking-widest font-bold">
-              Cobertura operativa
-            </span>
-            <span className="text-sm font-black text-[#D35400] uppercase tracking-tight">
-              Nacional
-            </span>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-// ─── MAIN EXPORT ──────────────────────────────────────────────────────────────
-export default function HomePage() {
+export default function Inicio() {
   return (
     <>
-
-      {/* Render the complex Desktop view only on medium screens and up */}
-      <div className="hidden md:block">
-        <DesktopView />
+      <div id="vuelo">
+        <VideoVuelo fuentes={fuentesVuelo} />
       </div>
 
-      {/* Render the highly-optimized native Mobile view on small screens */}
-      <div className="block md:hidden">
-        <MobileView />
-      </div>
+      {/* Proof right after the trailer: delivered work only, and without
+          naming clients, since the company asked to keep names off the site. */}
+      <section aria-labelledby="h-experiencia" className="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-28">
+        <div className="grid gap-10 md:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)] md:items-start">
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-3">
+              <Antetitulo n="01">La experiencia</Antetitulo>
+              <h2 id="h-experiencia" data-aparecer className={H2}>
+                Ya trabajamos en la vía
+              </h2>
+            </div>
+            <div data-aparecer>
+              <Cifras
+                cifras={[
+                  { valor: 400, texto: "eclisas angulares de 75 lb", detalle: "Fabricadas en Colombia" },
+                  { antes: "+", valor: 100, texto: "herramientas para mantenimiento de vía", detalle: "Entregadas" },
+                ]}
+              />
+            </div>
+            <p data-aparecer className="text-lg md:text-xl font-semibold text-tinta border-l-4 border-azul pl-4 max-w-2xl">
+              Seleccionada por iNNpulsa Colombia en el programa En-Cadena, Mejores proveedores del sector ferroviario.
+            </p>
+            <ul data-aparecer="grupo" className="grid gap-3 sm:grid-cols-2">
+              <li className="foco flex flex-col gap-2 rounded border border-linea p-5">
+                <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-azul">
+                  <Factory size={16} aria-hidden /> Fabricación
+                </p>
+                <p className="font-semibold text-tinta">Operador ferroviario nacional</p>
+                <p className="text-sm text-tenue">Eclisas angulares de 75 lb y eclisas para puentes del corredor.</p>
+                {eclisa75 && (
+                  <Link href={`/catalogo/${slugProducto(eclisa75)}`} className="mt-auto inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-azul hover:underline underline-offset-4">
+                    Ver la eclisa de 75 lb <ArrowRight size={16} aria-hidden />
+                  </Link>
+                )}
+              </li>
+              <li className="foco flex flex-col gap-2 rounded border border-linea p-5">
+                <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-azul">
+                  <Truck size={16} aria-hidden /> Suministro
+                </p>
+                <p className="font-semibold text-tinta">Operador ferroviario de carga</p>
+                <p className="text-sm text-tenue">Herramientas para mantenimiento de vía y suministro de eclisas.</p>
+                {herramientas && (
+                  <Link href={rutaLinea(herramientas)} className="mt-auto inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-azul hover:underline underline-offset-4">
+                    Ver herramientas de vía <ArrowRight size={16} aria-hidden />
+                  </Link>
+                )}
+              </li>
+            </ul>
+            <Link data-aparecer href="/fabricacion" className="boton-iman self-start inline-flex items-center gap-2 min-h-12 px-6 rounded bg-azul text-white font-semibold hover:bg-azul-hover">
+              Así fabricamos en Colombia <ArrowRight size={18} aria-hidden />
+            </Link>
+          </div>
+          {/* Desktop only: on the phone the section stays compact and the proof
+              (figures and jobs) is what has to fit. */}
+          <figure data-aparecer className="relative hidden md:block corte-ala overflow-hidden rounded md:h-full md:min-h-[420px]">
+            <Image src="/images/fabricacion/via-ferrea-puente.webp" alt="Vía férrea sobre un puente" fill sizes="35vw" className="object-cover" />
+            <figcaption className="absolute inset-x-0 bottom-0 p-5 pl-[18%] text-white font-semibold bg-[linear-gradient(0deg,rgba(12,38,66,0.92),rgba(12,38,66,0))]">
+              Vía férrea en Colombia
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <Franja items={[...LINEAS.map((l) => ({ texto: l.nombre, href: rutaLinea(l) })), { texto: "GAVICOM Energy", href: "/energy" }]} />
+
+      <ViaDesarmada piezas={piezasVia} />
+
+      <section aria-labelledby="h-montar" className="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-28">
+        <div className="flex flex-col gap-3 mb-8">
+          <Antetitulo n="03">Para montarla</Antetitulo>
+          <h2 id="h-montar" data-aparecer className={H2}>
+            Y para montarla
+          </h2>
+          <p data-aparecer className="text-tenue max-w-xl">Las herramientas para instalar y mantener esas mismas fijaciones.</p>
+        </div>
+        {/* A swipeable row on the phone (five cards stacked would be a long
+            scroll of tools); a plain grid from sm up. Snapping stops while a
+            card has keyboard focus, so it cannot pull the focused card back
+            off screen. */}
+        <FilaDeslizable
+          data-aparecer="grupo"
+          aria-label="Herramientas para montar la vía"
+          className={`-mx-4 px-4 flex gap-3 overflow-x-auto snap-x snap-proximity focus-within:snap-none scroll-px-4 pb-2 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 ${COLUMNAS_MONTAR} sm:gap-4 sm:overflow-visible sm:pb-0`}
+        >
+          {PARA_MONTAR.map((p) => (
+            <li key={p.sku} className="w-[70%] shrink-0 snap-start flex sm:w-auto [&>article]:w-full">
+              <TarjetaProducto producto={p} />
+            </li>
+          ))}
+        </FilaDeslizable>
+        <Link data-aparecer href="/catalogo" className="mt-6 inline-flex items-center gap-1.5 min-h-12 px-6 rounded border border-azul text-azul font-semibold hover:bg-azul-suave">
+          Ver las {PRODUCTOS.length} referencias <ArrowRight size={18} aria-hidden />
+        </Link>
+      </section>
+
+      <section aria-labelledby="h-cotizar" className="sobre-azul bg-azul text-white">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-28 grid gap-10 md:grid-cols-[1fr_1.3fr] items-center">
+          <div data-aparecer className="flex flex-col gap-3">
+            <Antetitulo n="04" claro>
+              Cotizar
+            </Antetitulo>
+            <h2 id="h-cotizar" className={`${H2} text-white`}>
+              Cotizar toma tres pasos
+            </h2>
+            <p className="text-white/80">Sin formularios largos: armas la lista y nos llega completa, con códigos y cantidades.</p>
+          </div>
+          <ol data-aparecer="grupo" className="grid gap-5 sm:grid-cols-3">
+            {[
+              ["Marca las piezas", "Desde el catálogo, con «Agregar a cotización»."],
+              ["Pon cantidades", "Y la ciudad donde las necesitas."],
+              ["Envía", "Por WhatsApp o correo. Te respondemos con precio y plazo."],
+            ].map(([t, d], i) => (
+              <li key={t} className="border-t-2 border-white/30 pt-3">
+                <p className="font-semibold">
+                  <span className="font-mono tabular-nums text-white/70 mr-1.5">{i + 1}.</span>
+                  {t}
+                </p>
+                <p className="text-sm text-white/80 mt-1">{d}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* No bottom padding of its own: the footer already opens with a wide
+          top margin, and both together left a blank band. */}
+      <section aria-labelledby="h-lineas" className="mx-auto max-w-6xl px-4 sm:px-6 pt-20 md:pt-28 pb-4">
+        <div className="flex flex-col gap-3 mb-8">
+          <Antetitulo n="05">El catálogo</Antetitulo>
+          <h2 id="h-lineas" data-aparecer className={H2}>
+            Qué suministramos
+          </h2>
+          <div data-aparecer className="mt-2 max-w-2xl">
+            <Buscador />
+          </div>
+        </div>
+        {/* Five lines plus Servicios fill two rows of three (three rows of
+            two on tablets), so the 1px grid never shows an empty grey cell;
+            Energy takes a full row of its own. */}
+        <ul data-aparecer="grupo" className="grid gap-px bg-linea border border-linea rounded overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
+          {LINEAS.map((l) => (
+            <li key={l.slug} className="bg-white">
+              <Link href={rutaLinea(l)} className="foco group flex flex-col gap-1 h-full min-h-11 p-5 hover:bg-gris">
+                <span className="flex items-center justify-between gap-2 font-semibold text-tinta group-hover:text-azul">
+                  {l.nombre}
+                  <span className="font-mono text-sm font-normal text-tenue tabular-nums">{PRODUCTOS.filter((p) => p.categoria === l.categoria).length} ref.</span>
+                </span>
+                <span className="text-sm text-tenue">{l.resumen}</span>
+              </Link>
+            </li>
+          ))}
+          <li className="bg-white">
+            <Link href="/servicios" className="foco group flex flex-col gap-1 h-full min-h-11 p-5 hover:bg-gris">
+              <span className="flex items-center justify-between gap-2 font-semibold text-tinta group-hover:text-azul">
+                Servicios
+                <span className="font-mono text-sm font-normal text-tenue tabular-nums">{SERVICIOS.length}</span>
+              </span>
+              <span className="text-sm text-tenue">Topografía con dron, mantenimiento, hidráulica, alquiler Lincoln, planos y consultoría.</span>
+            </Link>
+          </li>
+          <li className="sobre-azul bg-azul sm:col-span-2 lg:col-span-3">
+            <div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between md:gap-8 md:p-8">
+              <div className="flex flex-col gap-1">
+                <p className="flex items-baseline gap-3 font-titulo text-xl md:text-2xl font-bold text-white">
+                  GAVICOM Energy
+                  <span className="font-mono text-xs font-normal uppercase tracking-wider text-white/75">Solar</span>
+                </p>
+                <p className="text-white/80 max-w-xl">Cofres fotovoltaicos, instalación de sistemas solares, protecciones AC y DC y gabinetes.</p>
+              </div>
+              <Link href="/energy" className="boton-iman self-start md:self-auto shrink-0 inline-flex items-center gap-2 min-h-12 px-6 rounded bg-white text-azul font-semibold hover:bg-azul-suave">
+                Ver GAVICOM Energy <ArrowRight size={18} aria-hidden />
+              </Link>
+            </div>
+          </li>
+        </ul>
+      </section>
     </>
   );
 }

@@ -1,0 +1,64 @@
+/* Catalogue motion. Imported by the components that use it (cards, gallery,
+   action bar, add confirmation), so it ships wherever they render. Every
+   effect is short (200-300 ms) and dropped under prefers-reduced-motion. */
+
+/* Card photo -> product page photo (React <ViewTransition share="morph-foto">). */
+::view-transition-group(.morph-foto) {
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Switching models in the gallery: the new photo fades in over white. */
+.galeria-fundido {
+  animation: galeria-fundido 200ms ease-out;
+}
+@keyframes galeria-fundido {
+  from { opacity: 0; }
+}
+
+/* Add confirmation: rises 8 px while it fades in. */
+.aviso-entrar {
+  animation: aviso-entrar 200ms ease-out;
+}
+@keyframes aviso-entrar {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+}
+
+/* Phone action bar on product pages slides in from the bottom edge. */
+.barra-ficha {
+  transition: transform 200ms ease-out;
+}
+
+/* On a product page the round WhatsApp button is hidden on phones and the
+   action bar takes the bottom edge: the confirmation sits just above it. */
+@media (max-width: 767.98px) {
+  /* Room for the bar under the LAST thing on the page (the footer too), so
+     it never covers text when scrolled to the bottom. */
+  body:has([data-barra-ficha]) {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  /* Same room for keyboard focus: scrolling to a focused element stops
+     above the bar instead of leaving it underneath (WCAG 2.4.11). */
+  html:has([data-barra-ficha]) {
+    scroll-padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px) + 8px);
+  }
+  body:has([data-barra-ficha][data-visible="true"]) .aviso-cotizacion {
+    right: 1rem;
+    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .galeria-fundido,
+  .aviso-entrar {
+    animation: none;
+  }
+  .barra-ficha {
+    transition: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

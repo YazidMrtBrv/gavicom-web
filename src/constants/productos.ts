@@ -32,7 +32,7 @@ export const COMPANIA_INFO = {
   whatsappSales: "+573150509803",
   whatsappBaseUrl: "https://api.whatsapp.com/send",
   disclaimerLegal:
-    "GAVICOM SAS es comercializador y distribuidor independiente de componentes ferroviarios. Los nombres de normas, estándares (AREMA, UIC) o catálogos de fabricantes se mencionan exclusivamente como referencia técnica de compatibilidad y especificación de los materiales suministrados.",
+    "GAVICOM SAS suministra componentes ferroviarios y fabrica piezas en Colombia con aliados industriales. Los nombres de normas, estándares (AREMA, UIC) o catálogos de fabricantes se mencionan exclusivamente como referencia técnica de compatibilidad y especificación de los materiales suministrados.",
 };
 
 export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
@@ -50,6 +50,111 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       Estándar: "Conforme a especificaciones de vía pesada",
       Perforaciones: "Disponibles en configuraciones estándar de la industria",
       Suministro: "Kit completo o piezas individuales según proyecto",
+    },
+  },
+  {
+    sku: "GVC-AK-EA75",
+    nombre: "Eclisa Angular para Riel de 75 LB",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Fabricación en Colombia",
+    descripcion:
+      "Barra de unión angular para riel de 75 lb, desarrollada por GAVICOM con ingeniería inversa de la pieza original, planos de fabricación propios y fundición con aliado nacional. Ya entregamos 400 unidades (200 pares) a un operador ferroviario nacional.",
+    imagen: "eclisa-angular-75lb.webp",
+    especificaciones: {
+      Material: "Hierro nodular ASTM A536",
+      Riel: "75 lb",
+      Planos: "Propios; se comparten bajo acuerdo de confidencialidad",
+      Calidad: "Química, metalografía, dureza, dimensional y ensayos no destructivos",
+    },
+  },
+  {
+    sku: "GVC-AK-JB90",
+    nombre: "Eclisas para Riel de 90 LB",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Barra de unión para riel de 90 lb, fabricada en hierro nodular.",
+    imagen: "eclisa-90lb.webp",
+    especificaciones: {
+      Material: "Hierro nodular ASTM A536",
+      Riel: "90 lb",
+    },
+  },
+  {
+    sku: "GVC-AK-JB30",
+    nombre: "Eclisas 30KL",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Barra de unión para riel 30KL, fabricada en hierro nodular.",
+    imagen: "eclisa-30kg.webp",
+    especificaciones: {
+      Material: "Hierro nodular ASTM A536",
+      Riel: "30KL",
+    },
+  },
+  {
+    sku: "GVC-AK-PA01",
+    nombre: "Placa de Apoyo",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Placa de soporte que brinda sujeción al riel sobre el durmiente.",
+    imagen: "placa-apoyo.webp",
+    especificaciones: {
+      Material: "Acero ASTM A67",
+    },
+  },
+  {
+    sku: "GVC-AK-CA75",
+    nombre: "Cuña de Apoyo para Riel de 75 LB/YD",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Elemento de apoyo para riel de 75 lb/yd.",
+    imagen: "cuna-apoyo-75lb.webp",
+    especificaciones: {
+      Material: "Acero ASTM A67",
+      Riel: "75 lb/yd",
+    },
+  },
+  {
+    sku: "GVC-AK-ST01",
+    nombre: "Sujetador Tornillo Ferrovial",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Elementos de Sujeción",
+    origen: "Suministro GAVICOM",
+    descripcion: "Componentes que aseguran o fijan el riel o la placa al durmiente.",
+    imagen: "sujetador-tornillo-ferrovial.webp",
+    especificaciones: {
+      Material: "Acero ASTM A67",
+    },
+  },
+  {
+    sku: "GVC-AK-CF01",
+    nombre: "Calzo Fundido para Riel",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Calzo de soporte para riel ferroviario, fundido en hierro nodular.",
+    imagen: "calzo-fundido.webp",
+    especificaciones: {
+      Material: "Hierro nodular ASTM A536",
+      Medidas: "8 mm y 11 mm",
+    },
+  },
+  {
+    sku: "GVC-AK-CL01",
+    nombre: "Calzo en Lámina para Riel",
+    categoria: "Fijaciones Pesadas",
+    subcategoria: "Superestructura de Vía",
+    origen: "Suministro GAVICOM",
+    descripcion: "Calzo o soporte para riel ferroviario en lámina con corte láser.",
+    imagen: "calzo-lamina.webp",
+    especificaciones: {
+      Proceso: "Corte láser",
+      Espesores: "1/8\" y 3/16\"",
     },
   },
   {
@@ -140,8 +245,8 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     subcategoria: "Elementos de Sujeción",
     origen: "Fijación Elástica Complementaria",
     descripcion:
-      "Tornillos de rosca gruesa y alta resistencia para fijar placas base o placas elásticas a los durmientes, ofreciendo un agarre superior en comparación con las fijaciones tradicionales por impacto.",
-    imagen: "tirafondos.webp",
+      "Tornillos de rosca gruesa para fijar placas a los durmientes. Cabeza cuadrada o hexagonal y acabado galvanizado, natural o bicromatado. Los fabricamos según el plano o la muestra del cliente, con control dimensional y de dureza por lote, y capacidad de más de 2.000 tirafondos cada 10 días.",
+    imagen: "tirafondos-acabados.webp",
     especificaciones: {
       "Tipo de Rosca": "Diseño paso ancho para anclaje de madera/insertos de concreto",
       Cabeza: "Hexagonal o cuadrada para torque mecánico controlado",
@@ -389,7 +494,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
 
   {
     sku: "GVC-SRV-TOP01",
-    nombre: "Estudios Topográficos y Captura de Información",
+    nombre: "Estudios topográficos y captura de información",
     categoria: "Servicios",
     subcategoria: "Ingeniería y Obras Civiles",
     origen: "Portafolio Servicios GAVICOM",
@@ -397,13 +502,12 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Levantamientos fotogramétricos con drones de alta resolución, generación de ortomosaicos y modelos 3D del corredor ferroviario aplicados al diseño, inspección y mantenimiento de infraestructura.",
     imagen: "servicios_pag2.webp",
     especificaciones: {
-      "Tecnología Aplicada":
+      "Tecnología aplicada":
         "Drones de alta resolución y sistemas RTK",
       Entregables:
         "Ortomosaicos, modelos digitales y curvas de nivel",
-      "Campos de Aplicación":
+      "Campos de aplicación":
         "Trazado de vías, control de obras y cálculo de volúmenes",
-      Personal: "Equipo técnico calificado y supervisión profesional",
     },
   },
   {
@@ -803,10 +907,9 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     subcategoria: "Seguridad Vial y Ferroviaria",
     origen: "Portafolio de Señalizaciones",
     descripcion:
-      "Señalización ferroviaria completa incluyendo soporte de instalación. Diseñada y fabricada por GAVICOM S.A.S con altos estándares de visibilidad y durabilidad para entornos ferroviarios.",
+      "Señalización ferroviaria completa incluyendo soporte de instalación, con altos estándares de visibilidad y durabilidad para entornos ferroviarios.",
     imagen: "senializacion-ferroviaria-1.webp",
     especificaciones: {
-      Fabricación: "GAVICOM S.A.S - Diseño y Fabricación",
       Incluye: "Señalización y soporte",
       Aplicación: "Entornos ferroviarios",
     },
@@ -861,10 +964,9 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     subcategoria: "Seguridad Vial y Ferroviaria",
     origen: "Portafolio de Señalizaciones",
     descripcion:
-      "Señalización vial diseñada y fabricada por GAVICOM S.A.S para entornos viales y ferroviarios. Incluye soporte de instalación y está fabricada con altos estándares de visibilidad reflectiva y durabilidad.",
+      "Señalización vial para entornos viales y ferroviarios. Incluye soporte de instalación y altos estándares de visibilidad reflectiva y durabilidad.",
     imagen: "senializacion-vial-1.webp",
     especificaciones: {
-      Fabricación: "GAVICOM S.A.S - Diseño y Fabricación",
       Incluye: "Señalización y soporte",
       "Material Base": "Lámina metálica con tratamiento anticorrosivo",
       Visibilidad: "Acabado reflectivo de alta especificación",
@@ -882,7 +984,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   // =============================================
   {
     sku: "GVC-SRV-MT01",
-    nombre: "Mantenimiento de Equipos Ferroviarios",
+    nombre: "Mantenimiento de equipos ferroviarios",
     categoria: "Servicios",
     subcategoria: "Mantenimiento Industrial",
     origen: "Portafolio Servicios GAVICOM",
@@ -890,7 +992,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Servicio especializado para el mantenimiento, ajuste y optimización de equipos ferroviarios. Incluye mantenimiento preventivo y correctivo de equipos utilizados en infraestructura de vía férrea.",
     imagen: "servicios_pag3.webp",
     especificaciones: {
-      "Tipo de Servicio": "Preventivo y correctivo especializado",
+      "Tipo de servicio": "Preventivo y correctivo especializado",
       Equipos: "Maquinaria y herramientas ferroviarias",
       Alcance: "Ajuste, reparación y optimización de rendimiento",
       Personal: "Técnicos especializados en equipos de vía",
@@ -898,7 +1000,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   },
   {
     sku: "GVC-SRV-HD01",
-    nombre: "Servicio Técnico Hidráulico",
+    nombre: "Servicio técnico hidráulico",
     categoria: "Servicios",
     subcategoria: "Mantenimiento Industrial",
     origen: "Portafolio Servicios GAVICOM",
@@ -914,12 +1016,12 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   },
   {
     sku: "GVC-SRV-LC01",
-    nombre: "Alquiler de Equipos Lincoln para Soldadura Eléctrica",
+    nombre: "Alquiler de equipos Lincoln para soldadura eléctrica",
     categoria: "Servicios",
     subcategoria: "Alquiler de Equipos",
     origen: "Portafolio Servicios GAVICOM",
     descripcion:
-      "Equipos de soldadura de alta calidad marca Lincoln Electric. Equipos tipo motosoldador autónomo ideales para trabajo en campo. Aplicación en soldadura de rieles y estructuras ferroviarias.",
+      "Equipos marca Lincoln Electric tipo motosoldador autónomo, para trabajo en campo. Aplicación en soldadura de rieles y estructuras ferroviarias.",
     imagen: "servicios_pag5.webp",
     especificaciones: {
       Marca: "Lincoln Electric",
@@ -930,7 +1032,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   },
   {
     sku: "GVC-SRV-PL01",
-    nombre: "Diseño de Planos Técnicos Ferroviarios",
+    nombre: "Diseño de planos técnicos ferroviarios",
     categoria: "Servicios",
     subcategoria: "Ingeniería y Diseño",
     origen: "Portafolio Servicios GAVICOM",
@@ -938,7 +1040,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Diseño y elaboración de planos técnicos para cambiavías, cruces de diamante y pasos a nivel ferroviarios. Desarrollo de infraestructura ferroviaria especializada con software CAD profesional.",
     imagen: "planos-tecnicos-ferroviarios.webp",
     especificaciones: {
-      "Tipo de Planos": "Cambiavías, cruces de diamante, pasos a nivel",
+      "Tipo de planos": "Cambiavías, cruces de diamante, pasos a nivel",
       Software: "CAD profesional para infraestructura ferroviaria",
       Alcance: "Diseño estructural y geométrico de vía",
       Entregables: "Planos técnicos listos para construcción",
@@ -946,7 +1048,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   },
   {
     sku: "GVC-SRV-3D01",
-    nombre: "Renderizado 3D de Vías Férreas",
+    nombre: "Renderizado 3D de vías férreas",
     categoria: "Servicios",
     subcategoria: "Ingeniería y Diseño",
     origen: "Portafolio Servicios GAVICOM",
@@ -955,14 +1057,12 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     imagen: "servicios_pag7.webp",
     especificaciones: {
       Modelado: "Tridimensional de infraestructura ferroviaria",
-      Software: "Herramientas especializadas de renderizado",
       Aplicación: "Visualización y planificación de proyectos",
-      Beneficio: "Toma de decisiones con representación realista",
     },
   },
   {
     sku: "GVC-SRV-CON01",
-    nombre: "Servicios de Consultoría Ferroviaria",
+    nombre: "Servicios de consultoría ferroviaria",
     categoria: "Servicios",
     subcategoria: "Asesoría Técnica Especializada",
     origen: "Portafolio Servicios GAVICOM",
@@ -970,11 +1070,11 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Acompañamiento técnico para operadores, contratistas y entidades del sector férreo: diagnóstico del estado de vía, especificación de materiales según norma, estructuración de planes de mantenimiento y soporte documental en procesos de licitación y contratación.",
     imagen: "consultoria-ferroviaria.webp",
     especificaciones: {
-      "Líneas de Asesoría":
+      "Líneas de asesoría":
         "Diagnóstico de vía, especificación técnica y planes de mantenimiento",
-      "Marco Normativo":
+      "Marco normativo":
         "Referencias AREMA y UIC aplicadas a compatibilidad de materiales",
-      "Apoyo Contractual":
+      "Apoyo contractual":
         "Fichas técnicas y soporte documental para licitaciones",
       Modalidad:
         "Asesoría puntual por proyecto o acompañamiento continuo",

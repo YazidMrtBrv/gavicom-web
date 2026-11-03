@@ -1,38 +1,50 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Montserrat, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/commons/Navbar";
-import WhatsAppFloat from "@/components/commons/WhatsAppFloat";
-import PageTransition from "@/components/PageTransition";
-import SmoothScrollProvider from "@/components/SmoothScrollProvider";
-import IntroWrapper from "@/components/IntroWrapper";
-import ErrorBoundary from "@/components/ErrorBoundary";
-import Footer from "@/components/ui/Footer";
-import PointerSpotlight from "@/components/ui/PointerSpotlight";
+import Encabezado from "@/components/Encabezado";
+import Pie from "@/components/Pie";
+import BotonWhatsApp from "@/components/BotonWhatsApp";
+import AvisoCotizacion from "@/components/catalogo/AvisoCotizacion";
+import Interacciones from "@/components/movimiento/Interacciones";
 import { Analytics } from "@vercel/analytics/next";
+import { EMPRESA, SITE_URL, alternas } from "@/lib/meta";
+import { LINEAS, rutaLinea } from "@/lib/catalogo";
+import { COMPANIA_INFO } from "@/constants/productos";
 
-const inter = Inter({
-  variable: "--font-inter",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const SITE_URL = "https://gavicomferroviario.com";
-const EMPRESA = "GAVICOM SAS";
+// Stand-in for Batangas, the manual's heading face, until it has a web license.
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
 
-export const viewport = {
+// Only what the code already backs up: no standards or certification claims
+// the company cannot document in shared previews and search results.
+// Kept within 155 characters so search results show it whole.
+const DESCRIPCION =
+  "Eclisas, fijaciones, clips elásticos, tirafondos y herramientas de vía; piezas ferroviarias fabricadas en Colombia. Desde Barranquilla a todo el país.";
+const TITULO = `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`;
+
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
+  themeColor: "#0c2642",
 };
 
 export const metadata: Metadata = {
   title: {
-    default: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
+    default: TITULO,
     template: `%s | ${EMPRESA}`,
   },
-  description:
-    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía certificadas AREMA/UIC y señalización industrial. Sede en Barranquilla con cobertura en toda Colombia.",
+  description: DESCRIPCION,
   keywords: [
     "herramientas ferroviarias",
     "suministros ferroviarios",
@@ -53,32 +65,21 @@ export const metadata: Metadata = {
   verification: {
     google: "er00xipii8hKUi9e9PUQGK-gJK_yQMprai4hsVUbGLw",
   },
-  alternates: {
-    canonical: "/",
-  },
+  alternates: alternas("/"),
+  // No fixed images: app/opengraph-image.tsx and twitter-image.tsx render the
+  // 1200x630 preview; the wide logo alone was cropped badly by every network.
   openGraph: {
-    title: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
-    description:
-      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas certificadas para la industria del tren.",
+    title: TITULO,
+    description: DESCRIPCION,
     url: SITE_URL,
     siteName: EMPRESA,
     locale: "es_CO",
     type: "website",
-    images: [
-      {
-        url: "/logo-gavicom.png",
-        width: 512,
-        height: 512,
-        alt: EMPRESA,
-      },
-    ],
   },
   twitter: {
-    card: "summary",
-    title: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
-    description:
-      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas certificadas para la industria del tren.",
-    images: ["/logo-gavicom.png"],
+    card: "summary_large_image",
+    title: TITULO,
+    description: DESCRIPCION,
   },
   robots: {
     index: true,
@@ -86,22 +87,28 @@ export const metadata: Metadata = {
     "max-snippet": -1,
     "max-image-preview": "large",
   },
+  // favicon.ico is linked from app/ by file convention. Any `icons` key here
+  // drops the file-based icon.png link, so it is listed again explicitly,
+  // next to the vector version for browsers that render SVG favicons.
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: [
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-icon.png",
   },
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
+const organizacion = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organizacion`,
   name: EMPRESA,
   alternateName: ["GAVICOM", "GAVICOM Ferroviario"],
   url: SITE_URL,
-  logo: `${SITE_URL}/logo-gavicom.png`,
-  image: `${SITE_URL}/logo-gavicom.png`,
+  logo: `${SITE_URL}/apple-icon.png`,
+  telephone: "+57-315-050-9803",
+  email: COMPANIA_INFO.email,
+  image: `${SITE_URL}/marca/gavicom-azul.png`,
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+57-315-050-9803",
@@ -110,11 +117,7 @@ const jsonLd = {
     areaServed: "CO",
     availableLanguage: ["Spanish"],
   },
-  sameAs: [
-    `https://wa.me/573150509803`,
-  ],
-  description:
-    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía certificadas y señalización industrial.",
+  description: DESCRIPCION,
   address: {
     "@type": "PostalAddress",
     addressLocality: "Barranquilla",
@@ -133,7 +136,48 @@ const jsonLd = {
     "Estudios topográficos con dron",
     "Consultoría ferroviaria",
     "Obras civiles para infraestructura de transporte",
+    "Energía solar fotovoltaica",
+    "Eclisas para riel",
+    "Tirafondos para durmiente",
+    "Clips elásticos para vía férrea",
+    "Fabricación de piezas ferroviarias en hierro nodular",
   ],
+  // The solar line is a brand of the same company, not a separate entity.
+  brand: { "@type": "Brand", name: "GAVICOM Energy", url: `${SITE_URL}/energy` },
+  // The catalogue lines as offer catalogues pointing at their guide pages,
+  // without prices: GAVICOM quotes every order.
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Catálogo de suministros ferroviarios",
+    url: `${SITE_URL}/catalogo`,
+    itemListElement: LINEAS.map((l) => ({
+      "@type": "OfferCatalog",
+      name: l.nombre,
+      description: l.resumen,
+      url: `${SITE_URL}${rutaLinea(l)}`,
+    })),
+  },
+};
+
+// WebSite node with SearchAction: /catalogo reads ?q (CatalogoFiltrable), so
+// search engines can offer a search box that lands on real results.
+const sitioWeb = {
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#sitio`,
+  url: SITE_URL,
+  name: EMPRESA,
+  inLanguage: "es-CO",
+  publisher: { "@id": `${SITE_URL}/#organizacion` },
+  potentialAction: {
+    "@type": "SearchAction",
+    target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/catalogo?q={search_term_string}` },
+    "query-input": "required name=search_term_string",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [organizacion, sitioWeb],
 };
 
 export default function RootLayout({
@@ -142,26 +186,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="es"
-      className={`${inter.variable}`}
-    >
+    <html lang="es-CO" className={`${montserrat.variable} ${poppins.variable}`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen bg-[#f8f9fa] text-[#1a1a2e] font-sans antialiased flex flex-col">
-        <div className="rail-progress" aria-hidden="true" />
-        <PointerSpotlight />
-        <IntroWrapper>
-          <Navbar />
-          <main className="flex-grow"><SmoothScrollProvider><ErrorBoundary><PageTransition>{children}</PageTransition></ErrorBoundary></SmoothScrollProvider></main>
-          <Footer />
-          <WhatsAppFloat />
-        </IntroWrapper>
-        <Analytics />
+      <body className="min-h-screen font-sans flex flex-col">
+        <a href="#contenido" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:p-3 focus:bg-white focus:text-azul">
+          Saltar al contenido
+        </a>
+        <Encabezado />
+        <main id="contenido" className="flex-grow">
+          {children}
+        </main>
+        <Pie />
+        <BotonWhatsApp />
+        {/* One add confirmation for every page with an add button (catalogue,
+            home, energy), so it is the only live announcement. */}
+        <AvisoCotizacion />
+        <Interacciones />
+        {/* Vercel Analytics only exists on Vercel; elsewhere its script 404s. */}
+        {process.env.VERCEL ? <Analytics /> : null}
       </body>
     </html>
   );

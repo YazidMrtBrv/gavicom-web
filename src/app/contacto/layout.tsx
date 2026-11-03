@@ -1,23 +1,28 @@
 import type { Metadata } from "next";
+import { IMAGEN_COMPARTIR, alternas } from "@/lib/meta";
 
+const TITULO = "Contacto | GAVICOM SAS";
+const DESCRIPCION =
+  "Escribe a GAVICOM SAS por WhatsApp o correo: suministro ferroviario, fabricación de piezas, servicios y GAVICOM Energy. Barranquilla, cobertura nacional.";
+
+// No images declared on purpose: the shared Open Graph image is defined once
+// for the whole site, not per page.
 export const metadata: Metadata = {
-  title: "Contacto y Solicitud de Cotización",
-  description:
-    "Solicita cotización de suministros ferroviarios a GAVICOM SAS. Sede en Barranquilla, Atlántico, con cobertura en toda Colombia. Atención por WhatsApp, teléfono y correo.",
-  alternates: { canonical: "/contacto" },
+  title: "Contacto",
+  description: DESCRIPCION,
+  alternates: alternas("/contacto"),
   openGraph: {
-    title: "Contacto y Solicitud de Cotización | GAVICOM SAS",
-    description:
-      "Canal directo para cotizaciones de componentes ferroviarios y servicios técnicos. Barranquilla, Colombia.",
+    title: TITULO,
+    description: DESCRIPCION,
     url: "/contacto",
+    siteName: "GAVICOM SAS",
+    locale: "es_CO",
     type: "website",
+    images: [IMAGEN_COMPARTIR],
   },
+  twitter: { card: "summary_large_image", images: [IMAGEN_COMPARTIR], title: TITULO, description: DESCRIPCION },
 };
 
-export default function ContactoLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ContactoLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

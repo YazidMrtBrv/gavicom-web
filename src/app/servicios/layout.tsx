@@ -1,23 +1,32 @@
 import type { Metadata } from "next";
+import { IMAGEN_COMPARTIR, alternas } from "@/lib/meta";
 
+const TITULO = "Servicios técnicos para vía férrea";
+const DESCRIPCION =
+  "Topografía con dron, mantenimiento de equipos ferroviarios, servicio hidráulico, alquiler de motosoldadores Lincoln, planos de cambiavías y consultoría.";
+
+// No fixed images, per the site convention: share images come from
+// file-based opengraph-image routes, never from a hard-coded path.
 export const metadata: Metadata = {
-  title: "Servicios Ferroviarios: Topografía, Mantenimiento y Consultoría",
-  description:
-    "Estudios topográficos con dron, mantenimiento de equipos ferroviarios, servicio técnico hidráulico, alquiler de equipos de soldadura, diseño de planos de cambiavías, renderizado 3D y consultoría ferroviaria en Colombia.",
-  alternates: { canonical: "/servicios" },
+  title: TITULO,
+  description: DESCRIPCION,
+  alternates: alternas("/servicios"),
   openGraph: {
-    title: "Servicios Ferroviarios: Topografía, Mantenimiento y Consultoría | GAVICOM SAS",
-    description:
-      "Portafolio de servicios técnicos para infraestructura férrea: topografía, mantenimiento, diseño de planos y consultoría especializada.",
+    title: `${TITULO} | GAVICOM SAS`,
+    description: DESCRIPCION,
     url: "/servicios",
+    siteName: "GAVICOM SAS",
+    locale: "es_CO",
     type: "website",
+    images: [IMAGEN_COMPARTIR],
+  },
+  twitter: {
+    card: "summary_large_image", images: [IMAGEN_COMPARTIR],
+    title: `${TITULO} | GAVICOM SAS`,
+    description: DESCRIPCION,
   },
 };
 
-export default function ServiciosLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ServiciosLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

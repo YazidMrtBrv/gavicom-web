@@ -1,335 +1,293 @@
 @import "tailwindcss";
 
+/* Styles for anything inside the header while it floats over a hero (#vuelo).
+   "auto" is the server-rendered state, decided by CSS before the observer
+   in Encabezado.tsx reports, so the first paint already matches. */
+@custom-variant cielo (&:is([data-cielo="si"] *, body:has(#vuelo) [data-cielo="auto"] *));
+
+/*
+ * Colors and type come from the GAVICOM brand manual (2026): Azul Ejecutivo
+ * as the only brand color, black/white as support and Gris Neutro for
+ * secondary backgrounds. The manual lists #0C2642 on its color page and
+ * #143B64 on the logo pages; #0C2642 is the one it marks as official.
+ */
 :root {
-  --background: #f8f9fa;
-  --foreground: #1a1a2e;
-  --orange-primary: #CC4C00;
-  --orange-accent:  #D35400;
-  --apple-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --glass-bg: rgba(248, 249, 250, 0.82);
-  --glass-border: rgba(211, 84, 0, 0.2);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --azul: #0c2642;
+  --azul-hover: #143b64;
+  --azul-suave: #e8edf3;
+  --negro: #000000;
+  --tinta: #14161a;
+  --tenue: #5b5f68;
+  --linea: #e2e3e7;
+  --gris: #f4f4f5;
+  --blanco: #ffffff;
+  /* Darker than WhatsApp's own green so white text on it passes AA (5.4:1). */
+  --whatsapp: #0f7a40;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-inter);
+  --color-azul: var(--azul);
+  --color-azul-hover: var(--azul-hover);
+  --color-azul-suave: var(--azul-suave);
+  --color-tinta: var(--tinta);
+  --color-tenue: var(--tenue);
+  --color-linea: var(--linea);
+  --color-gris: var(--gris);
+  --color-whatsapp: var(--whatsapp);
+  /* Montserrat for text and UI, Poppins for headings until the brand's
+     Batangas has a web license (the manual itself uses Poppins as stand-in). */
+  --font-sans: var(--font-montserrat), system-ui, sans-serif;
+  --font-titulo: var(--font-poppins), var(--font-montserrat), system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+html {
+  scroll-padding-top: 88px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--blanco);
+  color: var(--tinta);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* In a layer so utility classes such as text-white can override it. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-titulo);
+    text-wrap: balance;
+    color: var(--azul);
+  }
+}
+
 ::selection {
-  background: #D35400;
-  color: #ffffff;
+  background: var(--azul);
+  color: var(--blanco);
 }
 
-::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f3f5; }
-::-webkit-scrollbar-thumb {
-  background: #D35400;
-  border-radius: 0;
+:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #fff;
 }
-::-webkit-scrollbar-thumb:hover { background: #FF5F00; }
-
-@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+/* On the blue surfaces the ring flips, so it shows on both backgrounds. */
+.sobre-azul :focus-visible,
+footer :focus-visible,
+#vuelo :focus-visible,
+.bg-azul :focus-visible {
+  outline-color: #fff;
+  box-shadow: 0 0 0 5px var(--azul);
 }
 
-@keyframes count-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ---- Header (Encabezado.tsx) ---- */
+
+/* Always fixed: switching between transparent and white only repaints, it
+   never moves the page the way the old fixed/sticky swap did. */
+.encabezado {
+  background-color: rgb(255 255 255 / 0.95);
+  border-color: var(--linea);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background-color 200ms, border-color 200ms;
+}
+.encabezado[data-cielo="si"],
+body:has(#vuelo) .encabezado[data-cielo="auto"] {
+  background-color: transparent;
+  border-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* backdrop-filter would make the header the containing block of the fixed
+   mobile menu and squeeze it to the bar's 72 px, so it is dropped while open. */
+.encabezado[data-menu="abierto"] {
+  background-color: #fff;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.encabezado .logo-blanco {
+  display: none;
+}
+.encabezado[data-cielo="si"] .logo-azul,
+body:has(#vuelo) .encabezado[data-cielo="auto"] .logo-azul {
+  display: none;
+}
+.encabezado[data-cielo="si"] .logo-blanco,
+body:has(#vuelo) .encabezado[data-cielo="auto"] .logo-blanco {
+  display: block;
+}
+/* ---- Footer (Pie.tsx) ---- */
+/* The footer keeps its distance from light pages, but a page that already
+   ends in a blue band (Energy's quote, the 404) meets it edge to edge, or a
+   96 px white strip shows up between two blue blocks. */
+main:has(> :last-child.bg-azul) + footer {
+  margin-top: 0;
 }
 
-@keyframes shiny-sweep {
-  0%   { transform: rotate(25deg) translateX(-120%); }
-  100% { transform: rotate(25deg) translateX(220%); }
+/* Pages with a full-bleed hero let it run under the bar. */
+body:has(#vuelo) .espaciador-encabezado {
+  display: none;
 }
 
-@keyframes rail-drift {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@keyframes pulse-ring {
-  0%, 100% { transform: scale(1);   opacity: 0.5; }
-  50%       { transform: scale(1.6); opacity: 0; }
-}
-
-@keyframes neon-chase {
-  0%, 100% {
-    box-shadow: 0 0 2px rgba(211,84,0,0.2), inset 0 0 2px rgba(211,84,0,0.05);
-  }
-  25%  { box-shadow:  2px 0 4px rgba(211,84,0,0.35), inset 0  1px 2px rgba(211,84,0,0.1); }
-  50%  { box-shadow:  0   0 6px rgba(211,84,0,0.25), inset 0  0   3px rgba(211,84,0,0.08); }
-  75%  { box-shadow: -1px 0 4px rgba(211,84,0,0.35), inset 0 -1px 2px rgba(211,84,0,0.1); }
-}
-
-@theme {
-  --animate-fade-in-up: fade-in-up 0.7s var(--apple-ease) forwards;
-  --animate-fade-in:    fade-in 0.5s var(--apple-ease) forwards;
-  --animate-count-up:   count-up 0.6s var(--apple-ease) forwards;
-  --animate-rail-drift: rail-drift 8s linear infinite;
-}
-
-.anim-hidden {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s var(--apple-ease), transform 0.6s var(--apple-ease);
-}
-.anim-visible { opacity: 1; transform: translateY(0); }
-
-.anim-delay-1 { transition-delay: 0.1s; }
-.anim-delay-2 { transition-delay: 0.2s; }
-.anim-delay-3 { transition-delay: 0.3s; }
-.anim-delay-4 { transition-delay: 0.4s; }
-.anim-delay-5 { transition-delay: 0.5s; }
-.anim-delay-6 { transition-delay: 0.6s; }
-.anim-delay-7 { transition-delay: 0.7s; }
-.anim-delay-8 { transition-delay: 0.8s; }
-
-.card-hover {
-  transition: transform 0.5s var(--apple-ease), box-shadow 0.5s var(--apple-ease);
-}
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.03);
-}
-
-.shiny-btn { position: relative; overflow: hidden; }
-
-.shiny-btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    60deg,
-    transparent 20%,
-    rgba(255,255,255,0.35) 50%,
-    transparent 80%
-  );
-  transform: rotate(25deg) translateX(-120%);
-  transition: none;
-}
-
-.shiny-btn:hover::after {
-  animation: shiny-sweep 0.65s var(--apple-ease) forwards;
-}
-
-.rail-divider {
-  position: relative;
-  height: 2px;
-  background: repeating-linear-gradient(
-    90deg,
-    #D35400 0px, #D35400 4px,
-    transparent 4px, transparent 12px
-  );
-}
-.rail-divider::before,
-.rail-divider::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 8px; height: 8px;
-  background: #D35400;
-  transform: translateY(-50%) rotate(45deg);
-}
-.rail-divider::before { left:  -4px; }
-.rail-divider::after  { right: -4px; }
-
-.neon-chase {
-  animation: neon-chase 4s ease-in-out infinite;
-  border: 1px solid rgba(211,84,0,0.1);
-  transition: border-color 0.3s ease;
-}
-.neon-chase:hover { border-color: rgba(211,84,0,0.3); }
-
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-
-.glass-strong {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(211, 84, 0, 0.15);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
-}
-
-/* ============================================================
-   Entrada de página. En CSS y no en JS a propósito: hecha con
-   framer-motion, el opacity:0 inicial viajaba en el HTML y dejaba
-   la página invisible hasta que terminaba de hidratar.
-   ============================================================ */
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-    filter: blur(4px);
-  }
-}
-
-.page-enter {
-  animation: page-enter 0.35s ease-out;
-}
-
-/* ============================================================
-   Riel de progreso de scroll
-   ============================================================ */
-@keyframes rail-progress {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-
-.rail-progress { display: none; }
-
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .rail-progress {
-      display: block;
-      position: fixed;
-      inset: 0 0 auto 0;
-      height: 3px;
-      z-index: 60;
-      transform-origin: 0 50%;
-      background: repeating-linear-gradient(
-        90deg,
-        #D35400 0px, #D35400 7px,
-        rgba(211, 84, 0, 0.25) 7px, rgba(211, 84, 0, 0.25) 11px
-      );
-      animation: rail-progress auto linear;
-      animation-timeline: scroll(root block);
-    }
-  }
-}
-
-/* ============================================================
-   Entrada de elementos al hacer scroll (mejora progresiva:
-   sin soporte, el elemento simplemente se ve desde el inicio)
-   ============================================================ */
 @media (prefers-reduced-motion: no-preference) {
-  @supports ((animation-timeline: view()) and (animation-range: entry)) {
-    @keyframes reveal-rise {
-      from { opacity: 0; transform: translateY(30px); }
-    }
-
-    .reveal-on-scroll {
-      animation: reveal-rise auto var(--apple-ease) backwards;
-      animation-timeline: view();
-      animation-range: entry 0% cover 30%;
-    }
+  /* Quote counter: brief scale when units are added. */
+  .pulso-contador {
+    animation: pulso-contador 250ms ease-out;
+  }
+  /* Mobile menu links come in one after another, 40 ms apart. */
+  .menu-enlace {
+    animation: menu-enlace 220ms ease-out both;
+    animation-delay: calc(var(--i, 0) * 40ms);
   }
 }
-
-/* ============================================================
-   Foco que sigue al puntero sobre botones principales
-   ============================================================ */
-@property --spot-size {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
+@keyframes pulso-contador {
+  50% { transform: scale(1.25); }
+}
+@keyframes menu-enlace {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
 }
 
-.spotlight {
-  position: relative;
-  overflow: hidden;
-  transition: --spot-size 0.35s var(--apple-ease);
+/* The wing cut: photos and panels are cut along the angle of the seagull's
+   raised wing in the logo, the one graphic device the site borrows from it. */
+.corte-ala {
+  clip-path: polygon(16% 0, 100% 0, 100% 100%, 0 100%);
 }
 
-.spotlight::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+/* Labels of the exploded rail joint; --etq goes 0..1 as it opens. */
+.etq {
+  font-size: 14px;
+  font-weight: 600;
+  fill: #0c2642;
+  opacity: var(--etq);
   pointer-events: none;
-  background: radial-gradient(
-    circle var(--spot-size) at var(--spot-x, 50%) var(--spot-y, 50%),
-    rgba(255, 255, 255, 0.3),
-    transparent 72%
-  );
 }
 
-.spotlight:hover,
-.spotlight:focus-visible {
-  --spot-size: 130px;
+
+@keyframes bajar {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
-/* ============================================================
-   Marcas técnicas que aparecen en las esquinas de una tarjeta
-   ============================================================ */
-.tech-corners::before,
-.tech-corners::after {
-  content: "";
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: #D35400;
-  opacity: 0;
-  transition: opacity 0.35s var(--apple-ease), transform 0.35s var(--apple-ease);
-  pointer-events: none;
-  z-index: 20;
-}
-.tech-corners::before {
-  top: 8px; left: 8px;
-  border-top: 2px solid; border-left: 2px solid;
-  transform: translate(6px, 6px);
-}
-.tech-corners::after {
-  bottom: 8px; right: 8px;
-  border-bottom: 2px solid; border-right: 2px solid;
-  transform: translate(-6px, -6px);
-}
-.group:hover .tech-corners::before,
-.group:hover .tech-corners::after {
-  opacity: 1;
-  transform: translate(0, 0);
-}
-
-/* ============================================================
-   Barra que se desliza al pasar sobre una fila de especificación
-   ============================================================ */
-.spec-row {
-  position: relative;
-  transition: background-color 0.25s var(--apple-ease);
-}
-.spec-row::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 2px;
-  background: #D35400;
-  transform: scaleY(0);
-  transform-origin: 50% 0;
-  transition: transform 0.3s var(--apple-ease);
-}
-.spec-row:hover::before { transform: scaleY(1); }
-
-/* ============================================================
-   Respeto por quien pide menos movimiento
-   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
+    transition: none !important;
     scroll-behavior: auto !important;
   }
-  .anim-hidden { opacity: 1; transform: none; }
+}
+
+/* Text of each scene of the home flight: fades in when the scene holds. */
+.capa-vuelo {
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
+}
+
+/* Static film grain over the flight footage. */
+.grano {
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---- Site-wide motion (components/movimiento) ---- */
+
+/* Only hidden once script has marked them, so without JS nothing is lost. */
+.por-aparecer:not([data-aparecer="grupo"]),
+.por-aparecer[data-aparecer="grupo"] > * {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition: opacity 700ms cubic-bezier(.2,.7,.2,1), transform 700ms cubic-bezier(.2,.7,.2,1);
+  transition-delay: var(--retardo, 0ms);
+}
+.por-aparecer.aparecio:not([data-aparecer="grupo"]),
+.por-aparecer.aparecio[data-aparecer="grupo"] > * {
+  opacity: 1;
+  transform: none;
+}
+
+.boton-iman {
+  transition: transform 250ms cubic-bezier(.2,.7,.2,1), background-color 150ms;
+}
+
+.inclinar {
+  transition: transform 300ms cubic-bezier(.2,.7,.2,1), box-shadow 300ms, border-color 150ms;
+  transform-style: preserve-3d;
+}
+.inclinar:hover {
+  box-shadow: 0 18px 40px -22px rgba(12, 38, 66, 0.45);
+}
+.inclinar img {
+  transition: transform 500ms cubic-bezier(.2,.7,.2,1);
+}
+.inclinar:hover img {
+  transform: scale(1.06);
+}
+
+/* Light that follows the cursor; --x/--y are set by Interacciones. */
+.foco {
+  position: relative;
+  isolation: isolate;
+}
+.foco::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms;
+  background: radial-gradient(260px circle at var(--x, 50%) var(--y, 50%), rgba(12, 38, 66, 0.08), transparent 70%);
+}
+.bg-azul .foco::after,
+.bg-azul.foco::after,
+.sobre-azul .foco::after {
+  background: radial-gradient(260px circle at var(--x, 50%) var(--y, 50%), rgba(255, 255, 255, 0.08), transparent 70%);
+}
+.foco:hover::after {
+  opacity: 1;
+}
+
+.franja-pista {
+  animation: franja 38s linear infinite;
+}
+/* A focused link must be on screen: the track stops moving and goes back to
+   its start, and PausaFranja scrolls the link into view. */
+.franja-pista:focus-within {
+  animation: none;
+}
+.franja:hover .franja-pista,
+.franja:focus-within .franja-pista,
+.franja[data-pausada="true"] .franja-pista {
+  animation-play-state: paused;
+}
+@keyframes franja {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .franja-pista { flex-wrap: wrap; }
+  .franja-pista > [aria-hidden] { display: none; }
+  .boton-iman, .inclinar { transform: none !important; }
+}
+
+/* A panel that swaps content (e.g. the manufacturing steps) fades in. */
+.aparecer-rapido {
+  animation: aparecer-rapido 300ms ease-out;
+}
+@keyframes aparecer-rapido {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+}
+
+/* Energy path: a dashed line that moves the way the energy flows. */
+.flujo {
+  background: repeating-linear-gradient(90deg, var(--azul) 0 10px, transparent 10px 18px);
+  opacity: 0.45;
+  animation: flujo 900ms linear infinite;
+}
+@keyframes flujo {
+  to { background-position: 18px 0; }
 }
