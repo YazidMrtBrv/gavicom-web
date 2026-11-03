@@ -83,6 +83,7 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
   // No offers, price, availability or reviews on purpose: GAVICOM quotes each
   // order and has published no reviews, and structured data must match what
   // the page shows (Google penalises markup that claims more than that).
+  const marcaVisible = filas.find(([k]) => k === "Marca")?.[1];
   const productoJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -93,7 +94,13 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
     category: p.categoria,
     image: principal ? urlAbsoluta(principal.src) : undefined,
     material,
-    brand: { "@type": "Organization", name: COMPANIA_INFO.nombre },
+    // GAVICOM is the brand only of what it manufactures; for supplied
+    // references the brand is the one the ficha states, or none at all.
+    brand: propia
+      ? { "@type": "Organization", name: COMPANIA_INFO.nombre }
+      : marcaVisible
+        ? { "@type": "Brand", name: marcaVisible }
+        : undefined,
     additionalProperty: filas.map(([nombre, valor]) => ({ "@type": "PropertyValue", name: nombre, value: valor })),
   };
   const migasJsonLd = {

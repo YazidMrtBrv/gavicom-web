@@ -37,6 +37,11 @@
   body:has([data-barra-ficha]) {
     padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
   }
+  /* Same room for keyboard focus: scrolling to a focused element stops
+     above the bar instead of leaving it underneath (WCAG 2.4.11). */
+  html:has([data-barra-ficha]) {
+    scroll-padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px) + 8px);
+  }
   body:has([data-barra-ficha][data-visible="true"]) .aviso-cotizacion {
     right: 1rem;
     bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));

@@ -7,6 +7,7 @@ import { Factory, Search, X } from "lucide-react";
 import { LINEAS, PRODUCTOS, buscar, lineaPorSlug, normalizar, slugProducto, slugTexto, subcategoriasDe } from "@/lib/catalogo";
 import { origenVisible } from "@/constants/catalogoExtra";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import { mostrarFocoEnFila } from "@/lib/focoEnFila";
 import { ID_ESTILO_PREVIO, MINIMO_PARA_SUBLINEAS, ORIGEN_PROPIO } from "@/components/catalogo/filtrosCatalogo";
 
 interface Filtros {
@@ -129,7 +130,9 @@ export default function CatalogoFiltrable({ children }: { children: ReactNode })
     }`;
   const cuenta = (activo: boolean) => `tabular-nums text-xs ${activo ? "text-white/80" : "text-tenue"}`;
   // Phones: one swipeable row; the right edge fades to hint there is more.
-  const fila = "-mx-4 px-4 overflow-x-auto snap-x snap-mandatory scroll-px-4 [mask-image:linear-gradient(to_right,#000_85%,transparent)] md:[mask-image:none] md:overflow-visible";
+  // Proximity snap and no fade while a chip has keyboard focus: a mandatory
+  // snap pulled the focused chip back off screen, and the fade hid it.
+  const fila = "-mx-4 px-4 overflow-x-auto snap-x snap-proximity focus-within:snap-none scroll-px-4 [mask-image:linear-gradient(to_right,#000_85%,transparent)] focus-within:[mask-image:none] md:[mask-image:none] md:overflow-visible";
 
   return (
     <div className="mt-6 flex flex-col gap-5">
@@ -159,7 +162,7 @@ export default function CatalogoFiltrable({ children }: { children: ReactNode })
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className={fila}>
+        <div className={fila} onFocus={mostrarFocoEnFila}>
           <div role="group" aria-label="Filtrar por línea" className="flex gap-2 w-max md:w-auto md:flex-wrap pr-8 md:pr-0">
             <button type="button" onClick={() => irA({ linea: null, sub: null })} aria-pressed={!linea} className={chip(!linea)}>
               Todas <span className={cuenta(!linea)}>{PRODUCTOS.length}</span>
@@ -190,7 +193,7 @@ export default function CatalogoFiltrable({ children }: { children: ReactNode })
             drop by one row when the real chips arrive. */}
         {sublineas.length <= 1 && <div id="reserva-sublineas" className="hidden h-11" />}
         {sublineas.length > 1 && (
-          <div className={fila}>
+          <div className={fila} onFocus={mostrarFocoEnFila}>
             <div role="group" aria-label={`Filtrar ${linea?.nombre.toLowerCase()} por tipo`} className="flex gap-2 w-max md:w-auto md:flex-wrap pr-8 md:pr-0">
               <button type="button" onClick={() => irA({ sub: null })} aria-pressed={!sub} className={chip(!sub)}>
                 Todo en {linea?.nombre.toLowerCase()}

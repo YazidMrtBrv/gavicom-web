@@ -1,6 +1,7 @@
 "use client";
 
 import BotonCotizar from "@/components/BotonCotizar";
+import { useCotizacion } from "@/lib/cotizacion";
 import { enlaceWhatsApp, mensajeProducto, nombreConVariante } from "@/lib/whatsapp";
 import SelectorCantidad from "./SelectorCantidad";
 import { useFicha } from "./ContextoFicha";
@@ -11,6 +12,12 @@ export const ID_ACCIONES = "acciones-ficha";
 
 export default function FichaAcciones() {
   const { sku, nombre, variante, cantidad, setCantidad } = useFicha();
+  const { lineas, tiene, cambiarCantidad } = useCotizacion();
+  // Once the reference is in the list the add button becomes a link, so the
+  // selector edits the saved line itself; otherwise it would silently show a
+  // number that is not the one that gets sent.
+  const enLista = tiene(sku, variante);
+  const guardada = enLista ? lineas.find((l) => l.sku === sku && (l.variante ?? "") === (variante ?? ""))?.cantidad : undefined;
   return (
     <div id={ID_ACCIONES} className="flex flex-col gap-3">
       {variante && (
@@ -20,9 +27,18 @@ export default function FichaAcciones() {
         </p>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        <SelectorCantidad id="cantidad-ficha" valor={cantidad} cambiar={setCantidad} etiqueta={`Cantidad de ${nombre}`} />
+        <SelectorCantidad
+          id="cantidad-ficha"
+          valor={guardada ?? cantidad}
+          cambiar={(n) => {
+            setCantidad(n);
+            if (enLista) cambiarCantidad(sku, n, variante);
+          }}
+          etiqueta={enLista ? `Cantidad de ${nombre} en tu cotización` : `Cantidad de ${nombre}`}
+        />
         <BotonCotizar sku={sku} nombre={nombre} variante={variante} cantidad={cantidad} grande />
       </div>
+      {enLista && <p className="text-sm text-tenue">Si cambias la cantidad, se actualiza en tu cotización.</p>}
       <a
         href={enlaceWhatsApp(mensajeProducto(nombreConVariante(nombre, variante), sku))}
         target="_blank"

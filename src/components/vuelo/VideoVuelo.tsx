@@ -240,8 +240,9 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
 
       <div className="absolute inset-0 flex flex-col justify-end">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-5 sm:pb-8">
-          <p className="font-mono text-[11px] sm:text-sm uppercase tracking-[0.06em] sm:tracking-[0.14em] text-white/85">
-            Suministro ferroviario · Barranquilla, Colombia
+          {/* 12 px minimum outdoors; phones drop the country so it stays on one line. */}
+          <p className="font-mono text-xs sm:text-sm uppercase tracking-normal sm:tracking-[0.14em] text-white/85">
+            Suministro ferroviario · Barranquilla<span className="hidden sm:inline">, Colombia</span>
           </p>
           <h1 className="mt-3 text-white text-[40px] leading-[1.04] sm:text-6xl md:text-7xl font-bold tracking-tight max-w-xl lg:max-w-3xl">
             Todo lo que la vía férrea necesita.

@@ -46,7 +46,7 @@ export default function TarjetaProducto({ producto, prioridad = false }: { produ
             </span>
           )}
         </div>
-        <span className="font-mono text-[11px] text-azul tracking-tight">{producto.sku}</span>
+        <span className="font-mono text-xs text-azul tracking-tight">{producto.sku}</span>
         <h3 className="font-sans text-[15px] font-semibold leading-snug text-tinta group-hover:text-azul">{producto.nombre}</h3>
       </Link>
       <div className="p-3 pt-0">
