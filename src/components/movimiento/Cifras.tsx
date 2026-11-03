@@ -19,7 +19,8 @@ export type Cifra = {
 const columnas: Record<number, string> = {
   1: "grid-cols-1",
   2: "grid-cols-2",
-  3: "grid-cols-3",
+  // Two per row on phones: three 4xl figures such as "+2.000" overflow 390 px.
+  3: "grid-cols-2 sm:grid-cols-3",
   4: "grid-cols-2 lg:grid-cols-4",
 };
 

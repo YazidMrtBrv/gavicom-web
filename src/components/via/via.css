@@ -109,11 +109,6 @@
   }
 }
 
-/* Photo band before the drawing: fades into it as the section starts. */
-.via-foto {
-  transition: opacity 150ms linear;
-}
-
 /* Six-step tour indicator. */
 .via-paso {
   transition: background-color 200ms ease-out;
@@ -126,7 +121,6 @@
   .via-lienzo :is(rect, polygon, path, line),
   .via-pista,
   .via-pista-flecha,
-  .via-foto,
   .via-paso {
     animation: none;
     transition: none;

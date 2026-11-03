@@ -85,8 +85,6 @@ const useConsulta = (consulta: string, sub: (aviso: () => void) => () => void) =
 
 export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
   const pista = useRef<HTMLDivElement>(null);
-  const banda = useRef<HTMLDivElement>(null);
-  const foto = useRef<HTMLPictureElement>(null);
   const grupos = useRef<Partial<Record<keyof typeof DESARME, SVGGElement | null>>>({});
   const lienzo = useRef<SVGSVGElement>(null);
   const chips = useRef<HTMLUListElement>(null);
@@ -138,12 +136,6 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
           paso = n;
           if (n >= 0) setActiva(piezas[n].id);
         }
-      }
-      // The photo band fades into the drawing as it leaves the screen.
-      const b = banda.current, f = foto.current;
-      if (b && f && !quieto) {
-        const rb = b.getBoundingClientRect();
-        f.style.opacity = String(1 - 0.85 * limitar(-rb.top / Math.max(1, rb.height)));
       }
       arrancar();
     };
@@ -248,42 +240,22 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
 
   return (
     <section aria-labelledby="h-via" className="relative bg-[#f4f4f5] scroll-mt-[88px]">
-      {/* Where the home flight ends: the same seagull, now standing on the
-          rail. It is footage, not the logo's seagull. */}
-      <div ref={banda} className="relative h-[46svh] min-h-[280px] md:h-[56vh] overflow-hidden bg-[#f4f4f5]">
-        <picture ref={foto} className="via-foto absolute inset-0 block">
-          <source media={MOVIL} srcSet="/video/gaviota-riel-v.webp" type="image/webp" />
-          <img
-            src="/video/gaviota-riel.webp"
-            alt="Gaviota posada sobre un riel de vía férrea"
-            loading="lazy"
-            decoding="async"
-            sizes="100vw"
-            width={1280}
-            height={720}
-            className="h-full w-full object-cover object-[50%_60%]"
-          />
-        </picture>
-        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.15)_45%,rgba(244,244,245,0)_70%,#f4f4f5_100%)]" />
-        <div className="absolute inset-x-0 top-0 mx-auto max-w-6xl px-4 sm:px-6 pt-10 md:pt-14">
-          <p className="max-w-[24ch] md:max-w-[30ch] text-white text-xl md:text-3xl font-semibold leading-snug [text-shadow:0_1px_12px_rgba(0,0,0,0.45)]">
-            Donde se posa la gaviota empieza la vía. Desármala pieza por pieza.
-          </p>
-        </div>
-      </div>
-
-      <div ref={pista} className="relative h-[170vh]">
+      {/* Shorter track than the first version (170vh): on the home page this
+          is now a supporting argument below the offer and the proof, so it
+          must not hold the visitor for several screens. The seagull photo
+          band that opened it was decoration and is gone for the same reason. */}
+      <div ref={pista} className="relative h-[130vh]">
         <div className="sticky top-0 min-h-[100svh] flex flex-col justify-center pt-[76px] pb-3 md:pt-20 md:pb-8">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 grid gap-3 md:gap-6 lg:grid-cols-[1.5fr_1fr] items-center">
             <div className="flex flex-col gap-2 md:gap-3 min-w-0">
               <div>
-                <p className="font-mono text-xs md:text-sm text-tenue tracking-wider">02 / La vía</p>
+                <p className="font-mono text-xs md:text-sm text-tenue tracking-wider">Fijaciones de vía</p>
                 <h2 id="h-via" className="text-3xl md:text-5xl font-bold tracking-tight scroll-mt-[88px] mt-1">
-                  Así se arma una vía
+                  Toda la junta del riel, en un solo pedido
                 </h2>
                 {/* Phones get the one-line version so the whole stage fits one screen. */}
                 <p className="text-tenue mt-1 md:mt-2 max-w-xl text-sm md:text-base">
-                  <span className="hidden sm:inline">Las piezas que puedes tocar están en el catálogo de GAVICOM. </span>Toca una pieza para ver su ficha.
+                  <span className="hidden sm:inline">Eclisas, pernos, clips, tirafondos, almohadilla y placa: las seis son producto GAVICOM. </span>Toca una pieza y agrégala a tu cotización.
                 </p>
               </div>
 
