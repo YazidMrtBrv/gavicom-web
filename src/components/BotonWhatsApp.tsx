@@ -41,11 +41,12 @@ export default function BotonWhatsApp() {
   const { total } = useCotizacion();
 
   // Hidden while a hero's own call to action ([data-hero-cta]) is on screen,
-  // so the page never shows two competing buttons. The observer is rebuilt on
+  // so the page never shows two competing buttons, and while a pinned card
+  // with its own buttons ([data-tapa-flotante]) is, so it never covers them. The observer is rebuilt on
   // every route because the button persists across navigations.
   const [tapadoEn, setTapadoEn] = useState<string | null>(null);
   useEffect(() => {
-    const ctas = Array.from(document.querySelectorAll("[data-hero-cta]"));
+    const ctas = Array.from(document.querySelectorAll("[data-hero-cta], [data-tapa-flotante]"));
     if (ctas.length === 0) return;
     const visibles = new Set<Element>();
     const obs = new IntersectionObserver((entradas) => {

@@ -98,18 +98,30 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
   const [forzado, setForzado] = useState<0 | 1 | null>(null);
   const [abierta, setAbierta] = useState(false);
   const [empezo, setEmpezo] = useState(false);
+  // Read out only when the visitor picks a part, never on scroll or hover.
+  const [anuncio, setAnuncio] = useState("");
   const forzadoRef = useRef(forzado);
   // Openness survives effect restarts, so a re-run never snaps the joint shut.
   const apertura = useRef<number | null>(null);
   const releer = useRef<(() => void) | null>(null);
   const actual = piezas.find((p) => p.id === (encima ?? activa)) ?? piezas[0];
   const indice = Math.max(0, piezas.findIndex((p) => p.id === activa));
+  const elegir = (pid: Id) => {
+    setActiva(pid);
+    const p = piezas.find((x) => x.id === pid);
+    if (p) setAnuncio(`${p.nombre}, ${p.sku}`);
+  };
 
   useEffect(() => {
     const cont = pista.current;
     if (!cont) return;
     let id = 0, objetivo = quieto ? 1 : 0, paso = -1, abiertaAntes = false, empezoAntes = false;
     let e = apertura.current ?? objetivo;
+    // Frames are only requested while the joint is still moving: a settled
+    // drawing costs nothing on a phone, off screen or with reduced motion.
+    const arrancar = () => {
+      if (!id) id = requestAnimationFrame(pintar);
+    };
     const leer = () => {
       const r = cont.getBoundingClientRect();
       const recorrido = r.height - window.innerHeight;
@@ -133,10 +145,13 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
         const rb = b.getBoundingClientRect();
         f.style.opacity = String(1 - 0.85 * limitar(-rb.top / Math.max(1, rb.height)));
       }
+      arrancar();
     };
     const pintar = () => {
-      id = requestAnimationFrame(pintar);
+      id = 0;
       e += (objetivo - e) * (quieto ? 1 : 0.12);
+      if (Math.abs(objetivo - e) < 0.001) e = objetivo;
+      else id = requestAnimationFrame(pintar);
       apertura.current = e;
       const k = e;
       for (const [clave, [dx, dy]] of Object.entries(DESARME) as [keyof typeof DESARME, [number, number]][]) {
@@ -164,7 +179,8 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
     };
     releer.current = leer;
     leer();
-    id = requestAnimationFrame(pintar);
+    // First paint even when the target equals the stored openness.
+    arrancar();
     window.addEventListener("scroll", leer, { passive: true });
     window.addEventListener("resize", leer, { passive: true });
     return () => {
@@ -186,6 +202,8 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
     const ul = chips.current;
     const li = ul?.children[indice] as HTMLElement | undefined;
     if (!ul || !li || ul.scrollWidth <= ul.clientWidth) return;
+    // A keyboard user tabbing through other chips keeps the row where focus is.
+    if (ul.contains(document.activeElement) && !li.contains(document.activeElement)) return;
     ul.scrollTo({ left: li.offsetLeft - ul.offsetLeft - 16, behavior: quieto ? "auto" : "smooth" });
   }, [indice, quieto]);
 
@@ -204,11 +222,11 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
       onMouseLeave: () => setEncima(null),
       onFocus: () => setEncima(pid),
       onBlur: () => setEncima(null),
-      onClick: () => setActiva(pid),
+      onClick: () => elegir(pid),
       onKeyDown: (ev: React.KeyboardEvent) => {
         if (ev.key === "Enter" || ev.key === " ") {
           ev.preventDefault();
-          setActiva(pid);
+          elegir(pid);
         }
       },
     };
@@ -301,12 +319,14 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
                   </text>
 
                   <g ref={(el) => { grupos.current.placa = el; }} {...pieza("placa")}>
-                    <rect className="via-toque" x="326" y="474" width="348" height="60" />
+                    <rect className="via-toque" x="326" y="466" width="348" height="76" />
                     <path d="M330 512 V499 H430 V490 H442 V499 H558 V490 H570 V499 H670 V512 Z" fill="#3a424c" stroke="#0c2642" strokeWidth="1.5" />
                     {etiqueta("placa")}
                   </g>
                   <g ref={(el) => { grupos.current.almohadilla = el; }} {...pieza("almohadilla")}>
-                    <rect className="via-toque" x="416" y="466" width="168" height="60" />
+                    {/* Hit areas are at least 74 units on each side: the drawing renders
+                        at about 0.6 px per unit on a short phone, and 44 px is the minimum. */}
+                    <rect className="via-toque" x="416" y="426" width="168" height="100" />
                     <rect x="420" y="492" width="160" height="7" rx="1.5" fill="#151a20" />
                     {etiqueta("almohadilla")}
                   </g>
@@ -320,19 +340,19 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
 
                   <g ref={(el) => { grupos.current.eclisa = el; }} {...pieza("eclisa")}>
                     <g data-lado="-1">
-                      <rect className="via-toque" x="442" y="346" width="60" height="110" />
+                      <rect className="via-toque" x="428" y="346" width="74" height="110" />
                       <polygon points="458,350 489,356 489,437 476,452 455,447" fill="#2c333b" stroke="#0c2642" strokeWidth="1.5" />
                       {movil && etiqueta("eclisa")}
                     </g>
                     <g data-lado="1">
-                      <rect className="via-toque" x="498" y="346" width="60" height="110" />
+                      <rect className="via-toque" x="498" y="346" width="74" height="110" />
                       <polygon points="542,350 511,356 511,437 524,452 545,447" fill="#2c333b" stroke="#0c2642" strokeWidth="1.5" />
                       {!movil && etiqueta("eclisa")}
                     </g>
                   </g>
 
                   <g ref={(el) => { grupos.current.perno = el; }} {...pieza("perno")}>
-                    <rect className="via-toque" x="412" y="374" width="176" height="60" />
+                    <rect className="via-toque" x="412" y="360" width="176" height="88" />
                     <rect x="432" y="398" width="136" height="11" fill="#4a535e" stroke="#0c2642" />
                     {Array.from({ length: 9 }, (_, i) => (
                       <line key={i} x1={530 + i * 4} y1="398" x2={532 + i * 4} y2="409" stroke="#0c2642" strokeOpacity="0.5" />
@@ -345,7 +365,7 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
                   <g ref={(el) => { grupos.current.clip = el; }} {...pieza("clip")}>
                     {[-1, 1].map((s) => (
                       <g key={s} data-lado={s}>
-                        <rect className="via-toque" x={s === 1 ? 568 : 356} y="440" width="76" height="62" />
+                        <rect className="via-toque" x={s === 1 ? 566 : 354} y="430" width="80" height="76" />
                         <path
                           transform={s === 1 ? "translate(1000 0) scale(-1 1)" : undefined}
                           d="M426 486 C 414 462, 392 452, 376 462 C 360 472, 366 492, 382 490 C 398 488, 398 470, 384 468"
@@ -362,7 +382,7 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
                   <g ref={(el) => { grupos.current.tirafondo = el; }} {...pieza("tirafondo")}>
                     {[380, 620].map((x) => (
                       <g key={x}>
-                        <rect className="via-toque" x={x - 30} y="448" width="60" height="148" />
+                        <rect className="via-toque" x={x - 37} y="448" width="74" height="148" />
                         <rect x={x - 5} y="466" width="10" height="126" fill="#4a535e" stroke="#0c2642" />
                         {Array.from({ length: 12 }, (_, i) => (
                           <line key={i} x1={x - 5} y1={500 + i * 7} x2={x + 5} y2={504 + i * 7} stroke="#0c2642" strokeOpacity="0.55" />
@@ -414,14 +434,16 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
 
               <ul
                 ref={chips}
-                className="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-px-4 -mx-4 px-4 pb-1 md:mx-0 md:px-0 md:flex-wrap md:overflow-visible"
+                className="flex gap-2 overflow-x-auto snap-x snap-proximity scroll-px-4 -mx-4 px-4 pb-1 md:mx-0 md:px-0 md:flex-wrap md:overflow-visible"
                 aria-label="Piezas de la junta"
               >
                 {piezas.map((p) => (
                   <li key={p.id} className="snap-start shrink-0">
                     <button
                       type="button"
-                      onClick={() => setActiva(p.id)}
+                      onClick={() => elegir(p.id)}
+                      // Mandatory snap would pull a focused chip back off screen.
+                      onFocus={(ev) => ev.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" })}
                       aria-pressed={activa === p.id}
                       className={`min-h-11 px-3 rounded border text-sm font-medium whitespace-nowrap transition-colors ${activa === p.id ? "bg-azul text-white border-azul" : "bg-white border-linea hover:border-azul"}`}
                     >
@@ -433,14 +455,17 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
             </div>
 
             {/* The card of the part being pointed at, or the last one tapped. */}
-            <article aria-live="polite" className="bg-white border border-linea rounded p-3 md:p-5 flex gap-3 md:gap-4 lg:flex-col shadow-[0_10px_40px_-20px_rgba(12,38,66,0.35)]">
+            <p className="sr-only" aria-live="polite">
+              {anuncio}
+            </p>
+            <article data-tapa-flotante className="bg-white border border-linea rounded p-3 md:p-5 flex gap-3 md:gap-4 lg:flex-col shadow-[0_10px_40px_-20px_rgba(12,38,66,0.35)]">
               <div className="relative w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-full lg:h-56 shrink-0 bg-white">
                 {actual.imagen && <Image key={actual.sku} src={actual.imagen} alt={actual.nombre} fill sizes="(min-width:1024px) 360px, 112px" className="object-contain" />}
               </div>
               <div className="flex flex-col gap-1.5 md:gap-2 min-w-0">
                 <p className="font-mono text-xs text-azul">{actual.sku}</p>
                 <h3 className="font-sans text-base md:text-lg font-semibold text-tinta leading-snug">{actual.nombre}</h3>
-                <p className="text-sm text-tenue line-clamp-2 md:line-clamp-3">{actual.resumen}</p>
+                <p className="via-resumen text-sm text-tenue line-clamp-2 md:line-clamp-3">{actual.resumen}</p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   <BotonCotizar sku={actual.sku} nombre={actual.nombre} />
                   <Link href={`/catalogo/${actual.slug}`} className="inline-flex items-center min-h-11 px-3 rounded border border-linea text-sm font-semibold hover:border-azul hover:text-azul">

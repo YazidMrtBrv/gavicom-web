@@ -9,6 +9,25 @@
   font-size: 21px;
 }
 
+/* The pinned stage must fit one screen, or the chips and the card's buttons
+   sit below the fold for the whole pinned stretch (and keyboard focus lands
+   on them unseen). The drawing is the part that gives way: the SVG keeps
+   its full width and the viewBox letterboxes inside the capped height. */
+.via-lienzo {
+  max-height: max(190px, calc(100svh - 430px));
+}
+@media (min-width: 1024px) {
+  .via-lienzo {
+    max-height: max(260px, calc(100svh - 430px));
+  }
+}
+/* Short phones: the card drops its summary (the full ficha is one tap away). */
+@media (max-width: 1023.98px) and (max-height: 820px) {
+  .via-resumen {
+    display: none;
+  }
+}
+
 /* Invisible hit area, larger than the drawn part, so a thumb can hit a
    7-unit-thin pad on a phone. Never outlined or highlighted. */
 .via-lienzo .via-toque {
