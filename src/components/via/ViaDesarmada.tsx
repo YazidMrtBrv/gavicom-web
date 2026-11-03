@@ -283,7 +283,7 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
                 </h2>
                 {/* Phones get the one-line version so the whole stage fits one screen. */}
                 <p className="text-tenue mt-1 md:mt-2 max-w-xl text-sm md:text-base">
-                  <span className="hidden sm:inline">Cada pieza de esta junta la suministra GAVICOM. </span>Toca una pieza para ver su ficha.
+                  <span className="hidden sm:inline">Las piezas que puedes tocar están en el catálogo de GAVICOM. </span>Toca una pieza para ver su ficha.
                 </p>
               </div>
 
