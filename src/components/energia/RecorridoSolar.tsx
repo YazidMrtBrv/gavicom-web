@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { Box, Building2, Cable, SolarPanel, Sun, Zap, type LucideIcon } from "lucide-react";
-import BotonCotizar from "@/components/BotonCotizar";
 
 /*
  * How a solar system works, as the path the energy follows from the sun to
@@ -192,7 +191,7 @@ export default function RecorridoSolar() {
         role="tabpanel"
         aria-labelledby={`paso-${p.id}`}
         tabIndex={0}
-        className="rounded-sm bg-white text-tinta p-5 md:p-6 grid gap-4 md:grid-cols-[auto_1fr_auto] md:items-center"
+        className="rounded-sm bg-white text-tinta p-5 md:p-6 grid gap-4 md:grid-cols-[auto_1fr] md:items-center"
       >
         <span key={p.id} className="aparecer-rapido grid place-items-center size-14 rounded-sm bg-azul-suave text-azul">
           <Icono size={28} aria-hidden />
@@ -209,11 +208,6 @@ export default function RecorridoSolar() {
             </p>
           )}
         </div>
-        {p.servicio && (
-          <div className="md:pl-4">
-            <BotonCotizar sku={p.servicio.sku} nombre={p.servicio.nombre} />
-          </div>
-        )}
       </div>
     </div>
   );

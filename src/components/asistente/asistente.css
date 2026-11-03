@@ -1,0 +1,33 @@
+/* Each step slides in when its key changes (200 ms). */
+.asistente-paso {
+  animation: asistente-paso 220ms cubic-bezier(.2, .7, .2, 1);
+}
+@keyframes asistente-paso {
+  from { opacity: 0; transform: translate3d(12px, 0, 0); }
+}
+/* Results and steps arrive one after another (delay set inline). */
+.asistente-item {
+  animation: asistente-item 260ms cubic-bezier(.2, .7, .2, 1) backwards;
+}
+@keyframes asistente-item {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+}
+/* A line just added to the mini list. */
+.asistente-linea {
+  animation: asistente-linea 300ms ease-out;
+}
+@keyframes asistente-linea {
+  from { opacity: 0; transform: translate3d(-6px, 0, 0); }
+}
+.asistente-punto {
+  transition: width 200ms ease-out, background-color 200ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .asistente-paso,
+  .asistente-item,
+  .asistente-linea,
+  .asistente-punto {
+    animation: none;
+    transition: none;
+  }
+}

@@ -5,6 +5,7 @@ import { ViewTransition } from "react";
 import type { Producto } from "@/constants/productos";
 import { esFabricacionPropia, imagenPrincipal, tieneFotoFolleto } from "@/constants/catalogoExtra";
 import { slugProducto } from "@/lib/catalogo";
+import { ArrowRight } from "lucide-react";
 import BotonCotizar from "./BotonCotizar";
 import IconoLinea from "./catalogo/IconoLinea";
 import InsigniaFabricado from "./catalogo/InsigniaFabricado";
@@ -42,15 +43,22 @@ export default function TarjetaProducto({ producto, prioridad = false }: { produ
           )}
           {propia && (
             <span className="absolute left-1 top-1">
-              <InsigniaFabricado compacta />
+              <InsigniaFabricado compacta colombia />
             </span>
           )}
         </div>
         <span className="font-mono text-xs text-azul tracking-tight">{producto.sku}</span>
         <h3 className="font-sans text-[15px] font-semibold leading-snug text-tinta group-hover:text-azul">{producto.nombre}</h3>
       </Link>
-      <div className="p-3 pt-0">
-        <BotonCotizar sku={producto.sku} nombre={producto.nombre} />
+      {/* The card opens the ficha; the quiet chip adds without leaving the
+          grid, for buyers who already know the reference. */}
+      {/* Phones keep only the chip (the card itself opens the ficha), so the
+          two-column grid never wraps its footer onto two lines. */}
+      <div className="px-3 pb-3 flex items-center justify-between gap-x-2">
+        <Link href={href} tabIndex={-1} aria-hidden className="hidden sm:inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-azul hover:underline underline-offset-4">
+          Ver ficha <ArrowRight size={16} aria-hidden />
+        </Link>
+        <BotonCotizar sku={producto.sku} nombre={producto.nombre} chip />
       </div>
     </article>
   );

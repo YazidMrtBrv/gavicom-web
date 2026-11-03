@@ -5,7 +5,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Cifras from "@/components/movimiento/Cifras";
 import RutaFabricacion from "@/components/fabricacion/RutaFabricacion";
+import ImportarVsFabricar from "@/components/fabricacion/ImportarVsFabricar";
 import ArmaTuPedido, { BotonPerfil } from "@/components/fabricacion/ArmaTuPedido";
+import { BotonWhatsAppVenta, LineaHorario } from "@/components/venta/Venta";
 import { PERFILES_ECLISA } from "@/constants/perfilesEclisa";
 
 const TITULO = "Fabricación de piezas ferroviarias en Colombia";
@@ -65,20 +67,26 @@ export default function Fabricacion() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 md:py-16 lg:py-20 [@media(max-height:760px)]:md:py-12 grid gap-10 md:grid-cols-[1.1fr_1fr] items-center">
           <div data-aparecer className="flex flex-col gap-5">
             <p className={`${ANTETITULO} text-white/70`}>Fabricación en Colombia</p>
-            <h1 className="text-white text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight">
-              Piezas ferroviarias fabricadas en Colombia, sin esperar una importación.
+            <h1 className="text-white text-[42px] md:text-6xl font-bold leading-[1.02] tracking-tight text-balance">
+              Tu pieza ferroviaria, hecha en Colombia.
             </h1>
             <p className="font-mono text-sm text-white/85">
               Hierro nodular ASTM A536 · 5 controles por lote · Planos bajo confidencialidad
             </p>
-            <p className="text-lg text-white/80 max-w-lg">
-              Ingeniería inversa, planos propios y fundición con nuestro aliado industrial. La pieza se fabrica y se entrega dentro del país: sin tránsito marítimo ni nacionalización.
+            <p className="text-lg text-white/85 max-w-lg">
+              Sin esperar una importación: envíanos el plano, la foto o la muestra. Hacemos la ingeniería inversa, los planos y la fundición con nuestro aliado industrial, y verificamos cada lote.
             </p>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2">
-              <a href="#arma-tu-pedido" data-hero-cta className="boton-iman inline-flex items-center min-h-12 px-6 rounded bg-white text-azul font-semibold hover:bg-azul-suave">
+            <div data-hero-cta className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 pt-2">
+              <BotonWhatsAppVenta mensaje="Hola GAVICOM, necesito fabricar una pieza ferroviaria. Les envío el plano o la foto: " grande ancho>
+                Cotizar mi pieza
+              </BotonWhatsAppVenta>
+              <a href="#arma-tu-pedido" className="boton-iman inline-flex items-center justify-center min-h-14 px-6 rounded border border-white text-white font-semibold hover:bg-white/10">
                 Arma tu pedido
               </a>
-              <a href="#caso" className="inline-flex items-center gap-1 min-h-11 text-white font-semibold underline underline-offset-4 decoration-white/50 hover:decoration-white">
+            </div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+              <LineaHorario claro />
+              <a href="#caso" className="inline-flex items-center gap-1 min-h-11 text-sm text-white font-semibold underline underline-offset-4 decoration-white/50 hover:decoration-white">
                 Ver el caso real <ArrowRight size={16} aria-hidden />
               </a>
             </div>
@@ -107,6 +115,15 @@ export default function Fabricacion() {
               { valor: 5, texto: "controles de calidad por lote" },
             ]}
           />
+        </div>
+      </section>
+
+      <section aria-labelledby="h-comparar" className="mx-auto max-w-6xl px-4 sm:px-6 pb-20 md:pb-28">
+        <p data-aparecer className={`${ANTETITULO} text-tenue`}>Compara</p>
+        <h2 id="h-comparar" data-aparecer className={`mt-2 max-w-3xl ${H2}`}>¿Importar la pieza o fabricarla aquí?</h2>
+        <p data-aparecer className="mt-3 text-tenue max-w-2xl">Cambia de ruta y mira por dónde pasa tu pieza en cada caso.</p>
+        <div data-aparecer className="mt-8">
+          <ImportarVsFabricar />
         </div>
       </section>
 

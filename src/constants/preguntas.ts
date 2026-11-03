@@ -22,6 +22,21 @@ const perfiles = PERFILES_ECLISA.map(([perfil, , norma]) => (norma ? `${perfil} 
 
 export const PREGUNTAS: Pregunta[] = [
   {
+    id: "por-que-gavicom",
+    pregunta: "¿Por qué comprarle a GAVICOM?",
+    respuesta: `Porque somos ${COMPANIA_INFO.promesa.charAt(0).toLowerCase()}${COMPANIA_INFO.promesa.slice(1, -1)}: cada referencia tiene ficha técnica y código, cotizamos por WhatsApp todos los días y fabricamos según tu plano o tu muestra. Todo lo que está en el sitio lo fabrica y lo suministra GAVICOM, con fabricación en Colombia con aliados industriales. Ya entregamos 400 eclisas angulares de 75 lb a un operador ferroviario nacional y fuimos seleccionados por iNNpulsa Colombia en el programa En-Cadena.`,
+    enlaces: [
+      { href: "/catalogo", texto: "Ver el catálogo" },
+      { href: "/nosotros", texto: "Nosotros" },
+    ],
+  },
+  {
+    id: "horario",
+    pregunta: "¿En qué horario atienden?",
+    respuesta: `${COMPANIA_INFO.horario} Escríbenos al WhatsApp de ventas ${telefono} o a ${COMPANIA_INFO.email}.`,
+    enlaces: [{ href: "/contacto", texto: "Contacto" }],
+  },
+  {
     id: "que-suministran",
     pregunta: "¿Qué suministra GAVICOM?",
     respuesta:
@@ -34,7 +49,7 @@ export const PREGUNTAS: Pregunta[] = [
   {
     id: "como-cotizar",
     pregunta: "¿Cómo pido una cotización?",
-    respuesta: `En el catálogo marca las piezas con «Agregar a cotización», pon las cantidades y la ciudad donde las necesitas, y envía la lista por WhatsApp o por correo. El mensaje sale con códigos y cantidades, y te respondemos con precio y plazo. También puedes escribir directamente al WhatsApp de ventas ${telefono} o a ${COMPANIA_INFO.email}.`,
+    respuesta: `En el catálogo marca las piezas con «Agregar a cotización», pon las cantidades y la ciudad donde las necesitas, y envía la lista por WhatsApp o por correo. El mensaje sale con códigos y cantidades, y te respondemos con la cotización. También puedes escribir directamente al WhatsApp de ventas ${telefono} o a ${COMPANIA_INFO.email}.`,
     enlaces: [
       { href: "/catalogo", texto: "Armar mi cotización" },
       { href: "/contacto", texto: "Contacto" },
@@ -44,7 +59,7 @@ export const PREGUNTAS: Pregunta[] = [
     id: "precios",
     pregunta: "¿Los precios están publicados en la web?",
     respuesta:
-      "No. Cada pedido se cotiza según las referencias, las cantidades y el lugar de entrega, por eso el catálogo no muestra precios. Envía tu lista y te respondemos con precio y plazo.",
+      "No. Cada pedido se cotiza según las referencias, las cantidades y el lugar de entrega, por eso el catálogo no muestra precios. Envía tu lista y te respondemos con la cotización.",
     enlaces: [{ href: "/cotizacion", texto: "Mi cotización" }],
   },
   {

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { IMAGEN_COMPARTIR, alternas } from "@/lib/meta";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Mail, MessageCircle } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
-import { enlaceWhatsApp } from "@/lib/whatsapp";
+import { BotonWhatsAppVenta, LineaHorario } from "@/components/venta/Venta";
 import "./nosotros.css";
 
 const TITULO = "Nosotros | GAVICOM SAS";
-const DESCRIPCION = `${COMPANIA_INFO.nombre}: experiencia en vía férrea. Suministro férreo, piezas fabricadas en Colombia con aliados industriales y GAVICOM Energy, desde ${COMPANIA_INFO.ciudad}.`;
+const DESCRIPCION = `${COMPANIA_INFO.nombre}, desde ${COMPANIA_INFO.fundacion}: ${COMPANIA_INFO.promesa.toLowerCase()} Suministro férreo, piezas fabricadas en Colombia y GAVICOM Energy, desde ${COMPANIA_INFO.ciudad}.`;
 
 export const metadata: Metadata = {
   title: "Nosotros",
@@ -55,13 +55,21 @@ export default function Nosotros() {
   return (
     <div className="flex flex-col">
       <section aria-labelledby="h-nosotros" className="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-10 md:pt-16 pb-16 md:pb-20">
-        <p className={`${anteTitulo} text-tenue`}>Nosotros</p>
-        <h1 id="h-nosotros" className="mt-3 text-4xl md:text-6xl font-bold tracking-tight max-w-3xl leading-[1.05]">
-          Experiencia en vía férrea, fabricación en Colombia
+        <p className={`${anteTitulo} text-tenue`}>Nosotros · Desde {COMPANIA_INFO.fundacion}</p>
+        {/* The owner's promise is the headline: a buyer comes to this page to
+            decide whether to trust the company, so it answers that first. */}
+        <h1 id="h-nosotros" className="mt-3 text-4xl md:text-6xl font-bold tracking-tight max-w-3xl leading-[1.05] text-balance">
+          {COMPANIA_INFO.promesa}
         </h1>
         <p className="mt-5 text-lg md:text-xl leading-relaxed max-w-2xl">
-          Somos una empresa de {COMPANIA_INFO.ciudad} creada desde la experiencia directa en infraestructura férrea y el conocimiento de sus exigencias técnicas y operativas.
+          Somos una empresa de {COMPANIA_INFO.ciudad}, fundada en {COMPANIA_INFO.fundacion} desde la experiencia directa en infraestructura férrea. Todo lo que ves en este sitio lo fabrica y lo suministra GAVICOM, con cobertura en todo el país.
         </p>
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+          <BotonWhatsAppVenta mensaje="Hola GAVICOM, quiero cotizar: " grande ancho>
+            Cotizar por WhatsApp
+          </BotonWhatsAppVenta>
+          <LineaHorario />
+        </div>
       </section>
 
       {/* Family-approved text, without the name, kept to this page on purpose:
@@ -147,18 +155,10 @@ export default function Nosotros() {
         <p className="mt-6 text-tenue">
           {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento}. {COMPANIA_INFO.cobertura}.
         </p>
-        {/* One sales line for the whole team: a per-person WhatsApp button that
-            lands on the same sales number would mislead. */}
+        {/* Email only here: WhatsApp is in the hero, the floating button and
+            the closing band, and a per-person button that lands on the same
+            sales number would mislead. */}
         <div className="mt-6 flex flex-col sm:flex-row gap-3">
-          <a
-            href={enlaceWhatsApp("Hola GAVICOM, quiero hacer una consulta.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 min-h-12 px-6 rounded bg-whatsapp text-white font-semibold hover:brightness-110"
-          >
-            <MessageCircle aria-hidden="true" className="size-5" />
-            Escribir a ventas por WhatsApp
-          </a>
           <a
             href={`mailto:${COMPANIA_INFO.email}`}
             className="inline-flex items-center justify-center gap-2 min-h-12 px-6 rounded border border-azul text-azul font-semibold hover:bg-azul-suave"

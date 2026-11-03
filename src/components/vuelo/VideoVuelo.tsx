@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, MessageCircle, Pause, Play } from "lucide-react";
+import { ArrowDown, Clock, Pause, Play } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
+import { IconoWhatsApp } from "@/components/venta/Venta";
 
 /*
  * Home hero: the seagull flight as a trailer. The 30 s clip plays on its own
@@ -25,13 +26,15 @@ import { COMPANIA_INFO } from "@/constants/productos";
 export type FuenteVuelo = { src: string; tipo: string; vertical: boolean; bytes: number | null };
 
 // Scenes of the clip, in seconds: sky, close-up, the railway from above, the
-// landing and the gull perched on the rail.
+// landing and the gull perched on the rail. Only their names are shown (on
+// the scene bar): the copy under the headline is the offer and stays fixed,
+// so the visitor reads what they get instead of a caption of the footage.
 const ESCENAS = [
-  { de: 0, a: 4.4, nombre: "Cielo", texto: "Materiales, herramientas y servicios desde Barranquilla, para proyectos en todo el país." },
-  { de: 4.4, a: 10, nombre: "De cerca", texto: "Del clip elástico al corredor completo: suministro, servicio técnico y topografía con dron." },
-  { de: 10, a: 20, nombre: "La vía", texto: "Fijaciones, herramientas de vía, señalización y servicio técnico para construir y mantener corredores férreos." },
-  { de: 20, a: 26.2, nombre: "Aterrizaje", texto: "Eclisas, clips, placas de asiento y tirafondos con ficha técnica y código." },
-  { de: 26.2, a: 30, nombre: "En el riel", texto: "Suministro para la vía férrea y sistemas fotovoltaicos con GAVICOM Energy." },
+  { de: 0, a: 4.4, nombre: "Cielo" },
+  { de: 4.4, a: 10, nombre: "De cerca" },
+  { de: 10, a: 20, nombre: "La vía" },
+  { de: 20, a: 26.2, nombre: "Aterrizaje" },
+  { de: 26.2, a: 30, nombre: "En el riel" },
 ];
 
 const escenaEn = (t: number) => {
@@ -41,7 +44,7 @@ const escenaEn = (t: number) => {
 
 const VERTICAL = "(max-aspect-ratio: 4/5)";
 const WHATSAPP = `https://wa.me/${COMPANIA_INFO.whatsappSales.replace(/\D/g, "")}?text=${encodeURIComponent(
-  "Hola GAVICOM, quiero cotizar materiales para vía férrea."
+  "Hola GAVICOM, quiero cotizar materiales para vía férrea: "
 )}`;
 
 const megas = (b: number) => `${(b / 1e6).toLocaleString("es-CO", { maximumFractionDigits: 1, minimumFractionDigits: 1 })} MB`;
@@ -210,7 +213,7 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
   const conVideo = fase !== "poster" || (fuente !== null && !aMano);
 
   return (
-    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[100svh] min-h-[600px] overflow-hidden bg-azul">
+    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[88svh] min-h-[620px] md:h-[90svh] overflow-hidden bg-azul">
       <video
         ref={video}
         muted
@@ -236,59 +239,56 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
       {/* The railway shots have a pale sky: keep the white menu readable. */}
       <div aria-hidden className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(12,38,66,0.65)_0%,rgba(12,38,66,0)_100%)]" />
       {/* Darkens the left and bottom just enough for white text on a bright sky. */}
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,38,66,0.85)_0%,rgba(12,38,66,0.35)_55%,rgba(12,38,66,0)_75%)] md:bg-[linear-gradient(90deg,rgba(12,38,66,0.75)_0%,rgba(12,38,66,0.3)_42%,rgba(12,38,66,0)_62%),linear-gradient(0deg,rgba(12,38,66,0.6)_0%,rgba(12,38,66,0)_35%)]" />
+      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,38,66,0.94)_0%,rgba(12,38,66,0.55)_55%,rgba(12,38,66,0)_80%)] md:bg-[linear-gradient(90deg,rgba(12,38,66,0.88)_0%,rgba(12,38,66,0.45)_45%,rgba(12,38,66,0)_68%),linear-gradient(0deg,rgba(12,38,66,0.65)_0%,rgba(12,38,66,0)_35%)]" />
 
       <div className="absolute inset-0 flex flex-col justify-end">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-5 sm:pb-8">
-          {/* 12 px minimum outdoors; phones drop the country so it stays on one line. */}
-          <p className="font-mono text-xs sm:text-sm uppercase tracking-normal sm:tracking-[0.14em] text-white/85">
+          {/* The promise is said once on the home page, in the trust strip
+              right below; here only who and where. 12 px minimum outdoors. */}
+          <p className="font-mono text-xs sm:text-sm uppercase tracking-normal sm:tracking-[0.14em] text-white/90">
             Suministro ferroviario · Barranquilla<span className="hidden sm:inline">, Colombia</span>
           </p>
-          <h1 className="mt-3 text-white text-[40px] leading-[1.04] sm:text-6xl md:text-7xl font-bold tracking-tight max-w-xl lg:max-w-3xl">
-            Todo lo que la vía férrea necesita.
+          {/* Short and big: the value has to land in the first seconds, over
+              moving footage, so the line is cut to what GAVICOM is and the
+              shadow keeps it legible whatever frame is behind it. */}
+          <h1 className="mt-3 text-white text-[42px] leading-[1.02] sm:text-6xl md:text-7xl lg:text-[84px] font-bold tracking-tight max-w-xl lg:max-w-4xl [text-shadow:0_2px_24px_rgba(12,38,66,0.5)]">
+            Componentes para la vía férrea, <span className="text-white/80">hechos por GAVICOM.</span>
           </h1>
+          <p className="mt-4 max-w-xl text-white/90 text-base sm:text-lg md:text-xl">
+            Eclisas, fijaciones, tirafondos, herramientas y señalización con ficha técnica. Y si tu pieza no está, la fabricamos en Colombia según tu plano.
+          </p>
 
-          {/* Scene subtitles share one grid cell, so the slot takes the height
-              of the longest one and nothing below jumps when they swap. */}
-          <div className="mt-4 grid max-w-lg">
-            {ESCENAS.map((e, k) => {
-              const activa = k === escena;
-              return (
-                <p
-                  key={e.nombre}
-                  aria-hidden={activa ? undefined : true}
-                  inert={!activa}
-                  className="capa-vuelo [grid-area:1/1] text-white/90 text-base sm:text-lg md:text-xl"
-                  style={{ opacity: activa ? 1 : 0, transform: activa ? "none" : "translate3d(0, 12px, 0)" }}
-                >
-                  {e.texto}
-                </p>
-              );
-            })}
-          </div>
-
-          <div data-hero-cta className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <div data-hero-cta className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-3">
             <a
               href={WHATSAPP}
               target="_blank"
               rel="noopener noreferrer"
-              className="boton-iman inline-flex items-center gap-2 min-h-12 px-5 sm:px-6 rounded bg-white text-azul font-semibold hover:bg-azul-suave"
+              className="boton-iman inline-flex items-center justify-center gap-2 min-h-14 px-6 rounded bg-whatsapp text-white text-lg font-semibold shadow-sm hover:brightness-110 w-full sm:w-auto"
             >
-              <MessageCircle size={20} aria-hidden />
+              <IconoWhatsApp size={24} />
               Cotizar por WhatsApp
+              <span className="sr-only"> (abre WhatsApp)</span>
             </a>
-            <Link href="/catalogo" className="boton-iman inline-flex items-center min-h-12 px-5 sm:px-6 rounded border border-white text-white font-semibold hover:bg-white/10">
+            <Link href="/catalogo" className="boton-iman inline-flex items-center justify-center min-h-12 px-5 sm:px-6 rounded border border-white text-white font-semibold hover:bg-white/10 flex-1 sm:flex-none">
               Ver catálogo
             </Link>
-            <Link href="/energy" className="inline-flex items-center gap-1.5 min-h-11 px-1 text-sm font-semibold text-white/90 hover:text-white hover:underline underline-offset-4">
-              GAVICOM Energy <ArrowRight size={16} aria-hidden />
-            </Link>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1">
+            <p className="inline-flex items-center gap-2 text-sm text-white/85">
+              <Clock size={16} aria-hidden className="shrink-0" />
+              Atendemos {COMPANIA_INFO.horarioCorto.charAt(0).toLowerCase() + COMPANIA_INFO.horarioCorto.slice(1)}
+            </p>
+            {/* Teases the finder right below, so a phone visitor who is not
+                ready to write yet has an obvious next thing to do. */}
+            <a href="#h-necesitas" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-white underline underline-offset-4 decoration-white/50 hover:decoration-white">
+              Encuentra tu pieza en tres toques <ArrowDown size={16} aria-hidden />
+            </a>
           </div>
 
           {/* Scene bar while the clip is attached; before that, the explicit
               button that tells what pressing it will cost. Same height in both
               so the hero does not jump. */}
-          <div className="mt-4 sm:mt-6 min-h-11">
+          <div className="mt-1 sm:mt-3 min-h-11">
             {conVideo ? (
               <div className="flex items-center gap-2 sm:gap-3">
                 <button

@@ -90,6 +90,20 @@ export function esFabricacionPropia(sku: string): boolean {
   return origenVisible(sku) === "fabricacion-propia";
 }
 
+// Brand of a catalogue reference. The owner states that everything on the
+// site is made or supplied by GAVICOM (2026-11), so every product is a GAVICOM
+// product unless its own ficha names another maker (a "Marca" row, such as
+// the Lincoln Electric welders, which belong to a rented service).
+// "Fabricado en Colombia" stays narrower: only where it is documented
+// (origenVisible "fabricacion-propia").
+export function marcaDe(p: Pick<Producto, "categoria" | "especificaciones">): string {
+  return p.especificaciones.Marca ?? "GAVICOM";
+}
+
+export function esProductoGavicom(p: Pick<Producto, "categoria" | "especificaciones">): boolean {
+  return p.categoria !== "Servicios" && marcaDe(p) === "GAVICOM";
+}
+
 export function unidadDe(sku: string): Unidad {
   return extraDe(sku).unidad ?? "unidad";
 }

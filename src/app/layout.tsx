@@ -5,6 +5,7 @@ import Encabezado from "@/components/Encabezado";
 import Pie from "@/components/Pie";
 import BotonWhatsApp from "@/components/BotonWhatsApp";
 import AvisoCotizacion from "@/components/catalogo/AvisoCotizacion";
+import CajonLista from "@/components/catalogo/CajonLista";
 import Interacciones from "@/components/movimiento/Interacciones";
 import { Analytics } from "@vercel/analytics/next";
 import { EMPRESA, SITE_URL, alternas } from "@/lib/meta";
@@ -99,6 +100,16 @@ export const metadata: Metadata = {
   },
 };
 
+// Every day, 6:00 to 22:00 (COMPANIA_INFO.horario). Organization has no
+// openingHours property of its own, so the hours go on the sales contact
+// point, where schema.org defines hoursAvailable.
+const HORARIO_LD = {
+  "@type": "OpeningHoursSpecification",
+  dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+  opens: "06:00",
+  closes: "22:00",
+};
+
 const organizacion = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organizacion`,
@@ -109,6 +120,9 @@ const organizacion = {
   telephone: "+57-315-050-9803",
   email: COMPANIA_INFO.email,
   image: `${SITE_URL}/marca/gavicom-azul.png`,
+  // Owner's own facts (2026-11): founding year, promise and daily hours.
+  foundingDate: String(COMPANIA_INFO.fundacion),
+  slogan: COMPANIA_INFO.promesa,
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+57-315-050-9803",
@@ -116,6 +130,7 @@ const organizacion = {
     email: "gerencia@gavicom.com",
     areaServed: "CO",
     availableLanguage: ["Spanish"],
+    hoursAvailable: HORARIO_LD,
   },
   description: DESCRIPCION,
   address: {
@@ -206,6 +221,7 @@ export default function RootLayout({
         {/* One add confirmation for every page with an add button (catalogue,
             home, energy), so it is the only live announcement. */}
         <AvisoCotizacion />
+        <CajonLista />
         <Interacciones />
         {/* Vercel Analytics only exists on Vercel; elsewhere its script 404s. */}
         {process.env.VERCEL ? <Analytics /> : null}

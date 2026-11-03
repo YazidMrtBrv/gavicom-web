@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, ChevronRight, FileText } from "lucide-react";
-import { COMPANIA_INFO } from "@/constants/productos";
-import { esFabricacionPropia, vistasFicha } from "@/constants/catalogoExtra";
+import { ArrowRight, ChevronRight, Crosshair, FileText, ShieldCheck, Zap } from "lucide-react";
+import { esFabricacionPropia, esProductoGavicom, marcaDe, vistasFicha } from "@/constants/catalogoExtra";
 import { PRODUCTOS, lineaDe, productoPorSlug, rutaLinea, slugProducto } from "@/lib/catalogo";
 import { MAX_TITULO, alternas, recortar } from "@/lib/meta";
 import { NOMBRE_SITIO, urlAbsoluta } from "@/lib/sitio";
@@ -80,6 +79,7 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
   if (!p) notFound();
   const linea = lineaDe(p);
   const propia = esFabricacionPropia(p.sku);
+  const gavicom = esProductoGavicom(p);
   const vistas = vistasFicha(p);
   const filas = Object.entries(p.especificaciones).filter(([k]) => propia || !FILAS_DE_ORIGEN.has(k));
 
@@ -97,7 +97,6 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
   // No offers, price, availability or reviews on purpose: GAVICOM quotes each
   // order and has published no reviews, and structured data must match what
   // the page shows (Google penalises markup that claims more than that).
-  const marcaVisible = filas.find(([k]) => k === "Marca")?.[1];
   const productoJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -111,13 +110,12 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
     // references, which show a placeholder instead of a picture.
     image: vistas.length ? vistas.map((v) => urlAbsoluta(v.src)) : undefined,
     material,
-    // GAVICOM is the brand only of what it manufactures; for supplied
-    // references the brand is the one the ficha states, or none at all.
-    brand: propia
-      ? { "@type": "Organization", name: COMPANIA_INFO.nombre }
-      : marcaVisible
-        ? { "@type": "Brand", name: marcaVisible }
-        : undefined,
+    // The owner states every catalogue product is GAVICOM's; a ficha that
+    // names another maker (Marca row) keeps that maker as the brand.
+    brand: gavicom
+      ? { "@type": "Brand", name: "GAVICOM" }
+      : { "@type": "Brand", name: marcaDe(p) },
+    manufacturer: gavicom ? { "@id": urlAbsoluta("/#organizacion") } : undefined,
     additionalProperty: filas.map(([nombre, valor]) => ({ "@type": "PropertyValue", name: nombre, value: valor })),
   };
   const migasJsonLd = {
@@ -183,21 +181,14 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-mono text-sm text-azul">{p.sku}</span>
-                {propia && <InsigniaFabricado />}
+                {gavicom && <InsigniaFabricado />}
+                {propia && <InsigniaFabricado colombia />}
               </div>
               <h1 className="text-3xl md:text-4xl font-bold leading-tight">{p.nombre}</h1>
               <p className="text-sm text-tenue">{p.subcategoria}</p>
             </div>
             <p className="text-[17px] leading-relaxed">{p.descripcion}</p>
 
-            <dl className="border-t border-linea">
-              {filas.map(([k, v]) => (
-                <div key={k} className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)] gap-4 py-3 border-b border-linea text-sm">
-                  <dt className="text-tenue">{k}</dt>
-                  <dd className="text-tinta">{v}</dd>
-                </div>
-              ))}
-            </dl>
 
             <FichaAcciones />
 
@@ -209,6 +200,33 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
             >
               <FileText size={18} aria-hidden /> Solicitar ficha técnica en PDF
             </a>
+
+            {/* The promise once, next to the buying decision. Hours stay in
+                the closing band and the footer. */}
+            <ul className="grid gap-2 rounded border border-linea bg-azul-suave p-4 text-sm">
+              <li className="flex items-start gap-2">
+                <ShieldCheck size={18} aria-hidden className="shrink-0 text-azul" />
+                <span><span className="font-semibold text-tinta">100% confiables:</span> ficha técnica y código en cada referencia.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Zap size={18} aria-hidden className="shrink-0 text-azul" />
+                <span><span className="font-semibold text-tinta">Rápidos:</span> tu pedido sale en un solo mensaje, sin formularios.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Crosshair size={18} aria-hidden className="shrink-0 text-azul" />
+                <span><span className="font-semibold text-tinta">Precisos:</span> la cotización sale con tu código y tu cantidad.</span>
+              </li>
+            </ul>
+
+            <h2 className="sr-only">Especificaciones</h2>
+            <dl className="border-t border-linea">
+              {filas.map(([k, v]) => (
+                <div key={k} className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)] gap-4 py-3 border-b border-linea text-sm">
+                  <dt className="text-tenue">{k}</dt>
+                  <dd className="text-tinta">{v}</dd>
+                </div>
+              ))}
+            </dl>
 
             {propia && (
               <div className="border border-linea rounded bg-azul-suave p-5 flex flex-col gap-2">

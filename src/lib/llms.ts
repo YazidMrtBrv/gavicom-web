@@ -3,7 +3,7 @@ import { ENERGY_INTRO, SERVICIOS_ENERGY } from "@/constants/energy";
 import { GUIAS_LINEA } from "@/constants/lineasGuia";
 import { PERFILES_ECLISA } from "@/constants/perfilesEclisa";
 import { PREGUNTAS } from "@/constants/preguntas";
-import { esFabricacionPropia } from "@/constants/catalogoExtra";
+import { esFabricacionPropia, marcaDe } from "@/constants/catalogoExtra";
 import { LINEAS, PRODUCTOS, SERVICIOS, rutaLinea, slugProducto } from "./catalogo";
 import { urlAbsoluta } from "./sitio";
 
@@ -18,6 +18,7 @@ const RESUMEN = `${COMPANIA_INFO.nombre} (GAVICOM) es un proveedor colombiano de
 const CONTACTO = [
   `- WhatsApp ventas: ${telefono} (https://wa.me/${COMPANIA_INFO.whatsappSales.replace(/\D/g, "")})`,
   `- Correo: ${COMPANIA_INFO.email}`,
+  `- Horario: ${COMPANIA_INFO.horario}`,
   `- Ciudad: ${COMPANIA_INFO.ciudad}, ${COMPANIA_INFO.departamento}, ${COMPANIA_INFO.pais}`,
   `- Formulario y datos: ${urlAbsoluta("/contacto")}`,
 ].join("\n");
@@ -31,6 +32,8 @@ export function llmsTxt(): string {
   return `# ${COMPANIA_INFO.nombre}
 
 > ${RESUMEN}
+
+Promesa: ${COMPANIA_INFO.promesa} Fundada en ${COMPANIA_INFO.fundacion}. Atención: ${COMPANIA_INFO.horario.charAt(0).toLowerCase() + COMPANIA_INFO.horario.slice(1)} Todo el catálogo es producto GAVICOM (fabricado o suministrado por GAVICOM).
 
 Seleccionada por iNNpulsa Colombia en el programa En-Cadena, Mejores proveedores del sector ferroviario. ${COMPANIA_INFO.disclaimerLegal}
 
@@ -68,6 +71,7 @@ function fichaProducto(p: Producto): string {
   return `### ${p.nombre}
 
 - Código: ${p.sku}
+- Marca: ${marcaDe(p)}
 - Ficha: ${urlAbsoluta(`/catalogo/${slugProducto(p)}`)}${origen}
 - ${p.descripcion}
 - Especificaciones:

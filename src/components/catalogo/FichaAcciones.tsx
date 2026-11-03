@@ -4,6 +4,7 @@ import BotonCotizar from "@/components/BotonCotizar";
 import { useCotizacion } from "@/lib/cotizacion";
 import { enlaceWhatsApp, mensajeProducto, nombreConVariante } from "@/lib/whatsapp";
 import SelectorCantidad from "./SelectorCantidad";
+import { IconoWhatsApp } from "@/components/venta/Venta";
 import { useFicha } from "./ContextoFicha";
 
 // Main actions of a product page. Its id is what the phone action bar
@@ -43,9 +44,11 @@ export default function FichaAcciones() {
         href={enlaceWhatsApp(mensajeProducto(nombreConVariante(nombre, variante), sku))}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center justify-center self-start min-h-12 px-5 rounded border border-linea font-semibold text-tinta hover:border-azul hover:text-azul"
+        className="inline-flex items-center justify-center gap-2 min-h-12 px-5 rounded bg-whatsapp text-white font-semibold hover:brightness-110 w-full sm:w-auto sm:self-start"
       >
-        Preguntar por WhatsApp
+        <IconoWhatsApp size={20} />
+        Cotizar por WhatsApp
+        <span className="sr-only"> (abre WhatsApp)</span>
       </a>
     </div>
   );

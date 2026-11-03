@@ -5,6 +5,7 @@ import { LINEAS, rutaLinea } from "@/lib/catalogo";
 import { metaPagina } from "@/lib/meta";
 import { urlAbsoluta } from "@/lib/sitio";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import { BotonWhatsAppVenta } from "@/components/venta/Venta";
 
 export const metadata = metaPagina({
   titulo: "Preguntas frecuentes sobre suministro férreo",
@@ -52,6 +53,11 @@ export default function PreguntasFrecuentes() {
           <p className="text-tenue">
             Suministro ferroviario, fabricación en Colombia y GAVICOM Energy, desde Barranquilla para todo el país.
           </p>
+          {/* A buyer reading answers is close to deciding: the next step is
+              right here, not only at the end of the page. */}
+          <BotonWhatsAppVenta mensaje="Hola GAVICOM, tengo una pregunta antes de cotizar: " ancho className="lg:w-full">
+            Preguntar por WhatsApp
+          </BotonWhatsAppVenta>
           <nav aria-label="Preguntas" className="hidden lg:block border-t border-linea pt-2">
             <ul className="flex flex-col">
               {PREGUNTAS.map((q) => (
