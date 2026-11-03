@@ -3,7 +3,7 @@ import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Factory, Truck } from "lucide-react";
-import { LINEAS, PRODUCTOS, SERVICIOS, imagenProducto, slugProducto } from "@/lib/catalogo";
+import { LINEAS, PRODUCTOS, SERVICIOS, imagenProducto, rutaLinea, slugProducto } from "@/lib/catalogo";
 import TarjetaProducto from "@/components/TarjetaProducto";
 import FilaDeslizable from "@/components/FilaDeslizable";
 import { tieneFotoFolleto } from "@/constants/catalogoExtra";
@@ -123,7 +123,7 @@ export default function Inicio() {
                 <p className="font-semibold text-tinta">Operador ferroviario de carga</p>
                 <p className="text-sm text-tenue">Herramientas para mantenimiento de vía y suministro de eclisas.</p>
                 {herramientas && (
-                  <Link href={`/catalogo?linea=${herramientas.slug}`} className="mt-auto inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-azul hover:underline underline-offset-4">
+                  <Link href={rutaLinea(herramientas)} className="mt-auto inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-azul hover:underline underline-offset-4">
                     Ver herramientas de vía <ArrowRight size={16} aria-hidden />
                   </Link>
                 )}
@@ -144,7 +144,7 @@ export default function Inicio() {
         </div>
       </section>
 
-      <Franja items={[...LINEAS.map((l) => ({ texto: l.nombre, href: `/catalogo?linea=${l.slug}` })), { texto: "GAVICOM Energy", href: "/energy" }]} />
+      <Franja items={[...LINEAS.map((l) => ({ texto: l.nombre, href: rutaLinea(l) })), { texto: "GAVICOM Energy", href: "/energy" }]} />
 
       <ViaDesarmada piezas={piezasVia} />
 
@@ -223,7 +223,7 @@ export default function Inicio() {
         <ul data-aparecer="grupo" className="grid gap-px bg-linea border border-linea rounded overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
           {LINEAS.map((l) => (
             <li key={l.slug} className="bg-white">
-              <Link href={`/catalogo?linea=${l.slug}`} className="foco group flex flex-col gap-1 h-full min-h-11 p-5 hover:bg-gris">
+              <Link href={rutaLinea(l)} className="foco group flex flex-col gap-1 h-full min-h-11 p-5 hover:bg-gris">
                 <span className="flex items-center justify-between gap-2 font-semibold text-tinta group-hover:text-azul">
                   {l.nombre}
                   <span className="font-mono text-sm font-normal text-tenue tabular-nums">{PRODUCTOS.filter((p) => p.categoria === l.categoria).length} ref.</span>

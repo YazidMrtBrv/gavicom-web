@@ -7,7 +7,9 @@ import BotonWhatsApp from "@/components/BotonWhatsApp";
 import AvisoCotizacion from "@/components/catalogo/AvisoCotizacion";
 import Interacciones from "@/components/movimiento/Interacciones";
 import { Analytics } from "@vercel/analytics/next";
-import { EMPRESA, SITE_URL } from "@/lib/meta";
+import { EMPRESA, SITE_URL, alternas } from "@/lib/meta";
+import { LINEAS, rutaLinea } from "@/lib/catalogo";
+import { COMPANIA_INFO } from "@/constants/productos";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -24,8 +26,9 @@ const poppins = Poppins({
 
 // Only what the code already backs up: no standards or certification claims
 // the company cannot document in shared previews and search results.
+// Kept within 155 characters so search results show it whole.
 const DESCRIPCION =
-  "Suministro de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía y señalización; fabricación de piezas en Colombia con aliados industriales. Barranquilla, cobertura nacional.";
+  "Eclisas, fijaciones, clips elásticos, tirafondos y herramientas de vía; piezas ferroviarias fabricadas en Colombia. Desde Barranquilla a todo el país.";
 const TITULO = `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`;
 
 export const viewport: Viewport = {
@@ -62,9 +65,7 @@ export const metadata: Metadata = {
   verification: {
     google: "er00xipii8hKUi9e9PUQGK-gJK_yQMprai4hsVUbGLw",
   },
-  alternates: {
-    canonical: "/",
-  },
+  alternates: alternas("/"),
   // No fixed images: app/opengraph-image.tsx and twitter-image.tsx render the
   // 1200x630 preview; the wide logo alone was cropped badly by every network.
   openGraph: {
@@ -105,6 +106,8 @@ const organizacion = {
   alternateName: ["GAVICOM", "GAVICOM Ferroviario"],
   url: SITE_URL,
   logo: `${SITE_URL}/apple-icon.png`,
+  telephone: "+57-315-050-9803",
+  email: COMPANIA_INFO.email,
   image: `${SITE_URL}/marca/gavicom-azul.png`,
   contactPoint: {
     "@type": "ContactPoint",
@@ -134,7 +137,26 @@ const organizacion = {
     "Consultoría ferroviaria",
     "Obras civiles para infraestructura de transporte",
     "Energía solar fotovoltaica",
+    "Eclisas para riel",
+    "Tirafondos para durmiente",
+    "Clips elásticos para vía férrea",
+    "Fabricación de piezas ferroviarias en hierro nodular",
   ],
+  // The solar line is a brand of the same company, not a separate entity.
+  brand: { "@type": "Brand", name: "GAVICOM Energy", url: `${SITE_URL}/energy` },
+  // The catalogue lines as offer catalogues pointing at their guide pages,
+  // without prices: GAVICOM quotes every order.
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Catálogo de suministros ferroviarios",
+    url: `${SITE_URL}/catalogo`,
+    itemListElement: LINEAS.map((l) => ({
+      "@type": "OfferCatalog",
+      name: l.nombre,
+      description: l.resumen,
+      url: `${SITE_URL}${rutaLinea(l)}`,
+    })),
+  },
 };
 
 // WebSite node with SearchAction: /catalogo reads ?q (CatalogoFiltrable), so

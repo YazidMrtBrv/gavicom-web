@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
+import { alternas } from "@/lib/meta";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Cifras from "@/components/movimiento/Cifras";
 import RutaFabricacion from "@/components/fabricacion/RutaFabricacion";
 import ArmaTuPedido, { BotonPerfil } from "@/components/fabricacion/ArmaTuPedido";
+import { PERFILES_ECLISA } from "@/constants/perfilesEclisa";
 
 const TITULO = "Fabricación de piezas ferroviarias en Colombia";
 const DESCRIPCION =
-  "GAVICOM fabrica componentes ferroviarios en Colombia: ingeniería inversa, planos propios, fundición en hierro nodular ASTM A536 y cinco controles de calidad por lote.";
+  "Fabricamos piezas ferroviarias en Colombia: ingeniería inversa, planos propios, fundición en hierro nodular ASTM A536 y cinco controles por lote.";
 
 // No fixed images: opengraph-image.tsx in this folder draws the card.
 export const metadata: Metadata = {
   title: "Fabricación en Colombia",
   description: DESCRIPCION,
-  alternates: { canonical: "/fabricacion" },
+  alternates: alternas("/fabricacion"),
   openGraph: {
     title: `${TITULO} | GAVICOM SAS`,
     description: DESCRIPCION,
@@ -49,15 +51,7 @@ const FICHA = [
   ["Cliente", "Operador ferroviario nacional"],
 ];
 
-// Rail profiles and standards GAVICOM can produce joint bars for. A null
-// standard is spelled out instead of a dash, which screen readers skip.
-const PERFILES: [string, string, string | null, string][] = [
-  ["90RA-A, 100RE, 115-119RE, 132-140RE", "Acero bajo y alto carbono", "AREMA", "Fundición, forja, laminado"],
-  ["50 kg, 30 kg, 37 kg", "Hierro fundido, acero bajo carbono", "GB, JIS E1110", "Fundición, forja"],
-  ["P50", "Hierro fundido, acero bajo carbono", null, "Fundición, forja"],
-  ["UIC60, UIC54, S49", "Acero bajo y alto carbono, hierro fundido", "UIC 864-6", "Fundición, forja"],
-  ["BS80A", "Acero bajo y alto carbono, hierro fundido", "BS", "Fundición, forja"],
-];
+const PERFILES = PERFILES_ECLISA;
 
 const H2 = "text-3xl md:text-5xl font-bold tracking-tight";
 const ANTETITULO = "font-mono text-sm tracking-[0.2em] uppercase";

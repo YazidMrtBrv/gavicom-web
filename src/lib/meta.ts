@@ -11,6 +11,27 @@ export const IMAGEN_COMPARTIR = {
   alt: "GAVICOM SAS: materiales, herramientas y fabricación para vía férrea en Barranquilla, Colombia",
 };
 
+/**
+ * Canonical plus a self-referencing es-CO hreflang (and x-default) for one
+ * path. The site is Spanish for Colombia only, so the annotation just states
+ * that clearly. Every page must pass it whole: a child `alternates` object
+ * replaces the parent's instead of merging with it.
+ */
+export function alternas(ruta: string): NonNullable<Metadata["alternates"]> {
+  return { canonical: ruta, languages: { "es-CO": ruta, "x-default": ruta } };
+}
+
+// The root template appends " | GAVICOM SAS" (14 characters). Search results
+// cut titles around 60, so a page title is kept to 46 before the suffix.
+export const MAX_TITULO = 60 - ` | ${EMPRESA}`.length;
+
+/** Cuts a description at a word boundary so it fits in a search snippet. */
+export function recortar(texto: string, max = 155): string {
+  if (texto.length <= max) return texto;
+  const corte = texto.slice(0, max - 1);
+  return `${corte.slice(0, corte.lastIndexOf(" ")).replace(/[,;:.]$/, "")}…`;
+}
+
 type Entrada = {
   titulo: string;
   descripcion: string;
@@ -30,7 +51,7 @@ export function metaPagina({ titulo, descripcion, ruta }: Entrada): Metadata {
   return {
     title: titulo,
     description: descripcion,
-    alternates: { canonical: ruta },
+    alternates: alternas(ruta),
     openGraph: {
       title: `${titulo} | ${EMPRESA}`,
       description: descripcion,

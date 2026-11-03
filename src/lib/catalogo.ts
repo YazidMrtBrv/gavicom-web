@@ -64,6 +64,12 @@ export function lineaDe(p: Producto): Linea | undefined {
   return LINEAS.find((l) => l.categoria === p.categoria);
 }
 
+// Each line has its own indexable guide page; the filtered catalogue
+// (/catalogo?linea=) stays for browsing but canonicalises to /catalogo.
+export function rutaLinea(l: Pick<Linea, "slug">): string {
+  return `/catalogo/linea/${l.slug}`;
+}
+
 export function lineaPorSlug(slug: string | null | undefined): Linea | undefined {
   return LINEAS.find((l) => l.slug === slug);
 }

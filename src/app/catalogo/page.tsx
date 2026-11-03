@@ -1,4 +1,6 @@
-import { PRODUCTOS, slugProducto, slugTexto } from "@/lib/catalogo";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { LINEAS, PRODUCTOS, rutaLinea, slugProducto, slugTexto } from "@/lib/catalogo";
 import { origenVisible } from "@/constants/catalogoExtra";
 import { NOMBRE_SITIO, urlAbsoluta } from "@/lib/sitio";
 import TarjetaProducto from "@/components/TarjetaProducto";
@@ -48,6 +50,28 @@ export default function Catalogo() {
           ))}
         </ul>
       </CatalogoFiltrable>
+
+      {/* Server-rendered links to the line guides: the filter chips above are
+          buttons, so without these the guides would be reachable only from
+          the home page. */}
+      <nav aria-labelledby="h-guias" className="mt-16 border-t border-linea pt-8">
+        <h2 id="h-guias" className="text-2xl font-bold">Guías por línea</h2>
+        <p className="text-tenue mt-1 max-w-2xl">Qué incluye cada línea, para qué sirve cada pieza y cómo cotizarla.</p>
+        <ul className="mt-5 grid gap-px bg-linea border border-linea rounded overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
+          {LINEAS.map((l) => (
+            <li key={l.slug} className="bg-white">
+              <Link href={rutaLinea(l)} className="foco group flex items-center justify-between gap-3 h-full min-h-12 p-4 font-semibold text-tinta hover:bg-gris hover:text-azul">
+                {l.nombre} <ArrowRight size={16} aria-hidden className="shrink-0" />
+              </Link>
+            </li>
+          ))}
+          <li className="bg-white">
+            <Link href="/preguntas-frecuentes" className="foco group flex items-center justify-between gap-3 h-full min-h-12 p-4 font-semibold text-tinta hover:bg-gris hover:text-azul">
+              Preguntas frecuentes <ArrowRight size={16} aria-hidden className="shrink-0" />
+            </Link>
+          </li>
+        </ul>
+      </nav>
     </div>
   );
 }

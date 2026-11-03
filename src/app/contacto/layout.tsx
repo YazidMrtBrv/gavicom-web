@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { IMAGEN_COMPARTIR } from "@/lib/meta";
+import { IMAGEN_COMPARTIR, alternas } from "@/lib/meta";
 
 const TITULO = "Contacto | GAVICOM SAS";
 const DESCRIPCION =
-  "Escribe a GAVICOM SAS por WhatsApp o por correo: suministro ferroviario, fabricación de piezas, GAVICOM Energy y servicios técnicos. Barranquilla, Atlántico, con cobertura en todo el territorio nacional.";
+  "Escribe a GAVICOM SAS por WhatsApp o correo: suministro ferroviario, fabricación de piezas, servicios y GAVICOM Energy. Barranquilla, cobertura nacional.";
 
 // No images declared on purpose: the shared Open Graph image is defined once
 // for the whole site, not per page.
 export const metadata: Metadata = {
   title: "Contacto",
   description: DESCRIPCION,
-  alternates: { canonical: "/contacto" },
+  alternates: alternas("/contacto"),
   openGraph: {
     title: TITULO,
     description: DESCRIPCION,
