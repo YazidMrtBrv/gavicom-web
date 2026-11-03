@@ -1,14 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { Box, Building2, Cable, SolarPanel, Sun, Zap, type LucideIcon } from "lucide-react";
 import BotonCotizar from "@/components/BotonCotizar";
 
 /*
  * How a solar system works, as the path the energy follows from the sun to
- * the load. Each stop says what happens there and what GAVICOM does at that
- * stop, with the quote button of the matching service. The dashed line moves
- * in the direction the energy flows.
+ * the load. It is a tab list: each stop is a tab and the panel below says
+ * what happens there and what GAVICOM does at that stop, with the quote
+ * button of the matching service.
+ *
+ * Two labelled tracks join the stops: DC (long dashes) from the panels to the
+ * inverter and AC (short dashes) from the inverter to the load. Each fills up
+ * to the active stop, so the reader sees where the current changes type.
+ * Dash length, not only color, tells them apart.
  */
 interface Parada {
   id: string;
@@ -16,7 +21,7 @@ interface Parada {
   icono: LucideIcon;
   corriente: "" | "DC" | "AC";
   que: string;
-  gavicom: string;
+  gavicom?: string;
   servicio?: { sku: string; nombre: string };
 }
 
@@ -27,7 +32,6 @@ const PARADAS: Parada[] = [
     icono: Sun,
     corriente: "",
     que: "La radiación solar llega a los módulos. En la Costa Caribe hay sol fuerte casi todo el año.",
-    gavicom: "Revisamos el sitio: orientación, sombras y el espacio disponible para los módulos.",
   },
   {
     id: "paneles",
@@ -71,59 +75,125 @@ const PARADAS: Parada[] = [
     icono: Building2,
     corriente: "AC",
     que: "La energía llega a la casa, el comercio o la planta, y baja lo que se compra a la red.",
-    gavicom: "Entregamos el sistema funcionando y listo para su operación.",
+    // Only what the four services cover: no commissioning or hand-over promise.
+    gavicom: "Montamos, protegemos e integramos los componentes del sistema.",
   },
 ];
 
+// Indexes where each track starts and ends (panels to inverter, inverter to load).
+const DC = [1, 3] as const;
+const AC = [3, 5] as const;
+const avance = (activa: number, [a, b]: readonly [number, number]) => Math.min(1, Math.max(0, (activa - a) / (b - a)));
+
 export default function RecorridoSolar() {
   const [activa, setActiva] = useState(1);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const p = PARADAS[activa];
   const Icono = p.icono;
 
-  return (
-    <div className="grid gap-6">
-      <ol className="recorrido grid grid-cols-3 sm:grid-cols-6 gap-y-6" aria-label="Recorrido de la energía">
-        {PARADAS.map((x, i) => {
-          const I = x.icono;
-          const on = i === activa;
-          return (
-            <li key={x.id} className="relative flex flex-col items-center">
-              {/* Flow line to the next stop (hidden after the last one and at
-                  the end of each row of three on phones). */}
-              {i < PARADAS.length - 1 && (
-                <span aria-hidden className={`flujo absolute top-8 left-1/2 w-full h-[3px] ${i === 2 ? "hidden sm:block" : ""}`} />
-              )}
-              <button
-                type="button"
-                onClick={() => setActiva(i)}
-                aria-pressed={on}
-                className={`relative z-10 grid place-items-center size-16 rounded-full border-2 transition-all duration-300 ${
-                  on ? "bg-azul border-azul text-white scale-110 shadow-[0_10px_30px_-10px_rgba(12,38,66,0.7)]" : "bg-white border-linea text-azul hover:border-azul"
-                }`}
-              >
-                <I size={28} aria-hidden />
-                <span className="sr-only">{x.nombre}</span>
-              </button>
-              <span className={`mt-2 text-center text-sm leading-tight ${on ? "font-semibold text-azul" : "text-tenue"}`}>{x.nombre}</span>
-              {x.corriente && <span className="mt-0.5 font-mono text-[11px] text-tenue">{x.corriente}</span>}
-            </li>
-          );
-        })}
-      </ol>
+  const ir = (i: number) => {
+    const n = (i + PARADAS.length) % PARADAS.length;
+    setActiva(n);
+    tabs.current[n]?.focus();
+  };
 
-      <div key={p.id} className="aparecer-rapido rounded border border-linea bg-white p-5 md:p-6 grid gap-4 md:grid-cols-[auto_1fr_auto] md:items-center">
-        <span className="grid place-items-center size-14 rounded bg-azul-suave text-azul">
+  // WAI-ARIA tabs pattern with automatic activation. Both arrow pairs work
+  // because the list is horizontal on wide screens and vertical on phones.
+  const teclas = (e: KeyboardEvent<HTMLDivElement>) => {
+    const mapa: Record<string, () => void> = {
+      ArrowRight: () => ir(activa + 1),
+      ArrowDown: () => ir(activa + 1),
+      ArrowLeft: () => ir(activa - 1),
+      ArrowUp: () => ir(activa - 1),
+      Home: () => ir(0),
+      End: () => ir(PARADAS.length - 1),
+    };
+    const accion = mapa[e.key];
+    if (accion) {
+      e.preventDefault();
+      accion();
+    }
+  };
+
+  return (
+    <div className="grid gap-6 md:gap-8">
+      <div className="recorrido relative" style={{ "--dc": avance(activa, DC), "--ac": avance(activa, AC) } as CSSProperties}>
+        {/* Tracks sit behind the stop buttons; purely visual. */}
+        <div aria-hidden className="recorrido-base" />
+        <div aria-hidden className="recorrido-tramo recorrido-dc">
+          <span className="recorrido-relleno" />
+          <span className="recorrido-rotulo">
+            <span>DC</span>
+            <span className="recorrido-rotulo-sep"> · </span>
+            <span>corriente continua</span>
+          </span>
+        </div>
+        <div aria-hidden className="recorrido-tramo recorrido-ac">
+          <span className="recorrido-relleno" />
+          <span className="recorrido-rotulo">
+            <span>AC</span>
+            <span className="recorrido-rotulo-sep"> · </span>
+            <span>corriente alterna</span>
+          </span>
+        </div>
+
+        <div role="tablist" aria-label="Recorrido de la energía" onKeyDown={teclas} className="recorrido-lista relative">
+          {PARADAS.map((x, i) => {
+            const I = x.icono;
+            const on = i === activa;
+            return (
+              <button
+                key={x.id}
+                ref={(el) => {
+                  tabs.current[i] = el;
+                }}
+                type="button"
+                role="tab"
+                id={`tab-${x.id}`}
+                aria-selected={on}
+                aria-controls="panel-recorrido"
+                tabIndex={on ? 0 : -1}
+                onClick={() => setActiva(i)}
+                className="recorrido-parada group"
+              >
+                <span
+                  className={`recorrido-punto grid place-items-center rounded-full border-2 ${
+                    on ? "bg-white border-white text-azul" : "bg-azul border-white/40 text-white group-hover:border-white"
+                  }`}
+                >
+                  <I size={24} aria-hidden />
+                </span>
+                <span className="recorrido-nombre">
+                  <span className={`block leading-tight ${on ? "font-semibold text-white" : "text-white/80"}`}>{x.nombre}</span>
+                  {x.corriente && <span className="block font-mono text-xs text-white/70">{x.corriente}</span>}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div
+        id="panel-recorrido"
+        role="tabpanel"
+        aria-labelledby={`tab-${p.id}`}
+        tabIndex={0}
+        className="rounded-sm bg-white text-tinta p-5 md:p-6 grid gap-4 md:grid-cols-[auto_1fr_auto] md:items-center"
+      >
+        <span key={p.id} className="aparecer-rapido grid place-items-center size-14 rounded-sm bg-azul-suave text-azul">
           <Icono size={28} aria-hidden />
         </span>
-        <div className="flex flex-col gap-2">
+        <div key={`t-${p.id}`} className="aparecer-rapido flex flex-col gap-2">
           <p className="font-titulo text-xl font-bold text-azul">
             {activa + 1}. {p.nombre}
           </p>
-          <p className="text-tinta">{p.que}</p>
-          <p className="text-tenue">
-            <span className="font-semibold text-azul">GAVICOM: </span>
-            {p.gavicom}
-          </p>
+          <p>{p.que}</p>
+          {p.gavicom && (
+            <p className="text-tenue">
+              <span className="font-semibold text-azul">GAVICOM: </span>
+              {p.gavicom}
+            </p>
+          )}
         </div>
         {p.servicio && (
           <div className="md:pl-4">
