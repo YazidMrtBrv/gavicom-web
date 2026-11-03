@@ -21,6 +21,7 @@ export default function CotizadorEnergia() {
   const [tengo, setTengo] = useState<Set<string>>(new Set());
   const [municipio, setMunicipio] = useState("");
   const [empresa, setEmpresa] = useState("");
+  const [plazo, setPlazo] = useState("");
 
   // The first real use of the calculator ticks "Consumo" by itself; after
   // that the visitor can untick it and it stays unticked.
@@ -48,19 +49,20 @@ export default function CotizadorEnergia() {
     tengo.has("consumo") && consumoCalculado ? `• ${consumoCalculado}` : "",
     puedeEnviar.length ? `• Puedo enviar: ${puedeEnviar.map((d) => d.enMensaje).join(", ")}` : "",
   ].filter(Boolean);
+  const detalles = [
+    municipio.trim() ? `Proyecto en: ${municipio.trim()}` : "",
+    empresa.trim() ? `De parte de: ${empresa.trim()}` : "",
+    plazo ? `Lo necesito: ${plazo}` : "",
+  ].filter(Boolean);
   const mensaje = [
     "Hola GAVICOM, quiero cotizar un proyecto de energía solar con GAVICOM Energy.",
     ...lineas,
-    "",
-    municipio.trim() ? `Proyecto en: ${municipio.trim()}` : "",
-    empresa.trim() ? `De parte de: ${empresa.trim()}` : "",
-  ]
-    .filter((l, i, arr) => l !== "" || (i > 0 && arr[i - 1] !== ""))
-    .join("\n")
-    .trim();
+    ...(detalles.length ? ["", ...detalles] : []),
+  ].join("\n");
 
-  const listos = (tipo ? 1 : 0) + tengo.size + (municipio.trim() ? 1 : 0);
-  const total = DATOS.length + 2;
+  // Type, municipality and deadline, plus each item of the checklist.
+  const listos = (tipo ? 1 : 0) + tengo.size + (municipio.trim() ? 1 : 0) + (plazo ? 1 : 0);
+  const total = DATOS.length + 3;
 
   return (
     <div className="grid gap-12 md:gap-16">
@@ -99,6 +101,8 @@ export default function CotizadorEnergia() {
             onMunicipio={setMunicipio}
             empresa={empresa}
             onEmpresa={setEmpresa}
+            plazo={plazo}
+            onPlazo={setPlazo}
             consumoCalculado={consumoCalculado}
           />
 

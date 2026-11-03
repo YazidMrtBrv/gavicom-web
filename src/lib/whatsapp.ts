@@ -13,6 +13,10 @@ export interface DatosContacto {
   plazo?: string;
 }
 
+// Same three answers wherever a quote asks for a deadline, so sales reads
+// them the same way from the catalogue list and from the solar form.
+export const PLAZOS = ["Urgente", "Este mes", "Proyecto futuro"] as const;
+
 // "Señalización ferroviaria · Modelo 7": the model travels with the name so
 // whoever answers knows which picture the visitor chose.
 export function nombreConVariante(nombre: string, variante?: string): string {
@@ -24,19 +28,16 @@ export function nombreConVariante(nombre: string, variante?: string): string {
 export function mensajeCotizacion(lineas: LineaCotizacion[], datos: DatosContacto): string {
   const filas = lineas.map((l) => `• ${l.cantidad} × ${nombreConVariante(l.nombre, l.variante)} (${l.sku})`);
   const quien = [datos.nombre, datos.empresa].filter(Boolean).join(", ");
-  return [
-    "Hola GAVICOM, quiero cotizar:",
-    ...filas,
-    "",
+  // Empty details are dropped before joining, so the only blank line is the
+  // one that separates the item list from who is asking.
+  const detalles = [
     datos.ciudad ? `Entrega en: ${datos.ciudad}` : "",
     quien ? `De parte de: ${quien}` : "",
     datos.nit ? `NIT: ${datos.nit}` : "",
     datos.plazo ? `Lo necesito: ${datos.plazo}` : "",
     datos.nota ? `Nota: ${datos.nota}` : "",
-  ]
-    .filter((l, i, arr) => l !== "" || (i > 0 && arr[i - 1] !== ""))
-    .join("\n")
-    .trim();
+  ].filter(Boolean);
+  return ["Hola GAVICOM, quiero cotizar:", ...filas, ...(detalles.length ? ["", ...detalles] : [])].join("\n");
 }
 
 export function mensajeProducto(nombre: string, sku: string): string {

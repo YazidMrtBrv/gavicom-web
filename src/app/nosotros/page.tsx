@@ -54,7 +54,7 @@ const anteTitulo = "font-mono text-xs md:text-sm tracking-widest uppercase";
 export default function Nosotros() {
   return (
     <div className="flex flex-col">
-      <section aria-labelledby="h-nosotros" className="mx-auto w-full max-w-5xl px-4 sm:px-6 pt-10 md:pt-16 pb-16 md:pb-20">
+      <section aria-labelledby="h-nosotros" className="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-10 md:pt-16 pb-16 md:pb-20">
         <p className={`${anteTitulo} text-tenue`}>Nosotros</p>
         <h1 id="h-nosotros" className="mt-3 text-4xl md:text-6xl font-bold tracking-tight max-w-3xl leading-[1.05]">
           Experiencia en vía férrea, fabricación en Colombia
@@ -71,7 +71,7 @@ export default function Nosotros() {
       <section aria-labelledby="h-gaviota" className="sobre-azul relative isolate overflow-hidden bg-azul text-white">
         <Image src="/video/gaviota-poster.jpg" alt="" fill sizes="100vw" loading="lazy" className="object-cover -z-20" />
         <div aria-hidden="true" className="absolute inset-0 -z-10 bg-azul/90" />
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 py-20 md:py-28 grid gap-10 md:grid-cols-[260px_1fr] items-center">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-28 grid gap-10 md:grid-cols-[260px_1fr] items-center">
           <div className="bg-azul p-5 self-start md:self-center w-fit">
             <Image src="/marca/gavicom-blanco.png" alt="Logo de GAVICOM con la gaviota sobre la I" width={1267} height={327} sizes="220px" className="w-[180px] md:w-[220px] h-auto" />
           </div>
@@ -87,7 +87,7 @@ export default function Nosotros() {
         </div>
       </section>
 
-      <section aria-labelledby="h-hacemos" className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-20 md:py-28">
+      <section aria-labelledby="h-hacemos" className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-20 md:py-28">
         <p className={`${anteTitulo} text-tenue`}>02 · Qué hacemos</p>
         <h2 id="h-hacemos" className="mt-3 text-3xl md:text-5xl font-bold tracking-tight">
           Tres líneas de trabajo
@@ -119,7 +119,7 @@ export default function Nosotros() {
       </section>
 
       <section aria-label="Reconocimiento" className="bg-gris border-y border-linea">
-        <figure className="mx-auto max-w-5xl px-4 sm:px-6 py-16 md:py-20">
+        <figure className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-20">
           <p className={`${anteTitulo} text-tenue`}>03 · Reconocimiento</p>
           <blockquote className="mt-4 border-l-4 border-azul pl-5 md:pl-8">
             <p className="font-titulo text-2xl md:text-3xl font-semibold text-azul leading-snug max-w-3xl">
@@ -129,7 +129,7 @@ export default function Nosotros() {
         </figure>
       </section>
 
-      <section aria-labelledby="h-equipo" className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-20 md:py-28">
+      <section aria-labelledby="h-equipo" className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-20 md:py-28">
         <p className={`${anteTitulo} text-tenue`}>04 · Contacto</p>
         <h2 id="h-equipo" className="mt-3 text-3xl md:text-5xl font-bold tracking-tight">
           Con quién hablas

@@ -6,14 +6,13 @@ import { Trash2 } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
 import { slugProducto } from "@/lib/catalogo";
 import { useCotizacion } from "@/lib/cotizacion";
-import { enlaceWhatsApp, mensajeCotizacion, type DatosContacto } from "@/lib/whatsapp";
+import { PLAZOS, enlaceWhatsApp, mensajeCotizacion, type DatosContacto } from "@/lib/whatsapp";
 import SelectorCantidad from "@/components/catalogo/SelectorCantidad";
 
 type EstadoCorreo = "nada" | "enviando" | "enviado" | "fallo" | "correo-invalido";
 type Campo = "nombre" | "empresa" | "ciudad" | "nota" | "correo" | "telefono";
 type Datos = Record<Campo, string> & { plazo: string };
 
-const PLAZOS = ["Urgente", "Este mes", "Proyecto futuro"];
 // Without a name and a delivery city every quote starts with a question
 // back, so both are asked before the message leaves.
 const OBLIGATORIOS: Campo[] = ["nombre", "ciudad"];
@@ -23,11 +22,25 @@ export default function Cotizacion() {
   const [datos, setDatos] = useState<Datos>({ nombre: "", empresa: "", ciudad: "", nota: "", correo: "", telefono: "", plazo: "" });
   const [errores, setErrores] = useState<Partial<Record<Campo, string>>>({});
   const [correo, setCorreo] = useState<EstadoCorreo>("nada");
+  // Emptying the list is one tap away from the last item's controls, so it
+  // asks once before wiping everything the visitor built.
+  const [confirmarVaciar, setConfirmarVaciar] = useState(false);
   // Honeypot: hidden from people, filled by bots; the API drops those posts.
   const [trampa, setTrampa] = useState("");
   const refs = useRef<Partial<Record<Campo, HTMLInputElement | null>>>({});
 
-  const contacto: DatosContacto = { nombre: datos.nombre.trim(), empresa: datos.empresa.trim(), ciudad: datos.ciudad.trim(), nota: datos.nota.trim(), plazo: datos.plazo };
+  // The field takes a NIT or a company name: a number goes on its own "NIT:"
+  // line, so sales never mistakes it for a phone number after the name.
+  const empresaONit = datos.empresa.trim();
+  const esNit = /^\d[\d.\s]*(-\s*\d)?$/.test(empresaONit) && empresaONit.replace(/\D/g, "").length >= 6;
+  const contacto: DatosContacto = {
+    nombre: datos.nombre.trim(),
+    empresa: esNit ? "" : empresaONit,
+    nit: esNit ? empresaONit : undefined,
+    ciudad: datos.ciudad.trim(),
+    nota: datos.nota.trim(),
+    plazo: datos.plazo,
+  };
   const texto = mensajeCotizacion(lineas, contacto);
 
   // Returns true when the required fields are filled; otherwise marks them
@@ -93,7 +106,7 @@ export default function Cotizacion() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          nombre: [contacto.nombre, contacto.empresa].filter(Boolean).join(", "),
+          nombre: [contacto.nombre, contacto.empresa, contacto.nit && `NIT ${contacto.nit}`].filter(Boolean).join(", "),
           telefono: datos.telefono,
           email: datos.correo.trim(),
           tipo: "Cotización",
@@ -112,9 +125,9 @@ export default function Cotizacion() {
 
   if (!lineas.length) {
     return (
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-10">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-10">
         <h1 className="text-3xl font-bold">Mi cotización</h1>
-        <div className="mt-6 border border-linea rounded bg-gris p-6 flex flex-col gap-3 items-start">
+        <div className="mt-6 max-w-3xl border border-linea rounded bg-gris p-6 flex flex-col gap-3 items-start">
           <p className="font-semibold">Tu lista está vacía.</p>
           <p className="text-tenue text-sm">En el catálogo, toca «Agregar a cotización» en cada referencia que necesites. La lista se guarda en este navegador.</p>
           <Link href="/catalogo" className="inline-flex items-center min-h-11 px-4 rounded bg-azul text-white font-semibold hover:bg-azul-hover">
@@ -126,7 +139,7 @@ export default function Cotizacion() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-8 md:pt-10">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-8 md:pt-10">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h1 className="text-3xl font-bold">Mi cotización</h1>
         <p className="text-tenue tabular-nums">
@@ -144,7 +157,7 @@ export default function Cotizacion() {
               // below; from sm up, all on one line.
               <li key={clave} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 py-4 border-b border-linea">
                 <div className="flex-1 min-w-0">
-                  <Link href={l.sku.startsWith("GVC-ENR-") ? `/energy#${l.sku.toLowerCase()}` : `/catalogo/${slugProducto(l)}`} className="font-semibold hover:text-azul">
+                  <Link href={l.sku.startsWith("GVC-ENR-") ? `/energy#${l.sku.toLowerCase()}` : `/catalogo/${slugProducto(l)}`} className="inline-flex items-center min-h-11 font-semibold hover:text-azul">
                     {l.nombre}
                   </Link>
                   {l.variante && <p className="text-sm text-tinta">{l.variante}</p>}
@@ -163,9 +176,21 @@ export default function Cotizacion() {
             <Link href="/catalogo" className="inline-flex items-center min-h-11 text-sm font-semibold text-azul hover:underline">
               Agregar más referencias
             </Link>
-            <button type="button" onClick={vaciar} className="min-h-11 text-sm text-tenue hover:text-tinta">
-              Vaciar lista
-            </button>
+            {confirmarVaciar ? (
+              <span role="group" aria-label="¿Vaciar toda la lista?" className="flex flex-wrap items-center justify-end gap-2 text-sm">
+                <span className="text-tinta">¿Vaciar toda la lista?</span>
+                <button type="button" onClick={vaciar} className="min-h-11 px-3 rounded border border-red-700 text-red-700 font-semibold hover:bg-red-50">
+                  Sí, vaciar
+                </button>
+                <button type="button" autoFocus onClick={() => setConfirmarVaciar(false)} className="min-h-11 px-3 rounded border border-linea font-semibold hover:border-azul">
+                  Cancelar
+                </button>
+              </span>
+            ) : (
+              <button type="button" onClick={() => setConfirmarVaciar(true)} className="min-h-11 text-sm text-tenue hover:text-tinta">
+                Vaciar lista
+              </button>
+            )}
           </li>
         </ul>
 

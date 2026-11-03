@@ -118,6 +118,14 @@ body:has(#vuelo) .encabezado[data-cielo="auto"] .logo-azul {
 body:has(#vuelo) .encabezado[data-cielo="auto"] .logo-blanco {
   display: block;
 }
+/* ---- Footer (Pie.tsx) ---- */
+/* The footer keeps its distance from light pages, but a page that already
+   ends in a blue band (Energy's quote, the 404) meets it edge to edge, or a
+   96 px white strip shows up between two blue blocks. */
+main:has(> :last-child.bg-azul) + footer {
+  margin-top: 0;
+}
+
 /* Pages with a full-bleed hero let it run under the bar. */
 body:has(#vuelo) .espaciador-encabezado {
   display: none;

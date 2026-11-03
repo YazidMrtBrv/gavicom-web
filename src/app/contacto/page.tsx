@@ -167,7 +167,7 @@ function FormularioConTema() {
 
 export default function Contacto() {
   return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-10 md:pt-16 pb-20 md:pb-28">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 md:pt-16 pb-4">
       <p className="font-mono text-xs md:text-sm tracking-widest uppercase text-tenue">Contacto</p>
       <h1 className="mt-3 text-4xl md:text-5xl font-bold tracking-tight">Escríbenos por WhatsApp o por correo</h1>
       <p className="text-tenue mt-4 max-w-2xl">Para cotizar varias referencias es más rápido armar tu lista en el catálogo. Para cualquier otra consulta, escríbenos aquí.</p>

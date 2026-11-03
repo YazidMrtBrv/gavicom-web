@@ -1,6 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
+import { PLAZOS } from "@/lib/whatsapp";
 
 // What GAVICOM asks for to quote a solar project. Ticking items sends
 // nothing: it only builds the WhatsApp message, so the first reply can get
@@ -9,7 +10,6 @@ import { Check } from "lucide-react";
 export const DATOS = [
   { id: "consumo", titulo: "Consumo o factura de energía", detalle: "Una factura reciente o el dato de consumo.", enMensaje: "consumo o factura de energía" },
   { id: "sitio", titulo: "Plano o fotos del sitio", detalle: "Del lugar donde iría la instalación.", enMensaje: "plano o fotos del sitio" },
-  { id: "plazo", titulo: "Plazo deseado", detalle: "Para cuándo necesita el sistema.", enMensaje: "plazo deseado" },
 ] as const;
 export const TIPOS = ["Residencial", "Comercial", "Industrial"] as const;
 export type Tipo = (typeof TIPOS)[number];
@@ -23,6 +23,9 @@ interface Props {
   onMunicipio: (s: string) => void;
   empresa: string;
   onEmpresa: (s: string) => void;
+  /** A deadline is an answer, not a document to send: chips, as in /cotizacion. */
+  plazo: string;
+  onPlazo: (s: string) => void;
   /** Filled-in consumption line once the visitor used the calculator. */
   consumoCalculado: string | null;
 }
@@ -81,6 +84,28 @@ export default function DatosParaCotizar(p: Props) {
           />
         </div>
       </div>
+
+      <fieldset className="rounded-sm bg-white p-4">
+        <legend className="sr-only">¿Para cuándo lo necesitas? (opcional)</legend>
+        <p aria-hidden className="font-semibold mb-2">
+          ¿Para cuándo lo necesitas? <span className="font-normal text-tenue">(opcional)</span>
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {PLAZOS.map((t) => (
+            <button
+              key={t}
+              type="button"
+              aria-pressed={p.plazo === t}
+              onClick={() => p.onPlazo(p.plazo === t ? "" : t)}
+              className={`min-h-11 px-4 rounded-sm border text-sm font-semibold transition-colors ${
+                p.plazo === t ? "bg-azul text-white border-azul" : "border-linea hover:border-azul"
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      </fieldset>
 
       {DATOS.map((d) => {
         const marcado = p.tengo.has(d.id);
