@@ -11,7 +11,7 @@ const DURACION = 4000;
 // Confirms every add without moving focus: the live region is always in the
 // DOM (screen readers ignore regions that appear with their text already
 // inside) and only its content changes. Bottom-left on phones, clear of the
-// round WhatsApp button at the right; above the action bar on product pages.
+// WhatsApp pill: above it on phones; above the action bar on product pages.
 export default function AvisoCotizacion() {
   const [aviso, setAviso] = useState<DetalleAgregado | null>(null);
   const temporizador = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -32,7 +32,7 @@ export default function AvisoCotizacion() {
   }, []);
 
   return (
-    <div role="status" className="aviso-cotizacion fixed z-50 left-4 right-20 bottom-4 sm:right-auto sm:left-6 sm:bottom-6 sm:max-w-sm pointer-events-none">
+    <div role="status" className="aviso-cotizacion fixed z-50 left-4 right-4 bottom-[5.5rem] sm:right-auto sm:left-6 sm:bottom-6 sm:max-w-sm pointer-events-none">
       {aviso && (
         <div className="aviso-entrar pointer-events-auto flex items-center gap-3 rounded bg-azul text-white pl-4 pr-2 py-2 shadow-lg">
           <CheckCircle2 size={20} aria-hidden className="shrink-0" />

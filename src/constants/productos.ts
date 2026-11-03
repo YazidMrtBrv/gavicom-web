@@ -21,7 +21,7 @@ export const COMPANIA_INFO = {
   nombre: "GAVICOM SAS",
   gerente: "Geimar Martínez",
   cargo: "Gerente General",
-  directora: "Carol Martinez",
+  directora: "Carol Martínez",
   cargoDirectora: "DIRECTORA EJECUTIVA",
   directoraWhatsapp: "+573017277888",
   email: "gerencia@gavicom.com",
@@ -29,6 +29,14 @@ export const COMPANIA_INFO = {
   departamento: "Atlántico",
   pais: "Colombia",
   cobertura: "Cobertura en todo el territorio nacional",
+  // Owner's own brand promise and service hours (2026-11). Shown wherever a
+  // buyer decides to write, so these strings are the only source for them.
+  promesa: "100% confiables, rápidos y precisos.",
+  horario: "Todos los días, de 6:00 a.m. a 10:00 p.m.",
+  horarioCorto: "Todos los días · 6 a.m. a 10 p.m.",
+  // schema.org openingHours form of the same hours.
+  horarioSchema: "Mo-Su 06:00-22:00",
+  fundacion: 2025,
   whatsappSales: "+573150509803",
   whatsappBaseUrl: "https://api.whatsapp.com/send",
   disclaimerLegal:
