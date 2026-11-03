@@ -16,6 +16,7 @@ import {
 import type { Producto } from "@/constants/productos";
 import { SERVICIOS, normalizar } from "@/lib/catalogo";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import { BotonWhatsAppVenta, FranjaConfianza, LineaHorario, IconoWhatsApp } from "@/components/venta/Venta";
 
 // Per-service presentation. The deliverable line is lifted from each
 // service's own text in productos.ts; the follow-up question is what sales
@@ -127,19 +128,20 @@ export default function Servicios() {
       <section className="sobre-azul bg-azul text-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 md:py-20">
           <p className="font-mono text-sm tracking-[0.2em] uppercase text-white/70">
-            Servicios técnicos
+            Servicios técnicos ferroviarios
           </p>
-          <h1 className="mt-3 text-white text-3xl md:text-5xl font-bold leading-[1.1] tracking-tight max-w-4xl">
-            Servicios técnicos para vía férrea, del levantamiento al
-            mantenimiento
+          <h1 className="mt-3 text-white text-3xl md:text-5xl font-bold leading-[1.1] tracking-tight max-w-4xl text-balance">
+            Topografía, mantenimiento, planos y consultoría para tu vía férrea
           </h1>
-          {/* The chips below already name every group, so phones skip this
-              line to keep the list of services within reach. */}
-          <p className="hidden sm:block mt-4 text-white/80 max-w-2xl">
-            Además del suministro, hacemos topografía con dron, mantenimiento de
-            equipos, servicio hidráulico, alquiler de motosoldadores Lincoln,
-            planos y consultoría ferroviaria.
+          <p className="mt-4 text-white/85 max-w-2xl md:text-lg">
+            El mismo proveedor de tus materiales, en campo. Cuéntanos el tramo, el equipo o el plano y te cotizamos.
           </p>
+          <div data-hero-cta className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+            <BotonWhatsAppVenta mensaje="Hola GAVICOM, quiero cotizar un servicio técnico: " grande ancho>
+              Cotizar un servicio
+            </BotonWhatsAppVenta>
+            <LineaHorario claro />
+          </div>
           {/* One swipeable row on phones instead of three wrapped rows. */}
           <nav
             aria-label="Grupos de servicios"
@@ -160,6 +162,8 @@ export default function Servicios() {
           </nav>
         </div>
       </section>
+
+      <FranjaConfianza />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-8 md:pt-16 flex flex-col gap-8 md:gap-16">
         {grupos.map((g) => (
@@ -240,9 +244,11 @@ export default function Servicios() {
                         )}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center min-h-11 px-4 rounded bg-azul text-white text-sm font-semibold hover:bg-azul-hover whitespace-nowrap"
+                        className="inline-flex items-center gap-2 min-h-11 px-4 rounded bg-whatsapp text-white text-sm font-semibold hover:brightness-110 whitespace-nowrap"
                       >
-                        Consultar este servicio
+                        <IconoWhatsApp size={18} />
+                        Cotizar este servicio
+                        <span className="sr-only"> (abre WhatsApp)</span>
                       </a>
                     </div>
                   </li>

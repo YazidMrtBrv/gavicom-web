@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import Cifras from "@/components/movimiento/Cifras";
 import RutaFabricacion from "@/components/fabricacion/RutaFabricacion";
 import ArmaTuPedido, { BotonPerfil } from "@/components/fabricacion/ArmaTuPedido";
+import { BandaCotizar, BotonWhatsAppVenta, FranjaConfianza, LineaHorario } from "@/components/venta/Venta";
 import { PERFILES_ECLISA } from "@/constants/perfilesEclisa";
 
 const TITULO = "Fabricación de piezas ferroviarias en Colombia";
@@ -66,19 +67,25 @@ export default function Fabricacion() {
           <div data-aparecer className="flex flex-col gap-5">
             <p className={`${ANTETITULO} text-white/70`}>Fabricación en Colombia</p>
             <h1 className="text-white text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight">
-              Piezas ferroviarias fabricadas en Colombia, sin esperar una importación.
+              Tu pieza ferroviaria, fabricada en Colombia sin esperar una importación.
             </h1>
             <p className="font-mono text-sm text-white/85">
               Hierro nodular ASTM A536 · 5 controles por lote · Planos bajo confidencialidad
             </p>
-            <p className="text-lg text-white/80 max-w-lg">
-              Ingeniería inversa, planos propios y fundición con nuestro aliado industrial. La pieza se fabrica y se entrega dentro del país: sin tránsito marítimo ni nacionalización.
+            <p className="text-lg text-white/85 max-w-lg">
+              Envíanos el plano, la foto o la muestra. Hacemos la ingeniería inversa, los planos y la fundición con nuestro aliado industrial, y verificamos cada lote. Sin tránsito marítimo ni nacionalización.
             </p>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2">
-              <a href="#arma-tu-pedido" data-hero-cta className="boton-iman inline-flex items-center min-h-12 px-6 rounded bg-white text-azul font-semibold hover:bg-azul-suave">
+            <div data-hero-cta className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 pt-2">
+              <BotonWhatsAppVenta mensaje="Hola GAVICOM, necesito fabricar una pieza ferroviaria. Les envío el plano o la foto: " grande ancho>
+                Cotizar mi pieza
+              </BotonWhatsAppVenta>
+              <a href="#arma-tu-pedido" className="boton-iman inline-flex items-center justify-center min-h-14 px-6 rounded border border-white text-white font-semibold hover:bg-white/10">
                 Arma tu pedido
               </a>
-              <a href="#caso" className="inline-flex items-center gap-1 min-h-11 text-white font-semibold underline underline-offset-4 decoration-white/50 hover:decoration-white">
+            </div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+              <LineaHorario claro />
+              <a href="#caso" className="inline-flex items-center gap-1 min-h-11 text-sm text-white font-semibold underline underline-offset-4 decoration-white/50 hover:decoration-white">
                 Ver el caso real <ArrowRight size={16} aria-hidden />
               </a>
             </div>
@@ -96,6 +103,8 @@ export default function Fabricacion() {
           </figure>
         </div>
       </section>
+
+      <FranjaConfianza />
 
       <section aria-label="Capacidad" className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
         <div data-aparecer>
@@ -247,9 +256,17 @@ export default function Fabricacion() {
         </div>
       </section>
 
+      <BandaCotizar
+        titulo="Cinco controles por lote, antes de que la pieza salga."
+        texto="Cuéntanos qué pieza necesitas y en qué cantidad: te respondemos con la cotización."
+        mensaje="Hola GAVICOM, necesito fabricar una pieza ferroviaria: "
+        boton="Cotizar fabricación"
+        secundario={{ href: "#arma-tu-pedido", texto: "Arma tu pedido" }}
+      />
+
       {/* Import figures stay apart from the 600 t own capacity and are not
           animated: GAVICOM still has to confirm whose capacity they are. */}
-      <section aria-labelledby="h-volumen" className="mx-auto max-w-6xl px-4 sm:px-6 pb-20 md:pb-28">
+      <section aria-labelledby="h-volumen" className="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-28">
         <div data-aparecer className="rounded border-2 border-azul p-6 md:p-10 grid gap-8 md:grid-cols-[1.2fr_1fr_1fr] items-center">
           <div>
             <p className={`${ANTETITULO} text-tenue`}>Para volúmenes mayores</p>
