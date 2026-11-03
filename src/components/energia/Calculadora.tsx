@@ -28,6 +28,14 @@ const AREA_PANEL = 2.6; // m² of a 550 W module
 // Assumption: aisles for maintenance and spacing between rows.
 const FACTOR_TECHO = 1.4;
 export const KWH_MIN = 50;
+
+// Typical monthly consumption per kind of project: quick starting points for
+// the visitor, also used when they arrive from the "why solar" tabs.
+export const PRESETS = [
+  { segmento: "hogar", texto: "Casa", kwh: 300 },
+  { segmento: "comercio", texto: "Comercio", kwh: 2000 },
+  { segmento: "industria", texto: "Bodega o planta", kwh: 10000 },
+] as const;
 export const KWH_MAX = 20000;
 
 export const fmt = (n: number, d = 0) => n.toLocaleString("es-CO", { maximumFractionDigits: d, minimumFractionDigits: d });
@@ -67,6 +75,75 @@ function Cifra({ etiqueta, valor, unidad, nota }: { etiqueta: string; valor: str
       </dd>
       {nota && <dd className="mt-1 text-xs text-white/70">{nota}</dd>}
     </div>
+  );
+}
+
+// Consumption against estimated generation, on one scale, so "cubre X %"
+// becomes something the eye can check.
+function Balance({ kwh, generacion }: { kwh: number; generacion: number }) {
+  const tope = Math.max(kwh, generacion);
+  const filas = [
+    { t: "Tu consumo", v: kwh, clase: "bg-white/40" },
+    { t: "Generación estimada", v: generacion, clase: "bg-white" },
+  ];
+  return (
+    <dl className="grid gap-3">
+      {filas.map((f) => (
+        <div key={f.t} className="grid gap-1.5">
+          <div className="flex items-baseline justify-between gap-3 text-sm">
+            <dt className="text-white/80">{f.t}</dt>
+            <dd className="font-mono tabular-nums whitespace-nowrap">{fmt(f.v)} kWh/mes</dd>
+          </div>
+          <div aria-hidden className="h-2 bg-white/10">
+            <div className={`h-full ${f.clase} transition-[width] duration-300`} style={{ width: `${(f.v / tope) * 100}%` }} />
+          </div>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+// The modules themselves, drawn in rows, so the visitor sees the size of the
+// array and not only a count. Past 48 the last cell says how many more.
+const MAX_DIBUJO = 48;
+const COLS = 12;
+function ArregloPaneles({ n }: { n: number }) {
+  const dibujados = n > MAX_DIBUJO ? MAX_DIBUJO - 1 : n;
+  const celdas = n > MAX_DIBUJO ? MAX_DIBUJO : n;
+  const filas = Math.ceil(celdas / COLS);
+  const W = 14;
+  const H = 20;
+  const G = 4;
+  return (
+    <figure className="grid gap-2">
+      <svg
+        aria-hidden
+        viewBox={`0 0 ${COLS * (W + G) - G} ${filas * (H + G) - G}`}
+        className="w-full max-w-sm h-auto"
+        style={{ maxHeight: 4 * (H + G) * 1.6 }}
+      >
+        {Array.from({ length: celdas }, (_, i) => {
+          const x = (i % COLS) * (W + G);
+          const y = Math.floor(i / COLS) * (H + G);
+          if (i >= dibujados) {
+            return (
+              <text key={i} x={x + W / 2} y={y + H / 2 + 3.5} textAnchor="middle" fill="#fff" fontSize={9} fontFamily="ui-monospace, monospace">
+                +{n - dibujados}
+              </text>
+            );
+          }
+          return (
+            <g key={i} fill="none" stroke="#fff" strokeWidth={1}>
+              <rect x={x + 0.5} y={y + 0.5} width={W - 1} height={H - 1} fill="rgb(255 255 255 / 0.1)" />
+              <path d={`M${x + W / 2} ${y + 1} V${y + H - 1} M${x + 1} ${y + H / 2} H${x + W - 1}`} strokeOpacity={0.5} />
+            </g>
+          );
+        })}
+      </svg>
+      <figcaption className="text-xs text-white/70 font-mono">
+        {fmt(n)} {n === 1 ? "panel" : "paneles"} de {PANEL_W} W · dibujo a escala de cantidad, no de techo
+      </figcaption>
+    </figure>
   );
 }
 
@@ -138,13 +215,7 @@ export default function Calculadora({ kwh, region, onKwh, onRegion }: Props) {
           className="energia-rango w-full min-h-11"
         />
         <div className="flex flex-wrap gap-2 text-sm">
-          {(
-            [
-              ["Casa", 300],
-              ["Comercio", 2000],
-              ["Bodega o planta", 10000],
-            ] as const
-          ).map(([t, v]) => (
+          {PRESETS.map(({ texto: t, kwh: v }) => (
             <button
               key={t}
               type="button"
@@ -197,9 +268,8 @@ export default function Calculadora({ kwh, region, onKwh, onRegion }: Props) {
             <p className="font-titulo font-bold text-2xl sm:text-3xl leading-tight">
               Cubre aprox. <span className="tabular-nums whitespace-nowrap">{fmt(Math.min(100, est.cobertura))} %</span> de tu consumo
             </p>
-            <div aria-hidden className="h-1.5 rounded-full bg-white/15 overflow-hidden">
-              <div className="h-full bg-white" style={{ width: `${Math.min(100, est.cobertura)}%` }} />
-            </div>
+            <Balance kwh={kwh} generacion={est.generacion} />
+            <ArregloPaneles n={est.paneles} />
             <dl className="grid grid-cols-2 gap-x-4 gap-y-5">
               <Cifra etiqueta="Potencia del sistema" valor={fmt(est.kwp, 1)} unidad="kWp" />
               <Cifra etiqueta={`Paneles de ${PANEL_W} W`} valor={fmt(est.paneles)} />
@@ -211,9 +281,6 @@ export default function Calculadora({ kwh, region, onKwh, onRegion }: Props) {
                 nota="Incluye pasillos de mantenimiento y separación (supuesto ×1,4)."
               />
             </dl>
-            <p className="text-sm text-white/75">
-              Generaría unos <span className="font-mono whitespace-nowrap">{fmt(est.generacion)} kWh/mes</span>.
-            </p>
             <p className="text-xs text-white/70 font-mono">
               Supuestos: {PANEL_W} W por panel, {fmt(region.hsp, 1)} h de sol pico, 20 % de pérdidas.
             </p>
