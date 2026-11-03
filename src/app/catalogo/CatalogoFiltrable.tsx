@@ -182,7 +182,7 @@ export default function CatalogoFiltrable({ children }: { children: ReactNode })
                 aria-pressed={filtros.origen === ORIGEN_PROPIO}
                 className={chip(filtros.origen === ORIGEN_PROPIO)}
               >
-                <Factory size={14} aria-hidden /> Fabricación propia <span className={cuenta(filtros.origen === ORIGEN_PROPIO)}>{TOTAL_PROPIOS}</span>
+                <Factory size={14} aria-hidden /> Fabricado en Colombia <span className={cuenta(filtros.origen === ORIGEN_PROPIO)}>{TOTAL_PROPIOS}</span>
               </button>
             )}
           </div>
@@ -218,7 +218,7 @@ export default function CatalogoFiltrable({ children }: { children: ReactNode })
           {resultado.length === 1 ? "1 referencia" : `${resultado.length} referencias`}
           {linea ? ` en ${linea.nombre.toLowerCase()}` : ""}
           {sub ? ` · ${sub.nombre.toLowerCase()}` : ""}
-          {filtros.origen === ORIGEN_PROPIO ? " · fabricación propia" : ""}
+          {filtros.origen === ORIGEN_PROPIO ? " · fabricado en Colombia" : ""}
           {consulta.trim() ? ` para «${consulta.trim()}»` : ""}
         </p>
         <button

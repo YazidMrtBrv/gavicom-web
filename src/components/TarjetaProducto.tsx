@@ -42,7 +42,7 @@ export default function TarjetaProducto({ producto, prioridad = false }: { produ
           )}
           {propia && (
             <span className="absolute left-1 top-1">
-              <InsigniaFabricado compacta />
+              <InsigniaFabricado compacta colombia />
             </span>
           )}
         </div>

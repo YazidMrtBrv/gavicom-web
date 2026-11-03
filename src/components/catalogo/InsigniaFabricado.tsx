@@ -1,16 +1,19 @@
-import { Factory } from "lucide-react";
+import { Factory, MapPin } from "lucide-react";
 
-// Only for references whose manufacture in Colombia is documented
-// (catalogoExtra: origenVisible "fabricacion-propia").
-export default function InsigniaFabricado({ compacta = false }: { compacta?: boolean }) {
+// Two claims, two badges: "Fabricado por GAVICOM" for every GAVICOM product
+// (the owner's statement, see marcaDe in catalogoExtra) and "Fabricado en
+// Colombia" only where local manufacture is documented (origenVisible
+// "fabricacion-propia").
+export default function InsigniaFabricado({ compacta = false, colombia = false }: { compacta?: boolean; colombia?: boolean }) {
+  const Icono = colombia ? MapPin : Factory;
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded bg-azul text-white font-semibold whitespace-nowrap ${
-        compacta ? "px-2 py-1 text-xs" : "px-2.5 py-1 text-xs"
-      }`}
+      className={`inline-flex items-center gap-1.5 rounded font-semibold whitespace-nowrap ${
+        colombia ? "bg-azul text-white" : "bg-azul-suave text-azul border border-azul/25"
+      } ${compacta ? "px-2 py-1 text-xs" : "px-2.5 py-1 text-xs"}`}
     >
-      <Factory size={compacta ? 12 : 14} aria-hidden />
-      Fabricado en Colombia
+      <Icono size={compacta ? 12 : 14} aria-hidden />
+      {colombia ? "Fabricado en Colombia" : "Fabricado por GAVICOM"}
     </span>
   );
 }
