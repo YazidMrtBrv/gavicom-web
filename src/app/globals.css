@@ -291,3 +291,26 @@ body:has(#vuelo) .espaciador-encabezado {
 @keyframes flujo {
   to { background-position: 18px 0; }
 }
+
+/* Home line cards: the three thumbnails of what is inside wake up on hover
+   or keyboard focus where hovering exists; touch screens always see them. */
+@media (hover: hover) {
+  .linea-destacados > * {
+    opacity: 0.35;
+    transform: translate3d(0, 4px, 0);
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+  }
+  .linea-destacados > :nth-child(2) { transition-delay: 40ms; }
+  .linea-destacados > :nth-child(3) { transition-delay: 80ms; }
+  .group:hover .linea-destacados > *,
+  .group:focus-visible .linea-destacados > * {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .linea-destacados > * {
+    transition: none !important;
+    transform: none !important;
+  }
+}

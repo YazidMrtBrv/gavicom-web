@@ -2,7 +2,9 @@ import { statSync } from "node:fs";
 import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Factory, Sun, Truck, Wrench } from "lucide-react";
+import { ArrowRight, Factory, Truck } from "lucide-react";
+import Asistente, { type PiezaAsistente } from "@/components/asistente/Asistente";
+import { SKUS_ASISTENTE } from "@/components/asistente/datos";
 import { COMPANIA_INFO } from "@/constants/productos";
 import { imagenPrincipal } from "@/constants/catalogoExtra";
 import { FranjaConfianza } from "@/components/venta/Venta";
@@ -68,31 +70,21 @@ const OFERTA = LINEAS.map((l) => {
     linea: l,
     foto: p ? imagenPrincipal(p) : null,
     total: PRODUCTOS.filter((x) => x.categoria === l.categoria).length,
+    // First three references of the line with a clean photo, other than the
+    // card's own picture: what the visitor will find inside.
+    destacados: PRODUCTOS.filter((x) => x.categoria === l.categoria && x.sku !== sku)
+      .map((x) => ({ sku: x.sku, nombre: x.nombre, foto: imagenPrincipal(x) }))
+      .filter((x) => x.foto)
+      .slice(0, 3),
   };
 });
 
-// The three reasons people arrive, as doors. Guiding by intent replaces a
-// wall of buttons: each door leads to the page that answers that need.
-const PUERTAS = [
-  {
-    href: "/catalogo",
-    icono: Wrench,
-    titulo: "Repuestos y herramientas para vía",
-    texto: `Eclisas, fijaciones, clips, tirafondos, herramientas y señalización: ${PRODUCTOS.length} referencias con ficha técnica.`,
-  },
-  {
-    href: "/fabricacion",
-    icono: Factory,
-    titulo: "Una pieza fabricada a medida",
-    texto: "Con tu plano o tu muestra, en hierro nodular ASTM A536 y con cinco controles de calidad por lote.",
-  },
-  {
-    href: "/energy",
-    icono: Sun,
-    titulo: "Energía solar",
-    texto: "Sistemas solares para hogar, comercio e industria, con cofres, protecciones y gabinetes.",
-  },
-];
+// Only the references the finder can show travel to the client.
+const PIEZAS_ASISTENTE: PiezaAsistente[] = SKUS_ASISTENTE.flatMap((sku) => {
+  const p = PRODUCTOS.find((x) => x.sku === sku);
+  if (!p) return [];
+  return [{ sku: p.sku, nombre: p.nombre, slug: slugProducto(p), img: imagenPrincipal(p)?.src ?? null }];
+});
 
 // How an order goes, in three steps. No timings: GAVICOM has not published any.
 const PASOS = [
@@ -135,29 +127,19 @@ export default function Inicio() {
 
       <FranjaConfianza />
 
-      <section aria-labelledby="h-necesitas" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
+      {/* The finder: pick a need, answer one quick question, get something
+          useful (parts with a live list, the manufacturing path, a solar
+          estimate) and one prefilled message. */}
+      <section aria-labelledby="h-necesitas" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24 scroll-mt-20">
         <div className="flex flex-col gap-3 mb-8">
           <Antetitulo>Empieza por aquí</Antetitulo>
           <h2 id="h-necesitas" data-aparecer className={H2}>
-            ¿Qué necesitas?
+            Encuentra lo que necesitas en tres toques
           </h2>
         </div>
-        <ul data-aparecer="grupo" className="grid gap-3 md:grid-cols-3">
-          {PUERTAS.map(({ href, icono: Icono, titulo, texto }) => (
-            <li key={href}>
-              <Link href={href} className="foco group flex h-full flex-col gap-3 rounded border border-linea bg-white p-5 md:p-6 hover:border-azul">
-                <span className="grid place-items-center size-11 rounded bg-azul-suave text-azul">
-                  <Icono size={22} aria-hidden />
-                </span>
-                <span className="font-titulo text-xl font-bold text-tinta group-hover:text-azul">{titulo}</span>
-                <span className="text-tenue">{texto}</span>
-                <span className="mt-auto inline-flex items-center gap-1.5 min-h-11 font-semibold text-azul">
-                  Ver más <ArrowRight size={18} aria-hidden className="transition-transform group-hover:translate-x-1" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div data-aparecer>
+          <Asistente piezas={PIEZAS_ASISTENTE} />
+        </div>
       </section>
 
       {/* Proof: delivered work only, and without naming clients, since the
@@ -239,9 +221,9 @@ export default function Inicio() {
           </div>
         </div>
         <ul data-aparecer="grupo" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {OFERTA.map(({ linea, foto, total }) => (
+          {OFERTA.map(({ linea, foto, total, destacados }) => (
             <li key={linea.slug}>
-              <Link href={rutaLinea(linea)} className="foco group flex h-full gap-4 rounded border border-linea bg-white p-4 hover:border-azul sm:flex-col">
+              <Link href={rutaLinea(linea)} className="foco inclinar group flex h-full gap-4 rounded border border-linea bg-white p-4 hover:border-azul sm:flex-col">
                 <span className="relative block size-20 shrink-0 sm:w-full sm:h-40 bg-white">
                   {foto && <Image src={foto.src} alt="" fill sizes="(min-width:1024px) 340px, (min-width:640px) 45vw, 80px" className="object-contain" />}
                 </span>
@@ -251,8 +233,19 @@ export default function Inicio() {
                     <span className="font-mono text-xs text-tenue tabular-nums whitespace-nowrap">{total} ref.</span>
                   </span>
                   <span className="text-sm text-tenue">{linea.resumen}</span>
+                  {/* A peek at what is inside: dimmed until hover or focus on
+                      devices that hover, always shown on touch screens. */}
+                  {destacados.length > 0 && (
+                    <span aria-hidden className="linea-destacados hidden sm:flex gap-2 pt-2">
+                      {destacados.map((d) => (
+                        <span key={d.sku} className="relative block size-12 rounded border border-linea bg-white" title={d.nombre}>
+                          <Image src={d.foto!.src} alt="" fill sizes="48px" className="object-contain p-1" />
+                        </span>
+                      ))}
+                    </span>
+                  )}
                   <span className="mt-auto inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-azul">
-                    Ver piezas <ArrowRight size={16} aria-hidden />
+                    Ver piezas <ArrowRight size={16} aria-hidden className="transition-transform group-hover:translate-x-1" />
                   </span>
                 </span>
               </Link>
