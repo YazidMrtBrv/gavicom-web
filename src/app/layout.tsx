@@ -5,6 +5,7 @@ import Encabezado from "@/components/Encabezado";
 import Pie from "@/components/Pie";
 import BotonWhatsApp from "@/components/BotonWhatsApp";
 import AvisoCotizacion from "@/components/catalogo/AvisoCotizacion";
+import CajonLista from "@/components/catalogo/CajonLista";
 import Interacciones from "@/components/movimiento/Interacciones";
 import { Analytics } from "@vercel/analytics/next";
 import { EMPRESA, SITE_URL, alternas } from "@/lib/meta";
@@ -220,6 +221,7 @@ export default function RootLayout({
         {/* One add confirmation for every page with an add button (catalogue,
             home, energy), so it is the only live announcement. */}
         <AvisoCotizacion />
+        <CajonLista />
         <Interacciones />
         {/* Vercel Analytics only exists on Vercel; elsewhere its script 404s. */}
         {process.env.VERCEL ? <Analytics /> : null}

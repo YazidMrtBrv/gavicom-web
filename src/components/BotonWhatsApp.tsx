@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCotizacion } from "@/lib/cotizacion";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
 import { IconoWhatsApp } from "@/components/venta/Venta";
+import { ClipboardList } from "lucide-react";
+import { abrirLista } from "@/components/catalogo/CajonLista";
 
 const GENERICO = "Hola GAVICOM, quiero cotizar: ";
 
@@ -68,21 +69,25 @@ export default function BotonWhatsApp() {
 
   return (
     <div
-      inert={tapado}
-      aria-hidden={tapado || undefined}
-      className={`${enFicha ? "hidden sm:flex" : "flex"} fixed z-30 right-4 bottom-4 sm:right-6 sm:bottom-6 transition-opacity duration-200 ${
-        tapado ? "opacity-0 pointer-events-none" : "opacity-100"
-      }`}
+      className={`${enFicha ? "hidden sm:flex" : "flex"} fixed z-30 right-4 bottom-4 sm:right-6 sm:bottom-6 items-center gap-2`}
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
+      {/* The live list opens in place, as a drawer: building a quote is an
+          interaction on the page, not a trip to another one. It stays
+          visible even while a hero call to action hides the WhatsApp pill. */}
       {conCotizacion && (
-        <Link
-          href="/cotizacion"
-          aria-label={`Enviar cotización, ${total} unidades en la lista`}
-          className="hidden sm:inline-flex items-center min-h-14 px-6 rounded-full bg-azul text-white font-semibold shadow-lg hover:bg-azul-hover"
+        <button
+          type="button"
+          onClick={abrirLista}
+          aria-label={`Abrir tu lista de cotización, ${total} unidades`}
+          className="inline-flex items-center gap-2 min-h-14 px-5 rounded-full bg-azul text-white font-semibold shadow-lg hover:bg-azul-hover"
         >
-          Enviar cotización ({total})
-        </Link>
+          <ClipboardList size={20} aria-hidden />
+          <span aria-hidden>
+            <span className="hidden sm:inline">Tu lista </span>
+            <span className="sm:hidden">Lista </span>({total})
+          </span>
+        </button>
       )}
       <a
         href={enlaceWhatsApp(mensajeDeRuta(ruta))}
@@ -91,11 +96,16 @@ export default function BotonWhatsApp() {
         }}
         target="_blank"
         rel="noopener noreferrer"
+        inert={tapado}
+        aria-hidden={tapado || undefined}
         aria-label="Cotizar con GAVICOM por WhatsApp (abre WhatsApp)"
-        className={`${conCotizacion ? "sm:hidden" : "sm:inline-flex"} inline-flex items-center justify-center gap-2 min-h-14 pl-4 pr-5 rounded-full bg-whatsapp text-white font-semibold shadow-lg hover:brightness-110`}
+        className={`inline-flex items-center justify-center gap-2 min-h-14 rounded-full bg-whatsapp text-white font-semibold shadow-lg hover:brightness-110 transition-opacity duration-200 ${
+          conCotizacion ? "size-14 sm:size-auto sm:pl-4 sm:pr-5" : "pl-4 pr-5"
+        } ${tapado ? "opacity-0 pointer-events-none" : "opacity-100"}`}
       >
         <IconoWhatsApp size={26} />
-        <span aria-hidden>
+        {/* With the list button beside it, phones keep only the icon. */}
+        <span aria-hidden className={conCotizacion ? "hidden sm:inline" : ""}>
           Cotizar<span className="hidden sm:inline"> por WhatsApp</span>
         </span>
       </a>

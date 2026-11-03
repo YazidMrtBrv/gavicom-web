@@ -1,7 +1,7 @@
 "use client";
 
 import "@/app/catalogo/transiciones.css";
-import Link from "next/link";
+import { abrirLista } from "./CajonLista";
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { EVENTO_AGREGADO, type DetalleAgregado } from "@/lib/cotizacion";
@@ -39,9 +39,9 @@ export default function AvisoCotizacion() {
           <p className="flex-1 min-w-0 text-sm leading-snug">
             Se agregó <span className="font-semibold">{aviso.nombre}</span>
           </p>
-          <Link href="/cotizacion" className="inline-flex items-center min-h-11 px-3 rounded text-sm font-semibold underline underline-offset-4 whitespace-nowrap hover:bg-white/10">
-            Ver cotización ({aviso.total})
-          </Link>
+          <button type="button" onClick={abrirLista} className="inline-flex items-center min-h-11 px-3 rounded text-sm font-semibold underline underline-offset-4 whitespace-nowrap hover:bg-white/10">
+            Ver mi lista ({aviso.total})
+          </button>
         </div>
       )}
     </div>

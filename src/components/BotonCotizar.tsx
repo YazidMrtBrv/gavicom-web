@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Check, Plus } from "lucide-react";
 import { useCotizacion } from "@/lib/cotizacion";
+import { abrirLista } from "@/components/catalogo/CajonLista";
 
 // Adds the reference to the browser-side quote list. Once it is there the
 // button turns into a link to the list, so a second tap never duplicates it
@@ -15,6 +16,7 @@ export default function BotonCotizar({
   cantidad = 1,
   variante,
   etiqueta,
+  chip = false,
 }: {
   sku: string;
   nombre: string;
@@ -23,6 +25,9 @@ export default function BotonCotizar({
   variante?: string;
   // Overrides the visible label, e.g. "Agregar esta variante".
   etiqueta?: string;
+  // Small outline chip for cards: an add is an interaction, not a shout, so
+  // it never competes with the page's one primary button.
+  chip?: boolean;
 }) {
   const { tiene, agregar } = useCotizacion();
   const base = `inline-flex items-center justify-center gap-2 rounded font-semibold transition-colors ${
@@ -30,6 +35,22 @@ export default function BotonCotizar({
   }`;
   const completo = variante ? `${nombre} · ${variante}` : nombre;
 
+  if (chip) {
+    const en = tiene(sku, variante);
+    return (
+      <button
+        type="button"
+        onClick={() => (en ? abrirLista() : agregar(sku, nombre, cantidad, variante))}
+        aria-label={en ? `${completo} ya está en tu lista. Abrir la lista` : `Agregar ${completo} a tu lista`}
+        className={`chip-agregar inline-flex items-center gap-1 min-h-11 px-3 rounded-full border text-sm font-semibold transition-colors ${
+          en ? "border-azul bg-azul-suave text-azul" : "border-linea text-tinta hover:border-azul hover:text-azul"
+        }`}
+      >
+        {en ? <Check size={16} aria-hidden /> : <Plus size={16} aria-hidden />}
+        <span aria-hidden>{en ? "En tu lista" : "Agregar"}</span>
+      </button>
+    );
+  }
   if (tiene(sku, variante)) {
     return (
       <Link href="/cotizacion" className={`${base} border border-azul text-azul bg-azul-suave`} aria-label={`${completo} ya está en tu cotización. Ver cotización`}>
