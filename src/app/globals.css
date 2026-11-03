@@ -252,25 +252,7 @@ body:has(#vuelo) .espaciador-encabezado {
   opacity: 1;
 }
 
-.franja-pista {
-  animation: franja 38s linear infinite;
-}
-/* A focused link must be on screen: the track stops moving and goes back to
-   its start, and PausaFranja scrolls the link into view. */
-.franja-pista:focus-within {
-  animation: none;
-}
-.franja:hover .franja-pista,
-.franja:focus-within .franja-pista,
-.franja[data-pausada="true"] .franja-pista {
-  animation-play-state: paused;
-}
-@keyframes franja {
-  to { transform: translate3d(-50%, 0, 0); }
-}
 @media (prefers-reduced-motion: reduce) {
-  .franja-pista { flex-wrap: wrap; }
-  .franja-pista > [aria-hidden] { display: none; }
   .boton-iman, .inclinar { transform: none !important; }
 }
 

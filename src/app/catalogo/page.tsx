@@ -33,7 +33,7 @@ export default function Catalogo() {
       <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div>
           <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.14em] text-tenue">{COMPANIA_INFO.promesa.replace(/\.$/, "")}</p>
-          <h1 className="mt-2 text-3xl md:text-5xl font-bold tracking-tight text-balance">Catálogo: {PRODUCTOS.length} productos GAVICOM para la vía férrea</h1>
+          <h1 className="mt-2 text-[34px] leading-[1.05] md:text-6xl font-bold tracking-tight text-balance">Catálogo: {PRODUCTOS.length} productos GAVICOM para la vía férrea</h1>
           <p className="text-tenue mt-3 max-w-2xl md:text-lg">
             Cada pieza tiene su ficha técnica: ábrela, revisa las especificaciones y agrégala a tu cotización. Al final envías la lista completa, con códigos y cantidades.
           </p>

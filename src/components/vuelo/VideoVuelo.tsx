@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Clock, Pause, Play } from "lucide-react";
+import { ArrowDown, Clock, Pause, Play } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
 import { IconoWhatsApp } from "@/components/venta/Venta";
 
@@ -213,7 +213,7 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
   const conVideo = fase !== "poster" || (fuente !== null && !aMano);
 
   return (
-    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[94svh] min-h-[640px] md:h-[90svh] overflow-hidden bg-azul">
+    <section ref={seccion} aria-label="La gaviota de GAVICOM en vuelo" className="relative h-[88svh] min-h-[620px] md:h-[90svh] overflow-hidden bg-azul">
       <video
         ref={video}
         muted
@@ -239,7 +239,7 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
       {/* The railway shots have a pale sky: keep the white menu readable. */}
       <div aria-hidden className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(12,38,66,0.65)_0%,rgba(12,38,66,0)_100%)]" />
       {/* Darkens the left and bottom just enough for white text on a bright sky. */}
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,38,66,0.85)_0%,rgba(12,38,66,0.35)_55%,rgba(12,38,66,0)_75%)] md:bg-[linear-gradient(90deg,rgba(12,38,66,0.75)_0%,rgba(12,38,66,0.3)_42%,rgba(12,38,66,0)_62%),linear-gradient(0deg,rgba(12,38,66,0.6)_0%,rgba(12,38,66,0)_35%)]" />
+      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,38,66,0.94)_0%,rgba(12,38,66,0.55)_55%,rgba(12,38,66,0)_80%)] md:bg-[linear-gradient(90deg,rgba(12,38,66,0.88)_0%,rgba(12,38,66,0.45)_45%,rgba(12,38,66,0)_68%),linear-gradient(0deg,rgba(12,38,66,0.65)_0%,rgba(12,38,66,0)_35%)]" />
 
       <div className="absolute inset-0 flex flex-col justify-end">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-5 sm:pb-8">
@@ -248,11 +248,14 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
           <p className="font-mono text-xs sm:text-sm uppercase tracking-normal sm:tracking-[0.14em] text-white/90">
             Suministro ferroviario · Barranquilla<span className="hidden sm:inline">, Colombia</span>
           </p>
-          <h1 className="mt-3 text-white text-[34px] leading-[1.06] sm:text-6xl md:text-[64px] font-bold tracking-tight max-w-xl lg:max-w-4xl text-balance">
-            Componentes y herramientas para la vía férrea, hechos por GAVICOM.
+          {/* Short and big: the value has to land in the first seconds, over
+              moving footage, so the line is cut to what GAVICOM is and the
+              shadow keeps it legible whatever frame is behind it. */}
+          <h1 className="mt-3 text-white text-[42px] leading-[1.02] sm:text-6xl md:text-7xl lg:text-[84px] font-bold tracking-tight max-w-xl lg:max-w-4xl [text-shadow:0_2px_24px_rgba(12,38,66,0.5)]">
+            Componentes para la vía férrea, <span className="text-white/80">hechos por GAVICOM.</span>
           </h1>
           <p className="mt-4 max-w-xl text-white/90 text-base sm:text-lg md:text-xl">
-            Eclisas, fijaciones, clips, tirafondos, herramientas y señalización con ficha técnica, y piezas fabricadas en Colombia según tu plano. Para proyectos en todo el país.
+            Eclisas, fijaciones, tirafondos, herramientas y señalización con ficha técnica. Y si tu pieza no está, la fabricamos en Colombia según tu plano.
           </p>
 
           <div data-hero-cta className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-3">
@@ -270,15 +273,22 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
               Ver catálogo
             </Link>
           </div>
-          <p className="mt-3 inline-flex items-center gap-2 text-sm text-white/85">
-            <Clock size={16} aria-hidden className="shrink-0" />
-            Atendemos {COMPANIA_INFO.horarioCorto.charAt(0).toLowerCase() + COMPANIA_INFO.horarioCorto.slice(1)}
-          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1">
+            <p className="inline-flex items-center gap-2 text-sm text-white/85">
+              <Clock size={16} aria-hidden className="shrink-0" />
+              Atendemos {COMPANIA_INFO.horarioCorto.charAt(0).toLowerCase() + COMPANIA_INFO.horarioCorto.slice(1)}
+            </p>
+            {/* Teases the finder right below, so a phone visitor who is not
+                ready to write yet has an obvious next thing to do. */}
+            <a href="#h-necesitas" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-white underline underline-offset-4 decoration-white/50 hover:decoration-white">
+              Encuentra tu pieza en tres toques <ArrowDown size={16} aria-hidden />
+            </a>
+          </div>
 
           {/* Scene bar while the clip is attached; before that, the explicit
               button that tells what pressing it will cost. Same height in both
               so the hero does not jump. */}
-          <div className="mt-2 sm:mt-4 min-h-11">
+          <div className="mt-1 sm:mt-3 min-h-11">
             {conVideo ? (
               <div className="flex items-center gap-2 sm:gap-3">
                 <button

@@ -130,10 +130,10 @@ export default function Inicio() {
       {/* The finder: pick a need, answer one quick question, get something
           useful (parts with a live list, the manufacturing path, a solar
           estimate) and one prefilled message. */}
-      <section aria-labelledby="h-necesitas" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24 scroll-mt-20">
+      <section aria-labelledby="h-necesitas" className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-16 md:py-24">
         <div className="flex flex-col gap-3 mb-8">
           <Antetitulo>Empieza por aquí</Antetitulo>
-          <h2 id="h-necesitas" data-aparecer className={H2}>
+          <h2 id="h-necesitas" data-aparecer className={`${H2} scroll-mt-24`}>
             Encuentra lo que necesitas en tres toques
           </h2>
         </div>

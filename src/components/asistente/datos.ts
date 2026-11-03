@@ -17,10 +17,11 @@ export const USOS = [
 ] as const;
 export type Uso = (typeof USOS)[number]["id"];
 
-// What a crew needs besides the eclisa, per kind of job. Real catalogue SKUs.
+// What a crew needs besides the eclisa, per kind of job. Real catalogue SKUs,
+// only ones with a clean product photo (not a brochure page).
 export const POR_USO: Record<Uso, string[]> = {
   construccion: ["GVC-AK-TB01", "GVC-AK-TP03", "GVC-AD-E2055", "GVC-AD-SS01", "GVC-AD-RP02"],
-  mantenimiento: ["GVC-FIJ-001", "GVC-MAN-002", "GVC-TM-07", "GVC-D-01", "GVC-AK-RA04"],
+  mantenimiento: ["GVC-FIJ-001", "GVC-TM-07", "GVC-D-01", "GVC-AK-RA04", "GVC-AK-WS02"],
 };
 
 // Every SKU the finder may show, so the page passes only these to the client.

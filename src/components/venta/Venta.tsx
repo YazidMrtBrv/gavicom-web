@@ -96,15 +96,17 @@ export function FranjaConfianza({
 }) {
   return (
     <section aria-label={etiqueta} className={azul ? "sobre-azul bg-azul-hover text-white" : "bg-azul-suave border-y border-linea"}>
-      <ul className="mx-auto max-w-6xl px-4 sm:px-6 py-5 md:py-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-3 sm:gap-y-4">
+      <ul className="mx-auto max-w-6xl px-4 sm:px-6 py-4 md:py-6 grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-3 sm:gap-x-4 sm:gap-y-4">
         {puntos.map(({ icono: Icono, titulo, texto }) => (
-          <li key={titulo} className="flex items-start gap-3">
-            <span className={`grid place-items-center size-9 sm:size-10 shrink-0 rounded ${azul ? "bg-white/10 text-white" : "bg-azul text-white"}`}>
-              <Icono size={20} aria-hidden />
+          <li key={titulo} className="flex items-center sm:items-start gap-2.5 sm:gap-3">
+            <span className={`grid place-items-center size-8 sm:size-10 shrink-0 rounded ${azul ? "bg-white/10 text-white" : "bg-azul text-white"}`}>
+              <Icono size={18} aria-hidden />
             </span>
             <span className="min-w-0">
-              <span className={`block font-semibold leading-tight ${azul ? "text-white" : "text-azul"}`}>{titulo}</span>
-              <span className={`block text-sm leading-snug mt-0.5 ${azul ? "text-white/80" : "text-tenue"}`}>{texto}</span>
+              <span className={`block text-sm sm:text-base font-semibold leading-tight ${azul ? "text-white" : "text-azul"}`}>{titulo}</span>
+              {/* Phones read the four titles at a glance; the detail would
+                  push the next section far below the hero. */}
+              <span className={`hidden sm:block text-sm leading-snug mt-0.5 ${azul ? "text-white/80" : "text-tenue"}`}>{texto}</span>
             </span>
           </li>
         ))}

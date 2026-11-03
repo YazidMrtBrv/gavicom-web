@@ -52,8 +52,10 @@ export default function TarjetaProducto({ producto, prioridad = false }: { produ
       </Link>
       {/* The card opens the ficha; the quiet chip adds without leaving the
           grid, for buyers who already know the reference. */}
-      <div className="px-3 pb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-        <Link href={href} tabIndex={-1} aria-hidden className="inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-azul hover:underline underline-offset-4">
+      {/* Phones keep only the chip (the card itself opens the ficha), so the
+          two-column grid never wraps its footer onto two lines. */}
+      <div className="px-3 pb-3 flex items-center justify-between gap-x-2">
+        <Link href={href} tabIndex={-1} aria-hidden className="hidden sm:inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-azul hover:underline underline-offset-4">
           Ver ficha <ArrowRight size={16} aria-hidden />
         </Link>
         <BotonCotizar sku={producto.sku} nombre={producto.nombre} chip />

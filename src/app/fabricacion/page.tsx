@@ -67,14 +67,14 @@ export default function Fabricacion() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 md:py-16 lg:py-20 [@media(max-height:760px)]:md:py-12 grid gap-10 md:grid-cols-[1.1fr_1fr] items-center">
           <div data-aparecer className="flex flex-col gap-5">
             <p className={`${ANTETITULO} text-white/70`}>Fabricación en Colombia</p>
-            <h1 className="text-white text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight">
-              Tu pieza ferroviaria, fabricada en Colombia sin esperar una importación.
+            <h1 className="text-white text-[42px] md:text-6xl font-bold leading-[1.02] tracking-tight text-balance">
+              Tu pieza ferroviaria, hecha en Colombia.
             </h1>
             <p className="font-mono text-sm text-white/85">
               Hierro nodular ASTM A536 · 5 controles por lote · Planos bajo confidencialidad
             </p>
             <p className="text-lg text-white/85 max-w-lg">
-              Envíanos el plano, la foto o la muestra. Hacemos la ingeniería inversa, los planos y la fundición con nuestro aliado industrial, y verificamos cada lote. Sin tránsito marítimo ni nacionalización.
+              Sin esperar una importación: envíanos el plano, la foto o la muestra. Hacemos la ingeniería inversa, los planos y la fundición con nuestro aliado industrial, y verificamos cada lote.
             </p>
             <div data-hero-cta className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 pt-2">
               <BotonWhatsAppVenta mensaje="Hola GAVICOM, necesito fabricar una pieza ferroviaria. Les envío el plano o la foto: " grande ancho>

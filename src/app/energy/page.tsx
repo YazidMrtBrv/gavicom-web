@@ -114,7 +114,7 @@ export default function Energy() {
             <p className="inline-flex items-center min-h-8 px-3 rounded-sm border border-white text-white text-sm font-semibold tracking-wide">
               GAVICOM Energy · Solar
             </p>
-            <h1 id="h-energy" className="mt-4 text-white text-[36px] leading-[1.05] sm:text-6xl lg:text-[54px] min-[1400px]:text-[62px] font-bold tracking-tight text-balance">
+            <h1 id="h-energy" className="mt-4 text-white text-[42px] leading-[1.02] sm:text-6xl lg:text-[66px] min-[1400px]:text-[74px] font-bold tracking-tight text-balance">
               Paga menos luz con tu propio sistema solar.
             </h1>
             <p className="mt-3 md:mt-5 text-white/90 text-base md:text-xl max-w-xl">

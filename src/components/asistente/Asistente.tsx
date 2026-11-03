@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, Check, ClipboardList, Factory, FileText, Package, Sun, Wrench, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ClipboardList, Factory, FileText, Sun, Wrench, X } from "lucide-react";
 import { useCotizacion } from "@/lib/cotizacion";
 import { enlaceWhatsApp, mensajeCotizacion } from "@/lib/whatsapp";
 import { IconoWhatsApp } from "@/components/venta/Venta";
@@ -269,8 +269,10 @@ export default function Asistente({ piezas }: { piezas: PiezaAsistente[] }) {
                         {p.img ? (
                           <Image src={p.img} alt="" fill sizes="(min-width:1024px) 180px, 45vw" className="object-contain" />
                         ) : (
-                          <span className="absolute inset-0 grid place-items-center text-azul">
-                            <Package size={32} aria-hidden />
+                          // Neutral tile, same honest treatment as the catalogue
+                          // cards: the reference code instead of an icon box.
+                          <span className="absolute inset-0 grid place-items-center rounded-sm bg-gris font-mono text-sm font-semibold text-azul">
+                            {p.sku}
                           </span>
                         )}
                       </div>
