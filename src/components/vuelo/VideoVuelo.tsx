@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Clock, Pause, Play } from "lucide-react";
+import { Clock, Pause, Play } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
 import { IconoWhatsApp } from "@/components/venta/Venta";
 
@@ -243,16 +243,16 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
 
       <div className="absolute inset-0 flex flex-col justify-end">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-5 sm:pb-8">
-          {/* The promise goes first: it is the owner's own claim and the
-              answer to "why these people". 12 px minimum outdoors. */}
+          {/* The promise is said once on the home page, in the trust strip
+              right below; here only who and where. 12 px minimum outdoors. */}
           <p className="font-mono text-xs sm:text-sm uppercase tracking-normal sm:tracking-[0.14em] text-white/90">
-            {COMPANIA_INFO.promesa.replace(/\.$/, "")}
+            Suministro ferroviario · Barranquilla<span className="hidden sm:inline">, Colombia</span>
           </p>
-          <h1 className="mt-3 text-white text-[38px] leading-[1.04] sm:text-6xl md:text-7xl font-bold tracking-tight max-w-xl lg:max-w-4xl text-balance">
-            Materiales para vía férrea, cotizados por WhatsApp.
+          <h1 className="mt-3 text-white text-[34px] leading-[1.06] sm:text-6xl md:text-[64px] font-bold tracking-tight max-w-xl lg:max-w-4xl text-balance">
+            Componentes y herramientas para la vía férrea, hechos por GAVICOM.
           </h1>
           <p className="mt-4 max-w-xl text-white/90 text-base sm:text-lg md:text-xl">
-            Eclisas, clips, tirafondos, herramientas y señalización fabricados por GAVICOM. Envía tu lista o tu plano y recibe tu cotización.
+            Eclisas, fijaciones, clips, tirafondos, herramientas y señalización con ficha técnica, y piezas fabricadas en Colombia según tu plano. Para proyectos en todo el país.
           </p>
 
           <div data-hero-cta className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-3">
@@ -268,9 +268,6 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
             </a>
             <Link href="/catalogo" className="boton-iman inline-flex items-center justify-center min-h-12 px-5 sm:px-6 rounded border border-white text-white font-semibold hover:bg-white/10 flex-1 sm:flex-none">
               Ver catálogo
-            </Link>
-            <Link href="/energy" className="inline-flex items-center gap-1.5 min-h-11 px-1 text-sm font-semibold text-white/90 hover:text-white hover:underline underline-offset-4">
-              Energía solar <ArrowRight size={16} aria-hidden />
             </Link>
           </div>
           <p className="mt-3 inline-flex items-center gap-2 text-sm text-white/85">

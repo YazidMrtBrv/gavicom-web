@@ -2,15 +2,11 @@ import { statSync } from "node:fs";
 import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Factory, Truck } from "lucide-react";
+import { ArrowRight, Factory, Sun, Truck, Wrench } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
-import { GUIAS_LINEA } from "@/constants/lineasGuia";
 import { imagenPrincipal } from "@/constants/catalogoExtra";
-import { BotonWhatsAppVenta, FranjaConfianza, LineaHorario } from "@/components/venta/Venta";
+import { FranjaConfianza } from "@/components/venta/Venta";
 import { LINEAS, PRODUCTOS, SERVICIOS, imagenProducto, rutaLinea, slugProducto } from "@/lib/catalogo";
-import TarjetaProducto from "@/components/TarjetaProducto";
-import FilaDeslizable from "@/components/FilaDeslizable";
-import { tieneFotoFolleto } from "@/constants/catalogoExtra";
 import Buscador from "@/components/Buscador";
 import VideoVuelo, { type FuenteVuelo } from "@/components/vuelo/VideoVuelo";
 import ViaDesarmada, { type PiezaVia } from "@/components/via/ViaDesarmada";
@@ -30,19 +26,6 @@ const piezasVia: PiezaVia[] = PIEZAS_VIA.flatMap(([id, sku, nombre]) => {
   if (!p) return [];
   return [{ id, nombre, sku, slug: slugProducto(p), imagen: imagenProducto(p), resumen: p.descripcion.split(". ")[0] + "." }];
 });
-
-// Tools GAVICOM sells to install and maintain those same parts. None of them
-// is in the rail joint above, so no reference shows twice on the page.
-const PARA_MONTAR = ["GVC-FIJ-001", "GVC-FIJ-003", "GVC-MAN-003", "GVC-TM-07", "GVC-D-01"]
-  .map((sku) => PRODUCTOS.find((p) => p.sku === sku))
-  .filter((p) => p !== undefined)
-  // A brochure page is not a product photo; those stay in the catalogue
-  // (with their honest no-photo card) but not in this showcase.
-  .filter((p) => !tieneFotoFolleto(p.sku));
-
-// Full rows only: five columns on wide screens when all five have a clean
-// photo, otherwise as many columns as cards.
-const COLUMNAS_MONTAR = PARA_MONTAR.length >= 5 ? "lg:grid-cols-5" : "lg:grid-cols-3";
 
 // Links of the two delivered jobs, built from the catalogue so a renamed SKU
 // or line slug breaks loudly here instead of leaving a dead link.
@@ -85,19 +68,45 @@ const OFERTA = LINEAS.map((l) => {
     linea: l,
     foto: p ? imagenPrincipal(p) : null,
     total: PRODUCTOS.filter((x) => x.categoria === l.categoria).length,
-    // The line guide's own WhatsApp opener, so sales reads the same first
-    // line from the home page and from the guide.
-    mensaje: GUIAS_LINEA.find((g) => g.slug === l.slug)?.mensaje ?? `Hola GAVICOM, quiero cotizar ${l.nombre.toLowerCase()}: `,
   };
 });
 
-// Short answers to what stops a buyer from writing. Only published facts:
-// no prices, delivery times, freight, invoicing or warranties.
-const OBJECIONES = [
-  { p: "¿Por qué no veo precios?", r: "Cada pedido se cotiza con tus referencias y cantidades. Envía la lista por WhatsApp y te respondemos con la cotización." },
-  { p: "¿Y si la pieza no está en el catálogo?", r: "La fabricamos según tu plano o tu muestra: ingeniería inversa, planos propios y cinco controles de calidad por lote." },
-  { p: "¿Llegan a mi proyecto?", r: `Atendemos desde ${COMPANIA_INFO.ciudad} con cobertura en todo el territorio nacional.` },
-  { p: "¿Cuándo me atienden?", r: `${COMPANIA_INFO.horario} Escribe hoy y arrancamos.` },
+// The three reasons people arrive, as doors. Guiding by intent replaces a
+// wall of buttons: each door leads to the page that answers that need.
+const PUERTAS = [
+  {
+    href: "/catalogo",
+    icono: Wrench,
+    titulo: "Repuestos y herramientas para vía",
+    texto: `Eclisas, fijaciones, clips, tirafondos, herramientas y señalización: ${PRODUCTOS.length} referencias con ficha técnica.`,
+  },
+  {
+    href: "/fabricacion",
+    icono: Factory,
+    titulo: "Una pieza fabricada a medida",
+    texto: "Con tu plano o tu muestra, en hierro nodular ASTM A536 y con cinco controles de calidad por lote.",
+  },
+  {
+    href: "/energy",
+    icono: Sun,
+    titulo: "Energía solar",
+    texto: "Sistemas solares para hogar, comercio e industria, con cofres, protecciones y gabinetes.",
+  },
+];
+
+// How an order goes, in three steps. No timings: GAVICOM has not published any.
+const PASOS = [
+  ["Nos cuentas qué necesitas", "Referencias y cantidades del catálogo, o el plano o la muestra de la pieza."],
+  ["Te cotizamos", "Con el código de cada pieza, por WhatsApp o por correo."],
+  ["Fabricamos o suministramos", "Con ficha técnica, y en las piezas fabricadas, cinco controles de calidad por lote."],
+];
+
+// The questions that stop a buyer, answered once. Hours live in the hero and
+// the closing band, so they are not repeated here.
+const DUDAS = [
+  { p: "¿Por qué no hay precios?", r: "Cada pedido se cotiza con sus referencias y cantidades." },
+  { p: "¿Y si la pieza no está en el catálogo?", r: "La fabricamos según tu plano o tu muestra." },
+  { p: "¿Llegan a mi proyecto?", r: `Atendemos desde ${COMPANIA_INFO.ciudad}, con cobertura en todo el país.` },
 ];
 
 const H2 = "text-3xl md:text-5xl font-bold tracking-tight text-balance";
@@ -110,6 +119,13 @@ function Antetitulo({ children, claro = false }: { children: string; claro?: boo
   );
 }
 
+/*
+ * Home as one story: what we offer (hero) -> why believe it (trust strip)
+ * -> what do you need (three doors) -> proof -> browse the lines -> how we
+ * work -> one closing call to action (the footer band). The only green
+ * buttons are the hero's and the closing band's; the floating WhatsApp
+ * button stays as the always-available path.
+ */
 export default function Inicio() {
   return (
     <>
@@ -119,81 +135,29 @@ export default function Inicio() {
 
       <FranjaConfianza />
 
-      {/* The offer right after the promise: what can be quoted today, each
-          line with its own prefilled WhatsApp button. The guide link stays
-          on the card for the buyer who wants to see references first. */}
-      <section aria-labelledby="h-oferta" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
-        <div className="flex flex-col gap-3 mb-8 md:flex-row md:items-end md:justify-between md:gap-10">
-          <div className="flex flex-col gap-3">
-            <Antetitulo>Qué te cotizamos</Antetitulo>
-            <h2 id="h-oferta" data-aparecer className={H2}>
-              {PRODUCTOS.length} referencias para construir y mantener la vía
-            </h2>
-            <p data-aparecer className="text-tenue max-w-2xl md:text-lg">
-              Todo producto GAVICOM, con ficha técnica y código. Elige la línea y escríbenos: el mensaje ya dice qué necesitas.
-            </p>
-          </div>
-          <div data-aparecer className="md:w-[26rem] shrink-0">
-            <Buscador />
-          </div>
+      <section aria-labelledby="h-necesitas" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
+        <div className="flex flex-col gap-3 mb-8">
+          <Antetitulo>Empieza por aquí</Antetitulo>
+          <h2 id="h-necesitas" data-aparecer className={H2}>
+            ¿Qué necesitas?
+          </h2>
         </div>
-        <ul data-aparecer="grupo" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {OFERTA.map(({ linea, foto, total, mensaje }) => (
-            <li key={linea.slug} className="foco flex gap-4 rounded border border-linea bg-white p-4 hover:border-azul/50 sm:flex-col">
-              <Link href={rutaLinea(linea)} className="relative block size-20 shrink-0 sm:w-full sm:h-40 bg-white" tabIndex={-1} aria-hidden>
-                {foto && <Image src={foto.src} alt="" fill sizes="(min-width:1024px) 340px, (min-width:640px) 45vw, 80px" className="object-contain" />}
+        <ul data-aparecer="grupo" className="grid gap-3 md:grid-cols-3">
+          {PUERTAS.map(({ href, icono: Icono, titulo, texto }) => (
+            <li key={href}>
+              <Link href={href} className="foco group flex h-full flex-col gap-3 rounded border border-linea bg-white p-5 md:p-6 hover:border-azul">
+                <span className="grid place-items-center size-11 rounded bg-azul-suave text-azul">
+                  <Icono size={22} aria-hidden />
+                </span>
+                <span className="font-titulo text-xl font-bold text-tinta group-hover:text-azul">{titulo}</span>
+                <span className="text-tenue">{texto}</span>
+                <span className="mt-auto inline-flex items-center gap-1.5 min-h-11 font-semibold text-azul">
+                  Ver más <ArrowRight size={18} aria-hidden className="transition-transform group-hover:translate-x-1" />
+                </span>
               </Link>
-              <div className="flex flex-col gap-2 min-w-0 flex-1">
-                <p className="flex items-baseline justify-between gap-2">
-                  <Link href={rutaLinea(linea)} className="font-titulo text-lg font-bold text-tinta hover:text-azul hover:underline underline-offset-4">
-                    {linea.nombre}
-                  </Link>
-                  <span className="font-mono text-xs text-tenue tabular-nums whitespace-nowrap">{total} ref.</span>
-                </p>
-                <p className="text-sm text-tenue">{linea.resumen}</p>
-                <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-1">
-                  <BotonWhatsAppVenta mensaje={mensaje} className="!min-h-11 !px-3.5 text-sm">
-                    Cotizar
-                  </BotonWhatsAppVenta>
-                  <Link href={rutaLinea(linea)} className="inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-azul hover:underline underline-offset-4">
-                    Ver piezas <ArrowRight size={16} aria-hidden />
-                  </Link>
-                </div>
-              </div>
             </li>
           ))}
-          <li className="sobre-azul flex flex-col gap-2 rounded bg-azul text-white p-5">
-            <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-white/75">
-              <Factory size={16} aria-hidden /> A la medida
-            </p>
-            <p className="font-titulo text-lg font-bold">¿Tu pieza no está? La fabricamos.</p>
-            <p className="text-sm text-white/80">Con tu plano o tu muestra, en hierro nodular ASTM A536 y con cinco controles por lote.</p>
-            <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-1">
-              <BotonWhatsAppVenta mensaje="Hola GAVICOM, necesito fabricar una pieza ferroviaria: " className="!min-h-11 !px-4 text-sm">
-                Cotizar fabricación
-              </BotonWhatsAppVenta>
-              <Link href="/fabricacion" className="inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-white hover:underline underline-offset-4">
-                Cómo fabricamos <ArrowRight size={16} aria-hidden />
-              </Link>
-            </div>
-          </li>
         </ul>
-        <div data-aparecer className="mt-4 grid gap-3 md:grid-cols-2">
-          <Link href="/servicios" className="foco group flex items-center justify-between gap-4 rounded border border-linea p-4 min-h-11 hover:border-azul/50">
-            <span>
-              <span className="block font-semibold text-tinta group-hover:text-azul">Servicios técnicos · {SERVICIOS.length}</span>
-              <span className="block text-sm text-tenue">Topografía con dron, mantenimiento, hidráulica, alquiler Lincoln, planos y consultoría.</span>
-            </span>
-            <ArrowRight size={18} aria-hidden className="shrink-0 text-azul" />
-          </Link>
-          <Link href="/energy" className="foco group flex items-center justify-between gap-4 rounded border border-linea p-4 min-h-11 hover:border-azul/50">
-            <span>
-              <span className="block font-semibold text-tinta group-hover:text-azul">GAVICOM Energy · solar</span>
-              <span className="block text-sm text-tenue">Sistemas solares para hogar, comercio e industria, con cofres, protecciones y gabinetes.</span>
-            </span>
-            <ArrowRight size={18} aria-hidden className="shrink-0 text-azul" />
-          </Link>
-        </div>
       </section>
 
       {/* Proof: delivered work only, and without naming clients, since the
@@ -202,9 +166,9 @@ export default function Inicio() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24 grid gap-10 md:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)] md:items-start">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-3">
-              <Antetitulo>Pruebas, no promesas</Antetitulo>
+              <Antetitulo>Trabajo entregado</Antetitulo>
               <h2 id="h-prueba" data-aparecer className={H2}>
-                Ya entregamos a operadores ferroviarios de Colombia
+                Ya trabajamos para operadores ferroviarios de Colombia
               </h2>
             </div>
             <div data-aparecer>
@@ -228,7 +192,7 @@ export default function Inicio() {
                 <p className="text-sm text-tenue">Eclisas angulares de 75 lb y eclisas para puentes del corredor.</p>
                 {eclisa75 && (
                   <Link href={`/catalogo/${slugProducto(eclisa75)}`} className="mt-auto inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-azul hover:underline underline-offset-4">
-                    Cotizar la eclisa de 75 lb <ArrowRight size={16} aria-hidden />
+                    Ver la eclisa de 75 lb <ArrowRight size={16} aria-hidden />
                   </Link>
                 )}
               </li>
@@ -257,82 +221,83 @@ export default function Inicio() {
         </div>
       </section>
 
-      <section aria-labelledby="h-montar" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
-        <div className="flex flex-col gap-3 mb-8">
-          <Antetitulo>Herramientas de vía</Antetitulo>
-          <h2 id="h-montar" data-aparecer className={H2}>
-            Las herramientas que tu cuadrilla pide
-          </h2>
-          <p data-aparecer className="text-tenue max-w-xl">Para instalar y mantener fijaciones. Agrega las que necesites y envía la lista completa.</p>
+      {/* The lines as browseable content: each card opens its guide, where
+          the references and their fichas are. No buttons on the cards. */}
+      <section aria-labelledby="h-lineas" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
+        <div className="flex flex-col gap-3 mb-8 md:flex-row md:items-end md:justify-between md:gap-10">
+          <div className="flex flex-col gap-3">
+            <Antetitulo>El catálogo</Antetitulo>
+            <h2 id="h-lineas" data-aparecer className={H2}>
+              Cinco líneas para construir y mantener la vía
+            </h2>
+            <p data-aparecer className="text-tenue max-w-2xl md:text-lg">
+              {PRODUCTOS.length} referencias hechas por GAVICOM, cada una con ficha técnica y código.
+            </p>
+          </div>
+          <div data-aparecer className="md:w-[26rem] shrink-0">
+            <Buscador />
+          </div>
         </div>
-        {/* A swipeable row on the phone (five cards stacked would be a long
-            scroll of tools); a plain grid from sm up. Snapping stops while a
-            card has keyboard focus, so it cannot pull the focused card back
-            off screen. */}
-        <FilaDeslizable
-          data-aparecer="grupo"
-          aria-label="Herramientas de vía para cotizar"
-          className={`-mx-4 px-4 flex gap-3 overflow-x-auto snap-x snap-proximity focus-within:snap-none scroll-px-4 pb-2 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 ${COLUMNAS_MONTAR} sm:gap-4 sm:overflow-visible sm:pb-0`}
-        >
-          {PARA_MONTAR.map((p) => (
-            <li key={p.sku} className="w-[70%] shrink-0 snap-start flex sm:w-auto [&>article]:w-full">
-              <TarjetaProducto producto={p} />
+        <ul data-aparecer="grupo" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {OFERTA.map(({ linea, foto, total }) => (
+            <li key={linea.slug}>
+              <Link href={rutaLinea(linea)} className="foco group flex h-full gap-4 rounded border border-linea bg-white p-4 hover:border-azul sm:flex-col">
+                <span className="relative block size-20 shrink-0 sm:w-full sm:h-40 bg-white">
+                  {foto && <Image src={foto.src} alt="" fill sizes="(min-width:1024px) 340px, (min-width:640px) 45vw, 80px" className="object-contain" />}
+                </span>
+                <span className="flex flex-col gap-1.5 min-w-0 flex-1">
+                  <span className="flex items-baseline justify-between gap-2">
+                    <span className="font-titulo text-lg font-bold text-tinta group-hover:text-azul">{linea.nombre}</span>
+                    <span className="font-mono text-xs text-tenue tabular-nums whitespace-nowrap">{total} ref.</span>
+                  </span>
+                  <span className="text-sm text-tenue">{linea.resumen}</span>
+                  <span className="mt-auto inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-azul">
+                    Ver piezas <ArrowRight size={16} aria-hidden />
+                  </span>
+                </span>
+              </Link>
             </li>
           ))}
-        </FilaDeslizable>
-        <Link data-aparecer href="/catalogo" className="mt-6 inline-flex items-center gap-1.5 min-h-12 px-6 rounded border border-azul text-azul font-semibold hover:bg-azul-suave">
-          Ver las {PRODUCTOS.length} referencias <ArrowRight size={18} aria-hidden />
-        </Link>
+          <li>
+            <Link href="/servicios" className="foco group flex h-full flex-col gap-1.5 rounded border border-linea bg-gris p-5 hover:border-azul">
+              <span className="flex items-baseline justify-between gap-2">
+                <span className="font-titulo text-lg font-bold text-tinta group-hover:text-azul">Servicios técnicos</span>
+                <span className="font-mono text-xs text-tenue tabular-nums">{SERVICIOS.length}</span>
+              </span>
+              <span className="text-sm text-tenue">Topografía con dron, mantenimiento de equipos, hidráulica, alquiler de motosoldadores Lincoln, planos y consultoría.</span>
+              <span className="mt-auto inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-azul">
+                Ver servicios <ArrowRight size={16} aria-hidden />
+              </span>
+            </Link>
+          </li>
+        </ul>
       </section>
 
-      <section aria-labelledby="h-cotizar" className="sobre-azul bg-azul text-white">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24 grid gap-10 md:grid-cols-[1fr_1.3fr] items-center">
-          <div data-aparecer className="flex flex-col gap-4">
-            <Antetitulo claro>Cotizar</Antetitulo>
-            <h2 id="h-cotizar" className={`${H2} text-white`}>
-              Tu cotización en tres pasos
-            </h2>
-            <p className="text-white/80">Sin formularios largos: tu lista nos llega completa, con códigos y cantidades.</p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <BotonWhatsAppVenta mensaje="Hola GAVICOM, quiero cotizar materiales para vía férrea: " ancho>
-                Cotizar por WhatsApp
-              </BotonWhatsAppVenta>
-              <Link href="/catalogo" className="inline-flex items-center justify-center min-h-12 px-5 rounded border border-white text-white font-semibold hover:bg-white/10">
-                Armar mi lista
-              </Link>
-            </div>
-            <LineaHorario claro />
-          </div>
-          <ol data-aparecer="grupo" className="grid gap-5 sm:grid-cols-3">
-            {[
-              ["Marca las piezas", "Desde el catálogo, con «Agregar a cotización»."],
-              ["Pon cantidades", "Y la ciudad donde las necesitas."],
-              ["Envía", "Por WhatsApp o correo. Te respondemos con tu cotización."],
-            ].map(([t, d], i) => (
-              <li key={t} className="border-t-2 border-white/30 pt-3">
-                <p className="font-semibold">
-                  <span className="font-mono tabular-nums text-white/70 mr-1.5">{i + 1}.</span>
-                  {t}
-                </p>
-                <p className="text-sm text-white/80 mt-1">{d}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      {/* The rail joint as a way to browse fixings part by part; each part
+          links to its ficha. */}
+      <ViaDesarmada piezas={piezasVia} />
 
-      <section aria-labelledby="h-dudas" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
-        <div className="flex flex-col gap-3 mb-8">
-          <Antetitulo>Antes de escribirnos</Antetitulo>
-          <h2 id="h-dudas" data-aparecer className={H2}>
-            Lo que suelen preguntarnos
+      <section aria-labelledby="h-trabajamos" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
+        <div className="flex flex-col gap-3 mb-10">
+          <Antetitulo>Cómo trabajamos</Antetitulo>
+          <h2 id="h-trabajamos" data-aparecer className={H2}>
+            Tres pasos, sin formularios largos
           </h2>
         </div>
-        <dl data-aparecer="grupo" className="grid gap-px bg-linea border border-linea rounded overflow-hidden md:grid-cols-2">
-          {OBJECIONES.map(({ p, r }) => (
-            <div key={p} className="bg-white p-5 md:p-6">
-              <dt className="font-titulo text-lg font-bold text-azul">{p}</dt>
-              <dd className="mt-1 text-tinta/85">{r}</dd>
+        <ol data-aparecer="grupo" className="grid gap-6 md:grid-cols-3">
+          {PASOS.map(([t, d], i) => (
+            <li key={t} className="border-t-2 border-azul pt-4">
+              <p className="font-mono text-sm tabular-nums text-tenue">0{i + 1}</p>
+              <p className="mt-1 font-titulo text-xl font-bold text-tinta">{t}</p>
+              <p className="mt-1 text-tenue">{d}</p>
+            </li>
+          ))}
+        </ol>
+        <dl data-aparecer="grupo" className="mt-12 grid gap-px bg-linea border border-linea rounded overflow-hidden md:grid-cols-3">
+          {DUDAS.map(({ p, r }) => (
+            <div key={p} className="bg-white p-5">
+              <dt className="font-semibold text-azul">{p}</dt>
+              <dd className="mt-1 text-sm text-tinta/85">{r}</dd>
             </div>
           ))}
         </dl>
@@ -340,12 +305,6 @@ export default function Inicio() {
           Más preguntas frecuentes <ArrowRight size={16} aria-hidden />
         </Link>
       </section>
-
-      {/* The exploded rail joint now comes last: it is a way to pick parts,
-          not the reason to buy, so it never stands between the visitor and
-          the offer. */}
-      <ViaDesarmada piezas={piezasVia} />
-
     </>
   );
 }
