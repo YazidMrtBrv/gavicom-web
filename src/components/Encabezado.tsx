@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Menu, Sun, X } from "lucide-react";
+import { ClipboardList, Menu, Sun, X } from "lucide-react";
 import { useCotizacion } from "@/lib/cotizacion";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
 
@@ -123,7 +123,7 @@ export default function Encabezado() {
   return (
     <>
       <header ref={cabecera} data-cielo={estadoCielo} data-menu={abierto ? "abierto" : undefined} className="encabezado fixed top-0 inset-x-0 z-40 border-b">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 h-[72px] flex items-center gap-6">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 h-[72px] flex items-center gap-2 sm:gap-6">
           <Link href="/" className="shrink-0 inline-flex items-center min-h-11" aria-label="GAVICOM, inicio">
             {/* Both official versions are in the page and CSS shows one, so
                 the logo is swapped, never recolored or animated. The manual
@@ -152,9 +152,13 @@ export default function Encabezado() {
 
           <Link
             href="/cotizacion"
-            className="ml-auto md:ml-2 inline-flex items-center gap-2 min-h-11 px-4 rounded text-sm font-semibold transition-[background-color,color] duration-200 bg-azul text-white hover:bg-azul-hover cielo:bg-white cielo:text-azul cielo:hover:bg-azul-suave"
+            className="ml-auto md:ml-2 inline-flex items-center justify-center gap-2 min-h-11 min-w-11 shrink-0 px-3 sm:px-4 rounded text-sm font-semibold transition-[background-color,color] duration-200 bg-azul text-white hover:bg-azul-hover cielo:bg-white cielo:text-azul cielo:hover:bg-azul-suave"
           >
-            Cotización
+            {/* Under 380 px the logo (120 px minimum), this link and the menu
+                button do not fit with the counter, so the word gives way to an
+                icon; the link keeps its full name for screen readers. */}
+            {total > 0 && <ClipboardList size={18} aria-hidden className="min-[380px]:hidden" />}
+            <span className={total > 0 ? "max-[379.98px]:sr-only" : undefined}>Cotización</span>
             {total > 0 && (
               <>
                 <span
@@ -173,7 +177,7 @@ export default function Encabezado() {
             ref={boton}
             type="button"
             onClick={() => setAbiertoEn(abierto ? null : ruta)}
-            className="md:hidden grid place-items-center w-11 h-11 text-azul cielo:text-white"
+            className="md:hidden shrink-0 grid place-items-center w-11 h-11 min-w-11 text-azul cielo:text-white"
             aria-expanded={abierto}
             aria-controls="menu-movil"
             aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
