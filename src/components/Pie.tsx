@@ -17,7 +17,6 @@ export default function Pie() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 grid gap-10 md:grid-cols-[1.2fr_1fr_1fr]">
         <div className="flex flex-col gap-4">
           <Image src="/marca/gavicom-blanco.png" alt="GAVICOM" width={160} height={41} className="h-10 w-auto self-start" />
-          <p className="font-semibold text-white">{COMPANIA_INFO.promesa}</p>
           <p className="text-sm text-white/75 max-w-sm">
             Materiales, herramientas y servicios para vía férrea, y energía solar con GAVICOM Energy. {COMPANIA_INFO.ciudad}, {COMPANIA_INFO.departamento}. Desde {COMPANIA_INFO.fundacion}.
           </p>

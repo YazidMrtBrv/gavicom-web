@@ -1,13 +1,12 @@
-import Link from "next/link";
 import { Clock, Crosshair, Factory, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import { COMPANIA_INFO } from "@/constants/productos";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
 
 /*
  * Shared sales pieces: the green WhatsApp button, the trust strip with the
- * owner's promise ("100% confiables, rápidos y precisos"), the service hours
- * and the closing quote band. Every page uses the same ones so the promise,
- * the hours and the next step read identically wherever a buyer decides.
+ * owner's promise ("100% confiables, rápidos y precisos") and the hours line.
+ * Budget per page: one green button in the hero and one in the closing band
+ * (PieCotizar); the promise once; the hours only next to those two asks.
  * Server components: no client JavaScript is shipped for any of them.
  */
 
@@ -81,7 +80,7 @@ export interface PuntoConfianza {
 // only restates facts already published on the site.
 export const CONFIANZA_FERROVIARIA: PuntoConfianza[] = [
   { icono: ShieldCheck, titulo: "100% confiables", texto: "Cada referencia con ficha técnica y código." },
-  { icono: Zap, titulo: "Rápidos", texto: "Cotiza por WhatsApp, todos los días de 6 a.m. a 10 p.m." },
+  { icono: Zap, titulo: "Rápidos", texto: "Tu lista o tu plano, cotizados por WhatsApp." },
   { icono: Crosshair, titulo: "Precisos", texto: "Fabricamos según tu plano o tu muestra." },
   { icono: Factory, titulo: "Hecho por GAVICOM", texto: "Fabricación en Colombia con aliados industriales." },
 ];
@@ -110,51 +109,6 @@ export function FranjaConfianza({
           </li>
         ))}
       </ul>
-    </section>
-  );
-}
-
-// Closing (or mid-page) band: one decision, one green button, the hours, and
-// an optional quieter second path.
-export function BandaCotizar({
-  titulo,
-  texto,
-  mensaje,
-  boton = "Cotizar por WhatsApp",
-  secundario,
-  id,
-}: {
-  titulo: string;
-  texto?: string;
-  mensaje: string;
-  boton?: string;
-  secundario?: { href: string; texto: string };
-  id?: string;
-}) {
-  return (
-    <section id={id} aria-label={titulo} className="sobre-azul bg-azul text-white">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 md:py-16 grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-        <div>
-          <p className="font-titulo text-2xl md:text-4xl font-bold tracking-tight leading-tight text-white text-balance">{titulo}</p>
-          {texto && <p className="mt-3 text-white/85 max-w-2xl md:text-lg">{texto}</p>}
-          <LineaHorario claro className="mt-4" />
-        </div>
-        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3">
-          <BotonWhatsAppVenta mensaje={mensaje} grande ancho>
-            {boton}
-          </BotonWhatsAppVenta>
-          {secundario &&
-            (secundario.href.startsWith("#") ? (
-              <a href={secundario.href} className="inline-flex items-center justify-center min-h-14 px-6 rounded border border-white text-white font-semibold hover:bg-white/10">
-                {secundario.texto}
-              </a>
-            ) : (
-              <Link href={secundario.href} className="inline-flex items-center justify-center min-h-14 px-6 rounded border border-white text-white font-semibold hover:bg-white/10">
-                {secundario.texto}
-              </Link>
-            ))}
-        </div>
-      </div>
     </section>
   );
 }
