@@ -3,7 +3,7 @@ import { BadgeCheck, Calculator, Crosshair, ShieldCheck, Zap } from "lucide-reac
 import { PASOS_TRABAJO, RAZONES_GAVICOM, SERVICIOS_ENERGY } from "@/constants/energy";
 import { urlAbsoluta } from "@/lib/sitio";
 import { alternas } from "@/lib/meta";
-import { BandaCotizar, BotonWhatsAppVenta, FranjaConfianza, LineaHorario, type PuntoConfianza } from "@/components/venta/Venta";
+import { BotonWhatsAppVenta, FranjaConfianza, LineaHorario, type PuntoConfianza } from "@/components/venta/Venta";
 import EsquemaSolar from "@/components/energia/EsquemaSolar";
 import RecorridoSolar from "@/components/energia/RecorridoSolar";
 import PorQueSolar from "@/components/energia/PorQueSolar";
@@ -85,12 +85,9 @@ function Antetitulo({ n, texto, claro = false }: { n: string; texto: string; cla
 const CONFIANZA_SOLAR: PuntoConfianza[] = [
   { icono: ShieldCheck, titulo: "100% confiables", texto: "Cofres con cumplimiento de los requisitos aplicables del RETIE." },
   { icono: BadgeCheck, titulo: "Gabinetes certificados", texto: "Los gabinetes suministrados llegan con certificados RETIE e IEC." },
-  { icono: Zap, titulo: "Rápidos", texto: "Cotiza por WhatsApp, todos los días de 6 a.m. a 10 p.m." },
+  { icono: Zap, titulo: "Rápidos", texto: "Con una foto de tu factura empezamos el estimado." },
   { icono: Crosshair, titulo: "Precisos", texto: "Dimensionamos con tu consumo real y una visita al sitio." },
 ];
-
-// First line of the WhatsApp message per service card.
-const mensajeServicio = (corto: string) => `Hola GAVICOM, quiero cotizar ${corto.toLowerCase()} con GAVICOM Energy: `;
 
 // The wing cut of the logo as the edge where a blue section starts.
 function CorteAla() {
@@ -162,12 +159,12 @@ export default function Energy() {
           button. The legal title stays under each card, as the client wrote it. */}
       <section id="servicios" aria-labelledby="h-servicios" className="py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <Antetitulo n="01" texto="Lo que te cotizamos" />
+          <Antetitulo n="01" texto="Lo que hacemos" />
           <h2 id="h-servicios" data-aparecer className={`mt-2 ${H2}`}>
             Tu sistema solar completo, con un solo proveedor
           </h2>
           <p className="mt-4 text-tenue max-w-2xl md:text-lg">
-            Pide el sistema entero o solo la parte que te falta. Cada servicio se cotiza aparte y por WhatsApp.
+            El sistema entero o solo la parte que te falta: cofres, montaje, protecciones y gabinetes, del mismo equipo.
           </p>
           <ol data-aparecer="grupo" className="mt-10 grid gap-px bg-linea border border-linea md:grid-cols-2">
             {SERVICIOS_ENERGY.map((s, i) => (
@@ -183,15 +180,17 @@ export default function Energy() {
                   <p className="text-tinta">{s.descripcion}</p>
                 </div>
                 <div className="mt-auto flex flex-col gap-4">
-                  <BotonWhatsAppVenta mensaje={mensajeServicio(s.corto)} className="self-start">
-                    Cotizar por WhatsApp<span className="sr-only">: {s.corto}</span>
-                  </BotonWhatsAppVenta>
                   {/* Legal title as the client wrote it; keeps "requisitos aplicables del RETIE". */}
                   <p className="text-sm text-tenue border-t border-linea pt-3">{s.titulo}</p>
                 </div>
               </li>
             ))}
           </ol>
+          {/* One way on from the list, not a button per card: the
+              calculator is where the visitor turns interest into a message. */}
+          <a href="#cotizar" className="mt-6 inline-flex items-center gap-2 min-h-11 font-semibold text-azul hover:underline underline-offset-4">
+            <Calculator size={18} aria-hidden /> Calcula qué sistema necesitas
+          </a>
         </div>
       </section>
 
@@ -213,7 +212,7 @@ export default function Energy() {
           <div className="lg:sticky lg:top-28 self-start">
             <Antetitulo n="03" texto="Por qué GAVICOM" />
             <h2 id="h-gavicom" data-aparecer className={`mt-2 ${H2}`}>
-              100% confiables, rápidos y precisos
+              Un solo equipo, del cofre al gabinete
             </h2>
             <p data-aparecer className="mt-4 text-tinta/85">
               GAVICOM Energy es la línea solar de GAVICOM SAS, la empresa de Barranquilla que fabrica y suministra componentes para la vía férrea. La misma exigencia técnica, ahora en tu techo: el cofre, las protecciones y los gabinetes los resuelve un mismo equipo.
@@ -267,14 +266,6 @@ export default function Energy() {
         </div>
       </section>
 
-      <BandaCotizar
-        titulo="Empieza con una foto de tu factura de luz."
-        texto="Con tu consumo hacemos el primer estimado. Después lo afinamos con una visita."
-        mensaje={MENSAJE_FACTURA}
-        boton="Enviar mi factura"
-        secundario={{ href: "#cotizar", texto: "Calcular primero" }}
-      />
-
       <section aria-labelledby="h-proceso" className="py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Antetitulo n="04" texto="Cómo trabajamos" />
@@ -300,7 +291,7 @@ export default function Energy() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Antetitulo n="05" texto="Cotizar" claro />
           <h2 id="h-cotizar" data-aparecer className={`mt-2 text-white ${H2}`}>
-            ¿Cuántos paneles necesitas? Calcúlalo en un minuto.
+            ¿Cuántos paneles necesitas?
           </h2>
           <p data-aparecer className="mt-4 text-white/80 max-w-2xl">
             Pon tu consumo y lo que ya tienes: el estimado y tu mensaje salen listos para enviar por WhatsApp. Después lo afinamos con una visita.
