@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Montserrat, Poppins } from "next/font/google";
 import "./globals.css";
 import Encabezado from "@/components/Encabezado";
@@ -6,6 +6,7 @@ import Pie from "@/components/Pie";
 import BotonWhatsApp from "@/components/BotonWhatsApp";
 import Interacciones from "@/components/movimiento/Interacciones";
 import { Analytics } from "@vercel/analytics/next";
+import { EMPRESA, SITE_URL } from "@/lib/meta";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -20,23 +21,26 @@ const poppins = Poppins({
   weight: ["600", "700"],
 });
 
-const SITE_URL = "https://gavicomferroviario.com";
-const EMPRESA = "GAVICOM SAS";
+// Only what the code already backs up: no standards or certification claims
+// the company cannot document in shared previews and search results.
+const DESCRIPCION =
+  "Suministro de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía y señalización; fabricación de piezas en Colombia con aliados industriales. Barranquilla, cobertura nacional.";
+const TITULO = `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`;
 
-export const viewport = {
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
+  themeColor: "#0c2642",
 };
 
 export const metadata: Metadata = {
   title: {
-    default: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
+    default: TITULO,
     template: `%s | ${EMPRESA}`,
   },
-  description:
-    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía certificadas AREMA/UIC y señalización industrial. Sede en Barranquilla con cobertura en toda Colombia.",
+  description: DESCRIPCION,
   keywords: [
     "herramientas ferroviarias",
     "suministros ferroviarios",
@@ -60,29 +64,20 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  // No fixed images: app/opengraph-image.tsx and twitter-image.tsx render the
+  // 1200x630 preview; the wide logo alone was cropped badly by every network.
   openGraph: {
-    title: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
-    description:
-      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas certificadas para la industria del tren.",
+    title: TITULO,
+    description: DESCRIPCION,
     url: SITE_URL,
     siteName: EMPRESA,
     locale: "es_CO",
     type: "website",
-    images: [
-      {
-        url: "/marca/gavicom-azul.png",
-        width: 1267,
-        height: 327,
-        alt: EMPRESA,
-      },
-    ],
   },
   twitter: {
-    card: "summary",
-    title: `${EMPRESA} | Suministros Ferroviarios y Herramientas de Vía`,
-    description:
-      "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción y herramientas certificadas para la industria del tren.",
-    images: ["/marca/gavicom-azul.png"],
+    card: "summary_large_image",
+    title: TITULO,
+    description: DESCRIPCION,
   },
   robots: {
     index: true,
@@ -90,21 +85,25 @@ export const metadata: Metadata = {
     "max-snippet": -1,
     "max-image-preview": "large",
   },
+  // favicon.ico is linked from app/ by file convention. Any `icons` key here
+  // drops the file-based icon.png link, so it is listed again explicitly,
+  // next to the vector version for browsers that render SVG favicons.
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: [
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
     apple: "/apple-icon.png",
   },
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
+const organizacion = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organizacion`,
   name: EMPRESA,
   alternateName: ["GAVICOM", "GAVICOM Ferroviario"],
   url: SITE_URL,
-  logo: `${SITE_URL}/marca/gavicom-azul.png`,
+  logo: `${SITE_URL}/apple-icon.png`,
   image: `${SITE_URL}/marca/gavicom-azul.png`,
   contactPoint: {
     "@type": "ContactPoint",
@@ -114,11 +113,7 @@ const jsonLd = {
     areaServed: "CO",
     availableLanguage: ["Spanish"],
   },
-  sameAs: [
-    `https://wa.me/573150509803`,
-  ],
-  description:
-    "Distribuidor independiente de componentes ferroviarios, fijaciones pesadas, sistemas elásticos de sujeción, herramientas de vía certificadas y señalización industrial.",
+  description: DESCRIPCION,
   address: {
     "@type": "PostalAddress",
     addressLocality: "Barranquilla",
@@ -141,13 +136,34 @@ const jsonLd = {
   ],
 };
 
+// WebSite node with SearchAction: /catalogo reads ?q (CatalogoFiltrable), so
+// search engines can offer a search box that lands on real results.
+const sitioWeb = {
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#sitio`,
+  url: SITE_URL,
+  name: EMPRESA,
+  inLanguage: "es-CO",
+  publisher: { "@id": `${SITE_URL}/#organizacion` },
+  potentialAction: {
+    "@type": "SearchAction",
+    target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/catalogo?q={search_term_string}` },
+    "query-input": "required name=search_term_string",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [organizacion, sitioWeb],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${montserrat.variable} ${poppins.variable}`}>
+    <html lang="es-CO" className={`${montserrat.variable} ${poppins.variable}`}>
       <head>
         <script
           type="application/ld+json"
@@ -165,7 +181,8 @@ export default function RootLayout({
         <Pie />
         <BotonWhatsApp />
         <Interacciones />
-        <Analytics />
+        {/* Vercel Analytics only exists on Vercel; elsewhere its script 404s. */}
+        {process.env.VERCEL ? <Analytics /> : null}
       </body>
     </html>
   );
