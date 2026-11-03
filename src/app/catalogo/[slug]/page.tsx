@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, ChevronRight, Crosshair, FileText, ShieldCheck, Zap } from "lucide-react";
-import { COMPANIA_INFO } from "@/constants/productos";
 import { esFabricacionPropia, esProductoGavicom, marcaDe, vistasFicha } from "@/constants/catalogoExtra";
 import { PRODUCTOS, lineaDe, productoPorSlug, rutaLinea, slugProducto } from "@/lib/catalogo";
 import { MAX_TITULO, alternas, recortar } from "@/lib/meta";
@@ -202,8 +201,8 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
               <FileText size={18} aria-hidden /> Solicitar ficha técnica en PDF
             </a>
 
-            {/* The promise next to the buying decision, plus the hours: the
-                buyer knows someone answers today. */}
+            {/* The promise once, next to the buying decision. Hours stay in
+                the closing band and the footer. */}
             <ul className="grid gap-2 rounded border border-linea bg-azul-suave p-4 text-sm">
               <li className="flex items-start gap-2">
                 <ShieldCheck size={18} aria-hidden className="shrink-0 text-azul" />
@@ -211,7 +210,7 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
               </li>
               <li className="flex items-start gap-2">
                 <Zap size={18} aria-hidden className="shrink-0 text-azul" />
-                <span><span className="font-semibold text-tinta">Rápidos:</span> te atendemos {COMPANIA_INFO.horario.charAt(0).toLowerCase() + COMPANIA_INFO.horario.slice(1)}</span>
+                <span><span className="font-semibold text-tinta">Rápidos:</span> tu pedido sale en un solo mensaje, sin formularios.</span>
               </li>
               <li className="flex items-start gap-2">
                 <Crosshair size={18} aria-hidden className="shrink-0 text-azul" />

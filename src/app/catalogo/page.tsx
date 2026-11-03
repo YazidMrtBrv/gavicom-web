@@ -7,7 +7,7 @@ import TarjetaProducto from "@/components/TarjetaProducto";
 import { scriptFiltroPrevio } from "@/components/catalogo/filtrosCatalogo";
 import CatalogoFiltrable from "./CatalogoFiltrable";
 import { COMPANIA_INFO } from "@/constants/productos";
-import { BotonWhatsAppVenta, LineaHorario } from "@/components/venta/Venta";
+import { BotonWhatsAppVenta } from "@/components/venta/Venta";
 
 export default function Catalogo() {
   // Lets search engines read the whole catalogue as one ordered list of
@@ -35,15 +35,12 @@ export default function Catalogo() {
           <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.14em] text-tenue">{COMPANIA_INFO.promesa.replace(/\.$/, "")}</p>
           <h1 className="mt-2 text-3xl md:text-5xl font-bold tracking-tight text-balance">Catálogo: {PRODUCTOS.length} productos GAVICOM para la vía férrea</h1>
           <p className="text-tenue mt-3 max-w-2xl md:text-lg">
-            Marca lo que necesitas con «Agregar», pon cantidades y envía la lista completa por WhatsApp. ¿Ya sabes qué buscas? Escríbenos directo.
+            Cada pieza tiene su ficha técnica: ábrela, revisa las especificaciones y agrégala a tu cotización. Al final envías la lista completa, con códigos y cantidades.
           </p>
         </div>
-        <div className="flex flex-col gap-2">
-          <BotonWhatsAppVenta mensaje="Hola GAVICOM, quiero cotizar estas referencias: " ancho>
-            Cotizar por WhatsApp
-          </BotonWhatsAppVenta>
-          <LineaHorario />
-        </div>
+        <BotonWhatsAppVenta mensaje="Hola GAVICOM, quiero cotizar estas referencias: " ancho>
+          Cotizar por WhatsApp
+        </BotonWhatsAppVenta>
       </div>
       {/* The full grid is rendered here, on the server, exactly once: the
           page stays static, crawlers see every product link and nothing moves

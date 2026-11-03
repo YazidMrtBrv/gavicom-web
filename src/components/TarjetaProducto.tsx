@@ -5,7 +5,7 @@ import { ViewTransition } from "react";
 import type { Producto } from "@/constants/productos";
 import { esFabricacionPropia, imagenPrincipal, tieneFotoFolleto } from "@/constants/catalogoExtra";
 import { slugProducto } from "@/lib/catalogo";
-import BotonCotizar from "./BotonCotizar";
+import { ArrowRight } from "lucide-react";
 import IconoLinea from "./catalogo/IconoLinea";
 import InsigniaFabricado from "./catalogo/InsigniaFabricado";
 
@@ -48,10 +48,12 @@ export default function TarjetaProducto({ producto, prioridad = false }: { produ
         </div>
         <span className="font-mono text-xs text-azul tracking-tight">{producto.sku}</span>
         <h3 className="font-sans text-[15px] font-semibold leading-snug text-tinta group-hover:text-azul">{producto.nombre}</h3>
+        {/* The whole card opens the ficha, where the buyer sees specs before
+            adding to the quote: cards inform, the ficha is the decision. */}
+        <span className="mt-auto inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-azul group-hover:underline underline-offset-4">
+          Ver ficha <ArrowRight size={16} aria-hidden />
+        </span>
       </Link>
-      <div className="p-3 pt-0">
-        <BotonCotizar sku={producto.sku} nombre={producto.nombre} />
-      </div>
     </article>
   );
 }

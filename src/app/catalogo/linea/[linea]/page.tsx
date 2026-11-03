@@ -128,13 +128,13 @@ export default async function PaginaLinea({ params }: { params: Promise<{ linea:
             {productos.length} <span className="text-base font-sans font-semibold">referencias</span>
           </p>
           <p className="text-sm text-tenue">
-            Desde {COMPANIA_INFO.ciudad} para todo el país. Cada referencia tiene su ficha y se agrega a la cotización.
+            Desde {COMPANIA_INFO.ciudad} para todo el país. Cada referencia tiene su ficha técnica y código.
           </p>
           <a
             href={enlaceWhatsApp(guia.mensaje)}
             target="_blank"
             rel="noopener noreferrer"
-            className="boton-iman inline-flex items-center justify-center gap-2 min-h-12 px-5 rounded bg-azul text-white font-semibold hover:bg-azul-hover"
+            className="boton-iman inline-flex items-center justify-center gap-2 min-h-12 px-5 rounded bg-whatsapp text-white font-semibold hover:brightness-110"
           >
             <MessageCircle size={18} aria-hidden /> Cotizar por WhatsApp
           </a>
@@ -228,34 +228,28 @@ export default async function PaginaLinea({ params }: { params: Promise<{ linea:
         </section>
       )}
 
-      <section aria-labelledby="h-cotizar" className="sobre-azul mt-16 md:mt-24 rounded bg-azul text-white">
+      {/* How to quote, as information only: the page's one call to action
+          is in the header, and the footer band closes the page. */}
+      <section aria-labelledby="h-cotizar" className="mt-16 md:mt-24 rounded border border-linea bg-gris">
         <div className="grid gap-8 p-6 md:p-10 md:grid-cols-[1fr_1.3fr] md:items-center">
           <div data-aparecer className="flex flex-col gap-3">
-            <h2 id="h-cotizar" className={`${H2} text-white`}>
+            <h2 id="h-cotizar" className={H2}>
               Cómo cotizar {linea.nombre.toLowerCase()}
             </h2>
-            <p className="text-white/80">No publicamos precios: cada pedido se cotiza con sus cantidades y el lugar de entrega.</p>
-            <a
-              href={enlaceWhatsApp(guia.mensaje)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="boton-iman self-start inline-flex items-center gap-2 min-h-12 px-6 rounded bg-white text-azul font-semibold hover:bg-azul-suave"
-            >
-              <MessageCircle size={18} aria-hidden /> Escribir por WhatsApp
-            </a>
+            <p className="text-tenue">No publicamos precios: cada pedido se cotiza con sus referencias y cantidades.</p>
           </div>
           <ol data-aparecer="grupo" className="grid gap-5 sm:grid-cols-3">
             {[
-              ["Marca las piezas", "En cada tarjeta, con «Agregar a cotización»."],
+              ["Elige las piezas", "En la ficha de cada una, con «Agregar a cotización»."],
               ["Pon cantidades", "Y la ciudad donde las necesitas."],
-              ["Envía", "Por WhatsApp o correo. Te respondemos con precio y plazo."],
+              ["Envía la lista", "Por WhatsApp o correo. Te respondemos con la cotización."],
             ].map(([t, d], i) => (
-              <li key={t} className="border-t-2 border-white/30 pt-3">
+              <li key={t} className="border-t-2 border-azul pt-3">
                 <p className="font-semibold">
-                  <span className="font-mono tabular-nums text-white/70 mr-1.5">{i + 1}.</span>
+                  <span className="font-mono tabular-nums text-tenue mr-1.5">{i + 1}.</span>
                   {t}
                 </p>
-                <p className="text-sm text-white/80 mt-1">{d}</p>
+                <p className="text-sm text-tenue mt-1">{d}</p>
               </li>
             ))}
           </ol>

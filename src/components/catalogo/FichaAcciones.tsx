@@ -47,7 +47,7 @@ export default function FichaAcciones() {
         className="inline-flex items-center justify-center gap-2 min-h-12 px-5 rounded bg-whatsapp text-white font-semibold hover:brightness-110 w-full sm:w-auto sm:self-start"
       >
         <IconoWhatsApp size={20} />
-        Cotizar ya por WhatsApp
+        Cotizar por WhatsApp
         <span className="sr-only"> (abre WhatsApp)</span>
       </a>
     </div>

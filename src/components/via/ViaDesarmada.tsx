@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowDown, Layers } from "lucide-react";
-import BotonCotizar from "@/components/BotonCotizar";
 import "./via.css";
 
 /*
@@ -249,13 +248,13 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 grid gap-3 md:gap-6 lg:grid-cols-[1.5fr_1fr] items-center">
             <div className="flex flex-col gap-2 md:gap-3 min-w-0">
               <div>
-                <p className="font-mono text-xs md:text-sm text-tenue tracking-wider">Fijaciones de vía</p>
+                <p className="font-mono text-xs md:text-sm text-tenue tracking-wider">La junta, pieza por pieza</p>
                 <h2 id="h-via" className="text-3xl md:text-5xl font-bold tracking-tight scroll-mt-[88px] mt-1">
                   Toda la junta del riel, en un solo pedido
                 </h2>
                 {/* Phones get the one-line version so the whole stage fits one screen. */}
                 <p className="text-tenue mt-1 md:mt-2 max-w-xl text-sm md:text-base">
-                  <span className="hidden sm:inline">Eclisas, pernos, clips, tirafondos, almohadilla y placa: las seis son producto GAVICOM. </span>Toca una pieza y agrégala a tu cotización.
+                  <span className="hidden sm:inline">Eclisas, pernos, clips, tirafondos, almohadilla y placa: las seis son producto GAVICOM. </span>Toca una pieza para ver su ficha.
                 </p>
               </div>
 
@@ -439,9 +438,10 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
                 <h3 className="font-sans text-base md:text-lg font-semibold text-tinta leading-snug">{actual.nombre}</h3>
                 <p className="via-resumen text-sm text-tenue line-clamp-2 md:line-clamp-3">{actual.resumen}</p>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  <BotonCotizar sku={actual.sku} nombre={actual.nombre} />
-                  <Link href={`/catalogo/${actual.slug}`} className="inline-flex items-center min-h-11 px-3 rounded border border-linea text-sm font-semibold hover:border-azul hover:text-azul">
-                    Ver ficha
+                  {/* Only the ficha link: the quote is added there, after the
+                      buyer has seen the specs (one decision point per part). */}
+                  <Link href={`/catalogo/${actual.slug}`} className="inline-flex items-center min-h-11 px-4 rounded border border-azul text-azul text-sm font-semibold hover:bg-azul-suave">
+                    Ver ficha de la pieza
                   </Link>
                 </div>
               </div>
