@@ -30,7 +30,9 @@ const PASOS: Paso[] = [
   {
     titulo: "Fundición nacional",
     texto: "La pieza se funde en Colombia con nuestro aliado industrial, en hierro nodular ASTM A536 y hornos de inducción de 1.800 kg por colada.",
-    imagen: { src: "/images/fabricacion/fundicion.webp", alt: "Colada de metal fundido en el horno de inducción", ancho: 460, alto: 362 },
+    // Cropped copy: the original carries a blue strip on two edges that only
+    // blends in over the blue hero, not on this white card.
+    imagen: { src: "/images/fabricacion/fundicion-recorte.webp", alt: "Colada de metal fundido en el horno de inducción", ancho: 444, alto: 348 },
   },
   {
     titulo: "Control y entrega",

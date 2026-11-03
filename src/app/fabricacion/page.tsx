@@ -68,10 +68,10 @@ export default function Fabricacion() {
     // last call to action.
     <div className="pb-24 md:pb-0">
       <section className="sobre-azul bg-azul text-white">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 md:py-20 grid gap-10 md:grid-cols-[1.1fr_1fr] items-center">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 md:py-16 lg:py-20 [@media(max-height:760px)]:md:py-12 grid gap-10 md:grid-cols-[1.1fr_1fr] items-center">
           <div data-aparecer className="flex flex-col gap-5">
             <p className={`${ANTETITULO} text-white/70`}>Fabricación en Colombia</p>
-            <h1 className="text-white text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">
+            <h1 className="text-white text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight">
               Piezas ferroviarias fabricadas en Colombia, sin esperar una importación.
             </h1>
             <p className="font-mono text-sm text-white/85">
@@ -190,7 +190,9 @@ export default function Fabricacion() {
             <Image src="/images/fabricacion/tirafondos-acabados.webp" alt="Tirafondos con cabeza cuadrada y hexagonal en varios acabados" width={767} height={347} className="w-full h-auto" />
           </figure>
           <figure className="inclinar rounded overflow-hidden border border-linea">
-            <Image src="/images/fabricacion/tirafondo-verificacion.webp" alt="Verificación dimensional de un tirafondo con calibrador" width={287} height={269} className="w-full h-full object-cover" />
+            {/* Edited copy of the original photo: the caliper display and the batch
+                label are blurred, because /fabricacion never shows part dimensions. */}
+            <Image src="/images/fabricacion/tirafondo-control.webp" alt="Tirafondo sujeto con pinzas junto a un calibrador en la mesa de control" width={283} height={268} className="w-full h-full object-cover" />
           </figure>
           <figure className="inclinar rounded overflow-hidden border border-linea bg-white">
             <Image src="/images/fabricacion/tirafondo-cabeza.webp" alt="Tirafondo de cabeza cuadrada marcada" width={232} height={269} className="w-full h-full object-contain" />
