@@ -1,47 +1,308 @@
-import Image from "next/image";
-import { SERVICIOS, imagenProducto } from "@/lib/catalogo";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Box,
+  Cable,
+  DraftingCompass,
+  Drone,
+  Factory,
+  MessageCircle,
+  MessagesSquare,
+  Package,
+  Wrench,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
+import type { Producto } from "@/constants/productos";
+import { SERVICIOS, normalizar } from "@/lib/catalogo";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
 
-export default function Servicios() {
-  return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-8 md:pt-12">
-      <h1 className="text-3xl md:text-4xl font-bold">Servicios</h1>
-      <p className="text-tenue mt-2 max-w-2xl">
-        Además del suministro, hacemos topografía con dron, mantenimiento de equipos, servicio hidráulico, alquiler de motosoldadores Lincoln, planos y consultoría ferroviaria.
-      </p>
+// Per-service presentation. The deliverable line is lifted from each
+// service's own text in productos.ts; the follow-up question is what sales
+// asks first anyway, so the visitor answers it in the first message.
+const PRESENTACION: Record<
+  string,
+  { icono: LucideIcon; entregable: string; pregunta: string }
+> = {
+  "GVC-SRV-TOP01": {
+    icono: Drone,
+    entregable:
+      "Ortomosaicos, modelos digitales y curvas de nivel del corredor.",
+    pregunta: "Longitud aproximada del tramo y municipio: ",
+  },
+  "GVC-SRV-MT01": {
+    icono: Wrench,
+    entregable:
+      "Mantenimiento preventivo y correctivo de maquinaria y herramientas de vía.",
+    pregunta: "Ubicación y fecha estimada: ",
+  },
+  "GVC-SRV-HD01": {
+    icono: Cable,
+    entregable:
+      "Cambio y reforzamiento de mangueras hidráulicas con acoples estandarizados.",
+    pregunta: "Ubicación y fecha estimada: ",
+  },
+  "GVC-SRV-LC01": {
+    icono: Zap,
+    entregable:
+      "Motosoldadores autónomos Lincoln Electric, en alquiler por proyecto.",
+    pregunta: "Cantidad de equipos y fecha de inicio: ",
+  },
+  "GVC-SRV-PL01": {
+    icono: DraftingCompass,
+    entregable:
+      "Planos de cambiavías, cruces de diamante y pasos a nivel, listos para construcción.",
+    pregunta: "Ubicación y fecha estimada: ",
+  },
+  "GVC-SRV-3D01": {
+    icono: Box,
+    entregable:
+      "Modelos 3D de la vía para visualizar y planificar el proyecto.",
+    pregunta: "Ubicación y fecha estimada: ",
+  },
+  "GVC-SRV-CON01": {
+    icono: MessagesSquare,
+    entregable:
+      "Diagnóstico de vía, especificación técnica y planes de mantenimiento.",
+    pregunta: "Ubicación y fecha estimada: ",
+  },
+};
 
-      <ul data-aparecer="grupo" className="mt-8 flex flex-col gap-px bg-linea border border-linea rounded overflow-hidden">
-        {SERVICIOS.map((s) => {
-          const img = imagenProducto(s);
-          return (
-            <li key={s.sku} id={s.sku.toLowerCase()} className="foco bg-white grid gap-5 p-5 md:p-6 md:grid-cols-[220px_1fr] items-start">
-              <div className="relative aspect-[4/3] bg-gris rounded overflow-hidden">
-                {img && <Image src={img} alt={s.nombre} fill sizes="(min-width:768px) 220px, 100vw" className="object-cover" />}
-              </div>
-              <div className="flex flex-col gap-3">
-                <div>
-                  <p className="text-sm text-tenue">{s.subcategoria}</p>
-                  <h2 className="text-xl md:text-2xl font-bold mt-0.5">{s.nombre}</h2>
-                </div>
-                <p className="leading-relaxed">{s.descripcion}</p>
-                <ul className="grid gap-x-6 gap-y-1 sm:grid-cols-2 text-sm">
-                  {Object.entries(s.especificaciones).map(([k, v]) => (
-                    <li key={k}>
-                      <span className="text-tenue">{k}:</span> {v}
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href={enlaceWhatsApp(`Hola GAVICOM, quiero información sobre: ${s.nombre}.`)}
-                  className="self-start inline-flex items-center min-h-11 px-4 rounded bg-azul text-white text-sm font-semibold hover:bg-azul-hover"
-                >
-                  Consultar este servicio
-                </a>
-              </div>
+// A service added later to productos.ts still renders, with its first
+// sentence as the deliverable line.
+function presentacion(s: Producto) {
+  return (
+    PRESENTACION[s.sku] ?? {
+      icono: Wrench,
+      entregable: s.descripcion.split(". ")[0].replace(/\.?$/, "."),
+      pregunta: "Ubicación y fecha estimada: ",
+    }
+  );
+}
+
+// Subcategories are stored in title case; the site writes headings in
+// sentence case.
+const rotulo = (t: string) => t.charAt(0) + t.slice(1).toLowerCase();
+const ancla = (t: string) => normalizar(t).replace(/[^a-z0-9]+/g, "-");
+
+// Groups in the order the services first appear, so the page follows the data.
+function agrupar(servicios: Producto[]) {
+  const grupos = new Map<string, Producto[]>();
+  for (const s of servicios)
+    grupos.set(s.subcategoria, [...(grupos.get(s.subcategoria) ?? []), s]);
+  // Running number across groups, fixed here rather than counted while
+  // rendering.
+  let n = 0;
+  return [...grupos.entries()].map(([sub, lista]) => ({
+    sub,
+    id: ancla(sub),
+    lista: lista.map((s) => ({ s, numero: String(++n).padStart(2, "0") })),
+  }));
+}
+
+// Schematic of a drone survey: parallel flight lines over an area. Drawn, not
+// photographed, so it cannot pass for a real job.
+function CuadriculaVuelo() {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      className="absolute inset-0 size-full opacity-25"
+      aria-hidden
+    >
+      <path
+        d="M8 10H56V22H8V34H56V46H8V56"
+        fill="none"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeDasharray="3 3"
+      />
+    </svg>
+  );
+}
+
+export default function Servicios() {
+  const grupos = agrupar(SERVICIOS);
+  return (
+    <>
+      <section className="sobre-azul bg-azul text-white">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 md:py-20">
+          <p className="font-mono text-sm tracking-[0.2em] uppercase text-white/70">
+            Servicios técnicos
+          </p>
+          <h1 className="mt-3 text-white text-3xl md:text-5xl font-bold leading-[1.1] tracking-tight max-w-4xl">
+            Servicios técnicos para vía férrea, del levantamiento al
+            mantenimiento
+          </h1>
+          {/* The chips below already name every group, so phones skip this
+              line to keep the list of services within reach. */}
+          <p className="hidden sm:block mt-4 text-white/80 max-w-2xl">
+            Además del suministro, hacemos topografía con dron, mantenimiento de
+            equipos, servicio hidráulico, alquiler de motosoldadores Lincoln,
+            planos y consultoría ferroviaria.
+          </p>
+          {/* One swipeable row on phones instead of three wrapped rows. */}
+          <nav
+            aria-label="Grupos de servicios"
+            className="mt-6 -mx-4 px-4 overflow-x-auto sm:mx-0 sm:px-0"
+          >
+            <ul className="flex gap-2 w-max sm:w-auto sm:flex-wrap">
+              {grupos.map((g) => (
+                <li key={g.id}>
+                  <a
+                    href={`#${g.id}`}
+                    className="inline-flex items-center min-h-11 px-4 rounded-full border border-white/40 text-sm font-semibold text-white hover:bg-white/10 whitespace-nowrap"
+                  >
+                    {rotulo(g.sub)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-8 md:pt-16 flex flex-col gap-8 md:gap-16">
+        {grupos.map((g) => (
+          <section
+            key={g.id}
+            id={g.id}
+            aria-labelledby={`h-${g.id}`}
+            className="scroll-mt-24"
+          >
+            <h2
+              id={`h-${g.id}`}
+              className="text-2xl md:text-4xl font-bold tracking-tight"
+            >
+              {rotulo(g.sub)}
+            </h2>
+            <ul className="mt-4 border-t border-linea">
+              {g.lista.map(({ s, numero }) => {
+                const { icono: Icono, entregable, pregunta } = presentacion(s);
+                const topografia = s.sku === "GVC-SRV-TOP01";
+                return (
+                  <li
+                    key={s.sku}
+                    id={s.sku.toLowerCase()}
+                    className="scroll-mt-24 border-b border-linea py-4 md:py-7 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 md:gap-x-6"
+                  >
+                    {/* The number sits under the icon, where the column has
+                        room, so it costs no extra line on phones. */}
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="relative grid place-items-center size-12 md:size-16 rounded-sm bg-azul text-white overflow-hidden">
+                        {topografia && <CuadriculaVuelo />}
+                        <Icono
+                          className="relative size-6 md:size-7"
+                          aria-hidden
+                        />
+                      </div>
+                      <p className="font-mono text-xs text-tenue tabular-nums">
+                        {numero}
+                      </p>
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-lg md:text-2xl font-bold leading-snug">
+                        {s.nombre}
+                      </h3>
+                      <p className="mt-1 text-tinta">{entregable}</p>
+                    </div>
+                    {/* Scope toggle and button share a row (full width on
+                        phones so both fit); an opened scope takes the whole
+                        row and pushes the button below. */}
+                    <div className="col-span-2 md:col-span-1 md:col-start-2 mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
+                      <details className="group open:basis-full">
+                        <summary className="inline-flex items-center gap-1 min-h-11 cursor-pointer font-semibold text-azul list-none [&::-webkit-details-marker]:hidden">
+                          <ArrowRight
+                            size={16}
+                            aria-hidden
+                            className="transition-transform group-open:rotate-90"
+                          />
+                          Ver alcance
+                        </summary>
+                        <div className="pb-2 max-w-3xl">
+                          <p className="leading-relaxed text-tenue">
+                            {s.descripcion}
+                          </p>
+                          <dl className="mt-3 grid gap-x-6 gap-y-1 sm:grid-cols-2 text-sm">
+                            {Object.entries(s.especificaciones).map(
+                              ([k, v]) => (
+                                <div key={k}>
+                                  <dt className="inline text-tenue">{k}: </dt>
+                                  <dd className="inline">{v}</dd>
+                                </div>
+                              ),
+                            )}
+                          </dl>
+                        </div>
+                      </details>
+                      <a
+                        href={enlaceWhatsApp(
+                          `Hola GAVICOM, quiero información sobre: ${s.nombre}.\n${pregunta}`,
+                        )}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center min-h-11 px-4 rounded bg-azul text-white text-sm font-semibold hover:bg-azul-hover whitespace-nowrap"
+                      >
+                        Consultar este servicio
+                      </a>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))}
+
+        <section
+          aria-labelledby="h-otra-cosa"
+          className="rounded border-2 border-azul p-5 md:p-8"
+        >
+          <h2
+            id="h-otra-cosa"
+            className="text-2xl md:text-3xl font-bold tracking-tight"
+          >
+            ¿Buscas otra cosa?
+          </h2>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+            <li>
+              <Link
+                href="/fabricacion"
+                className="inline-flex items-center gap-2 min-h-11 font-semibold text-azul hover:underline"
+              >
+                <Factory size={18} aria-hidden /> Necesito una pieza fabricada
+              </Link>
             </li>
-          );
-        })}
-      </ul>
-    </div>
+            <li>
+              <Link
+                href="/catalogo"
+                className="inline-flex items-center gap-2 min-h-11 font-semibold text-azul hover:underline"
+              >
+                <Package size={18} aria-hidden /> Necesito materiales de vía
+              </Link>
+            </li>
+            <li>
+              <a
+                href={enlaceWhatsApp(
+                  "Hola GAVICOM, quiero información sobre sus servicios técnicos.",
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 min-h-11 font-semibold text-azul hover:underline"
+              >
+                <MessageCircle size={18} aria-hidden /> Escribir por WhatsApp
+              </a>
+            </li>
+            <li>
+              <Link
+                href="/contacto?tema=servicios"
+                className="inline-flex items-center gap-2 min-h-11 font-semibold text-azul hover:underline"
+              >
+                <ArrowRight size={18} aria-hidden /> Usar el formulario de
+                contacto
+              </Link>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </>
   );
 }
