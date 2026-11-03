@@ -494,7 +494,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
 
   {
     sku: "GVC-SRV-TOP01",
-    nombre: "Estudios Topográficos y Captura de Información",
+    nombre: "Estudios topográficos y captura de información",
     categoria: "Servicios",
     subcategoria: "Ingeniería y Obras Civiles",
     origen: "Portafolio Servicios GAVICOM",
@@ -502,13 +502,12 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Levantamientos fotogramétricos con drones de alta resolución, generación de ortomosaicos y modelos 3D del corredor ferroviario aplicados al diseño, inspección y mantenimiento de infraestructura.",
     imagen: "servicios_pag2.webp",
     especificaciones: {
-      "Tecnología Aplicada":
+      "Tecnología aplicada":
         "Drones de alta resolución y sistemas RTK",
       Entregables:
         "Ortomosaicos, modelos digitales y curvas de nivel",
-      "Campos de Aplicación":
+      "Campos de aplicación":
         "Trazado de vías, control de obras y cálculo de volúmenes",
-      Personal: "Equipo técnico calificado y supervisión profesional",
     },
   },
   {
@@ -908,10 +907,9 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     subcategoria: "Seguridad Vial y Ferroviaria",
     origen: "Portafolio de Señalizaciones",
     descripcion:
-      "Señalización ferroviaria completa incluyendo soporte de instalación. Diseñada y fabricada por GAVICOM S.A.S con altos estándares de visibilidad y durabilidad para entornos ferroviarios.",
+      "Señalización ferroviaria completa incluyendo soporte de instalación, con altos estándares de visibilidad y durabilidad para entornos ferroviarios.",
     imagen: "senializacion-ferroviaria-1.webp",
     especificaciones: {
-      Fabricación: "GAVICOM S.A.S - Diseño y Fabricación",
       Incluye: "Señalización y soporte",
       Aplicación: "Entornos ferroviarios",
     },
@@ -966,10 +964,9 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     subcategoria: "Seguridad Vial y Ferroviaria",
     origen: "Portafolio de Señalizaciones",
     descripcion:
-      "Señalización vial diseñada y fabricada por GAVICOM S.A.S para entornos viales y ferroviarios. Incluye soporte de instalación y está fabricada con altos estándares de visibilidad reflectiva y durabilidad.",
+      "Señalización vial para entornos viales y ferroviarios. Incluye soporte de instalación y altos estándares de visibilidad reflectiva y durabilidad.",
     imagen: "senializacion-vial-1.webp",
     especificaciones: {
-      Fabricación: "GAVICOM S.A.S - Diseño y Fabricación",
       Incluye: "Señalización y soporte",
       "Material Base": "Lámina metálica con tratamiento anticorrosivo",
       Visibilidad: "Acabado reflectivo de alta especificación",
@@ -987,7 +984,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   // =============================================
   {
     sku: "GVC-SRV-MT01",
-    nombre: "Mantenimiento de Equipos Ferroviarios",
+    nombre: "Mantenimiento de equipos ferroviarios",
     categoria: "Servicios",
     subcategoria: "Mantenimiento Industrial",
     origen: "Portafolio Servicios GAVICOM",
@@ -995,7 +992,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Servicio especializado para el mantenimiento, ajuste y optimización de equipos ferroviarios. Incluye mantenimiento preventivo y correctivo de equipos utilizados en infraestructura de vía férrea.",
     imagen: "servicios_pag3.webp",
     especificaciones: {
-      "Tipo de Servicio": "Preventivo y correctivo especializado",
+      "Tipo de servicio": "Preventivo y correctivo especializado",
       Equipos: "Maquinaria y herramientas ferroviarias",
       Alcance: "Ajuste, reparación y optimización de rendimiento",
       Personal: "Técnicos especializados en equipos de vía",
@@ -1003,7 +1000,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   },
   {
     sku: "GVC-SRV-HD01",
-    nombre: "Servicio Técnico Hidráulico",
+    nombre: "Servicio técnico hidráulico",
     categoria: "Servicios",
     subcategoria: "Mantenimiento Industrial",
     origen: "Portafolio Servicios GAVICOM",
@@ -1019,12 +1016,12 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   },
   {
     sku: "GVC-SRV-LC01",
-    nombre: "Alquiler de Equipos Lincoln para Soldadura Eléctrica",
+    nombre: "Alquiler de equipos Lincoln para soldadura eléctrica",
     categoria: "Servicios",
     subcategoria: "Alquiler de Equipos",
     origen: "Portafolio Servicios GAVICOM",
     descripcion:
-      "Equipos de soldadura de alta calidad marca Lincoln Electric. Equipos tipo motosoldador autónomo ideales para trabajo en campo. Aplicación en soldadura de rieles y estructuras ferroviarias.",
+      "Equipos marca Lincoln Electric tipo motosoldador autónomo, para trabajo en campo. Aplicación en soldadura de rieles y estructuras ferroviarias.",
     imagen: "servicios_pag5.webp",
     especificaciones: {
       Marca: "Lincoln Electric",
@@ -1035,7 +1032,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   },
   {
     sku: "GVC-SRV-PL01",
-    nombre: "Diseño de Planos Técnicos Ferroviarios",
+    nombre: "Diseño de planos técnicos ferroviarios",
     categoria: "Servicios",
     subcategoria: "Ingeniería y Diseño",
     origen: "Portafolio Servicios GAVICOM",
@@ -1043,7 +1040,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Diseño y elaboración de planos técnicos para cambiavías, cruces de diamante y pasos a nivel ferroviarios. Desarrollo de infraestructura ferroviaria especializada con software CAD profesional.",
     imagen: "planos-tecnicos-ferroviarios.webp",
     especificaciones: {
-      "Tipo de Planos": "Cambiavías, cruces de diamante, pasos a nivel",
+      "Tipo de planos": "Cambiavías, cruces de diamante, pasos a nivel",
       Software: "CAD profesional para infraestructura ferroviaria",
       Alcance: "Diseño estructural y geométrico de vía",
       Entregables: "Planos técnicos listos para construcción",
@@ -1051,7 +1048,7 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
   },
   {
     sku: "GVC-SRV-3D01",
-    nombre: "Renderizado 3D de Vías Férreas",
+    nombre: "Renderizado 3D de vías férreas",
     categoria: "Servicios",
     subcategoria: "Ingeniería y Diseño",
     origen: "Portafolio Servicios GAVICOM",
@@ -1060,14 +1057,12 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
     imagen: "servicios_pag7.webp",
     especificaciones: {
       Modelado: "Tridimensional de infraestructura ferroviaria",
-      Software: "Herramientas especializadas de renderizado",
       Aplicación: "Visualización y planificación de proyectos",
-      Beneficio: "Toma de decisiones con representación realista",
     },
   },
   {
     sku: "GVC-SRV-CON01",
-    nombre: "Servicios de Consultoría Ferroviaria",
+    nombre: "Servicios de consultoría ferroviaria",
     categoria: "Servicios",
     subcategoria: "Asesoría Técnica Especializada",
     origen: "Portafolio Servicios GAVICOM",
@@ -1075,11 +1070,11 @@ export const PRODUCTOS_Y_SERVICIOS: Producto[] = [
       "Acompañamiento técnico para operadores, contratistas y entidades del sector férreo: diagnóstico del estado de vía, especificación de materiales según norma, estructuración de planes de mantenimiento y soporte documental en procesos de licitación y contratación.",
     imagen: "consultoria-ferroviaria.webp",
     especificaciones: {
-      "Líneas de Asesoría":
+      "Líneas de asesoría":
         "Diagnóstico de vía, especificación técnica y planes de mantenimiento",
-      "Marco Normativo":
+      "Marco normativo":
         "Referencias AREMA y UIC aplicadas a compatibilidad de materiales",
-      "Apoyo Contractual":
+      "Apoyo contractual":
         "Fichas técnicas y soporte documental para licitaciones",
       Modalidad:
         "Asesoría puntual por proyecto o acompañamiento continuo",
