@@ -172,7 +172,7 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
             // Brochure-only references: no flyer page as a product photo.
             <div className="aspect-square border border-dashed border-linea rounded bg-white flex flex-col items-center justify-center gap-3 p-6 text-center text-azul">
               <IconoLinea categoria={p.categoria} size={48} />
-              <p className="font-mono text-2xl font-semibold">{p.sku}</p>
+              <p className="t-subtitulo font-mono">{p.sku}</p>
               <p className="text-sm text-tenue max-w-xs">Foto disponible por WhatsApp: pídela al cotizar.</p>
             </div>
           )}
@@ -184,10 +184,10 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
                 {gavicom && <InsigniaFabricado />}
                 {propia && <InsigniaFabricado colombia />}
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold leading-tight">{p.nombre}</h1>
+              <h1 className="t-titulo">{p.nombre}</h1>
               <p className="text-sm text-tenue">{p.subcategoria}</p>
             </div>
-            <p className="text-[17px] leading-relaxed">{p.descripcion}</p>
+            <p className="t-texto">{p.descripcion}</p>
 
 
             <FichaAcciones />
@@ -260,7 +260,7 @@ export default async function FichaProducto({ params }: { params: Promise<{ slug
 
       {relacionados.length > 0 && (
         <section aria-labelledby="h-relacionados" className="mt-14">
-          <h2 id="h-relacionados" className="text-2xl font-bold mb-4">
+          <h2 id="h-relacionados" className="t-seccion mb-4">
             Más en {linea?.nombre.toLowerCase() ?? "el catálogo"}
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

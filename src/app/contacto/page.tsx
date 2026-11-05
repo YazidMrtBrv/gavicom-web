@@ -81,7 +81,7 @@ function Formulario({ temaInicial }: { temaInicial: string }) {
 
   return (
     <form onSubmit={enviar} className="border border-linea rounded p-5 md:p-6 bg-gris flex flex-col gap-4" aria-labelledby="h-form">
-      <h2 id="h-form" className="text-2xl font-bold">
+      <h2 id="h-form" className="t-subtitulo">
         Escríbenos
       </h2>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -168,13 +168,13 @@ function FormularioConTema() {
 export default function Contacto() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 md:pt-16 pb-4">
-      <p className="font-mono text-xs md:text-sm tracking-widest uppercase text-tenue">Contacto</p>
-      <h1 className="mt-3 text-4xl md:text-5xl font-bold tracking-tight">Escríbenos por WhatsApp o por correo</h1>
-      <p className="text-tenue mt-4 max-w-2xl">Para cotizar varias referencias es más rápido armar tu lista en el catálogo. Para cualquier otra consulta, escríbenos aquí.</p>
+      <p className="t-etiqueta text-tenue">Contacto</p>
+      <h1 className="mt-3 t-titulo">Escríbenos por WhatsApp o por correo</h1>
+      <p className="t-entrada text-tenue mt-4 max-w-2xl">Para cotizar varias referencias es más rápido armar tu lista en el catálogo. Para cualquier otra consulta, escríbenos aquí.</p>
 
       <div className="mt-10 grid gap-10 md:grid-cols-[1fr_1.4fr] items-start">
         <section aria-labelledby="h-directo" className="flex flex-col gap-4">
-          <h2 id="h-directo" className="text-2xl font-bold">
+          <h2 id="h-directo" className="t-subtitulo">
             Directo
           </h2>
           <a

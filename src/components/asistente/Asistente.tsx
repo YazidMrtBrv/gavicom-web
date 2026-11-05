@@ -167,7 +167,7 @@ export default function Asistente({ piezas }: { piezas: PiezaAsistente[] }) {
               <ArrowLeft size={18} aria-hidden /> Atrás
             </button>
           ) : (
-            <span className="font-mono text-xs uppercase tracking-[0.14em] text-tenue">Asistente</span>
+            <span className="t-etiqueta text-tenue">Asistente</span>
           )}
         </div>
         <div className="flex items-center gap-3">
@@ -188,7 +188,7 @@ export default function Asistente({ piezas }: { piezas: PiezaAsistente[] }) {
       </div>
 
       <div key={clave} className="asistente-paso p-4 sm:p-6 md:p-8">
-        <h3 ref={titulo} tabIndex={-1} className="font-titulo text-2xl md:text-3xl font-bold tracking-tight outline-none">
+        <h3 ref={titulo} tabIndex={-1} className="t-subtitulo outline-none">
           {encabezados[clave]}
         </h3>
 
@@ -210,7 +210,7 @@ export default function Asistente({ piezas }: { piezas: PiezaAsistente[] }) {
                   <span className="grid place-items-center size-11 rounded bg-azul-suave text-azul">
                     <Icono size={22} aria-hidden />
                   </span>
-                  <span className="font-titulo text-lg font-bold text-tinta group-hover:text-azul">{t}</span>
+                  <span className="t-tarjeta text-tinta group-hover:text-azul">{t}</span>
                   <span className="text-sm text-tenue">{d}</span>
                   <span className="mt-auto inline-flex items-center gap-1 min-h-11 font-semibold text-azul">
                     Empezar <ArrowRight size={16} aria-hidden className="transition-transform group-hover:translate-x-1" />
@@ -404,7 +404,7 @@ export default function Asistente({ piezas }: { piezas: PiezaAsistente[] }) {
                   }}
                   className="foco w-full flex flex-col items-start gap-1 min-h-11 rounded border border-linea bg-white p-5 text-left hover:border-azul"
                 >
-                  <span className="font-titulo text-lg font-bold">{p.texto}</span>
+                  <span className="t-tarjeta">{p.texto}</span>
                   <span className="text-sm text-tenue">Desde unos {fmt(p.kwh)} kWh al mes</span>
                 </button>
               </li>
@@ -438,7 +438,7 @@ export default function Asistente({ piezas }: { piezas: PiezaAsistente[] }) {
                   ].map(([k, v]) => (
                     <div key={k}>
                       <dt className="text-xs text-white/75">{k}</dt>
-                      <dd className="font-titulo text-2xl font-bold tabular-nums">{v}</dd>
+                      <dd className="t-subtitulo tabular-nums">{v}</dd>
                     </div>
                   ))}
                 </dl>

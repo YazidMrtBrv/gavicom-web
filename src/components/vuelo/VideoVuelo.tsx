@@ -245,16 +245,16 @@ export default function VideoVuelo({ fuentes }: { fuentes: FuenteVuelo[] }) {
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-5 sm:pb-8">
           {/* The promise is said once on the home page, in the trust strip
               right below; here only who and where. 12 px minimum outdoors. */}
-          <p className="font-mono text-xs sm:text-sm uppercase tracking-normal sm:tracking-[0.14em] text-white/90">
+          <p className="t-etiqueta text-white/90">
             Suministro ferroviario · Barranquilla<span className="hidden sm:inline">, Colombia</span>
           </p>
           {/* Short and big: the value has to land in the first seconds, over
               moving footage, so the line is cut to what GAVICOM is and the
               shadow keeps it legible whatever frame is behind it. */}
-          <h1 className="mt-3 text-white text-[42px] leading-[1.02] sm:text-6xl md:text-7xl lg:text-[84px] font-bold tracking-tight max-w-xl lg:max-w-4xl [text-shadow:0_2px_24px_rgba(12,38,66,0.5)]">
+          <h1 className="mt-3 t-portada text-white max-w-xl lg:max-w-4xl [text-shadow:0_2px_24px_rgba(12,38,66,0.5)]">
             Componentes para la vía férrea, <span className="text-white/80">hechos por GAVICOM.</span>
           </h1>
-          <p className="mt-4 max-w-xl text-white/90 text-base sm:text-lg md:text-xl">
+          <p className="mt-4 max-w-xl t-entrada text-white/90">
             Eclisas, fijaciones, tirafondos, herramientas y señalización con ficha técnica. Y si tu pieza no está, la fabricamos en Colombia según tu plano.
           </p>
 

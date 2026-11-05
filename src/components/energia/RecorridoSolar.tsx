@@ -197,7 +197,7 @@ export default function RecorridoSolar() {
           <Icono size={28} aria-hidden />
         </span>
         <div key={`t-${p.id}`} className="aparecer-rapido flex flex-col gap-2">
-          <p className="font-titulo text-xl font-bold text-azul">
+          <p className="t-subtitulo text-azul">
             {activa + 1}. {p.nombre}
           </p>
           <p>{p.que}</p>

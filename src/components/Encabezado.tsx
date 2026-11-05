@@ -138,7 +138,7 @@ export default function Encabezado() {
                 key={e.href}
                 href={e.href}
                 aria-current={activo(e.href) ? "page" : undefined}
-                className={`inline-flex items-center gap-1.5 min-h-11 px-3 text-[15px] font-medium border-b-2 transition-[color,border-color] duration-200 ${
+                className={`inline-flex items-center gap-1.5 min-h-11 px-3 text-sm xl:text-base font-medium border-b-2 transition-[color,border-color] duration-200 ${
                   activo(e.href)
                     ? "text-azul border-azul cielo:text-white cielo:border-white"
                     : "text-tenue border-transparent hover:text-azul cielo:text-white/85 cielo:hover:text-white"
@@ -200,7 +200,7 @@ export default function Encabezado() {
                       href={e.href}
                       onClick={() => setAbiertoEn(null)}
                       aria-current={activo(e.href) ? "page" : undefined}
-                      className={`flex items-center gap-3 min-h-12 py-2 pl-4 font-titulo text-2xl font-semibold border-l-[3px] ${
+                      className={`flex items-center gap-3 min-h-12 py-2 pl-4 t-subtitulo font-semibold border-l-[3px] ${
                         activo(e.href) ? "border-white text-white" : "border-transparent text-white/85 hover:text-white"
                       }`}
                     >

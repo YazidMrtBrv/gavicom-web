@@ -46,7 +46,7 @@ export default function PieCotizar() {
     <div className="border-b border-white/15">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 md:py-14 grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
         <div>
-          <h2 className="text-white text-2xl md:text-4xl font-bold tracking-tight max-w-2xl text-balance">{t.titulo}</h2>
+          <h2 className="t-seccion text-white max-w-2xl">{t.titulo}</h2>
           <LineaHorario claro className="mt-4" />
         </div>
         <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3">

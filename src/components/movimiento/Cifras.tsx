@@ -62,7 +62,7 @@ export default function Cifras({ cifras, claro = false }: { cifras: Cifra[]; cla
       {cifras.map((c) => (
         <li key={`${c.antes ?? ""}${c.valor}${c.texto}`} className={`border-t-2 pt-3 ${claro ? "border-white/60" : "border-azul"}`}>
           {/* Screen readers get the final figure once, not the count. */}
-          <span className={`block font-titulo font-bold text-4xl sm:text-6xl tabular-nums leading-none ${claro ? "text-white" : "text-azul"}`}>
+          <span className={`block t-cifra ${claro ? "text-white" : "text-azul"}`}>
             <span aria-hidden>
               {c.antes}
               <span data-valor={c.valor}>{formato(c.valor)}</span>
@@ -71,7 +71,7 @@ export default function Cifras({ cifras, claro = false }: { cifras: Cifra[]; cla
             <span className="sr-only">{`${c.antes ?? ""}${formato(c.valor)}${c.despues ?? ""}`}</span>
           </span>
           <span className={`block mt-2 text-sm sm:text-base whitespace-pre-line ${claro ? "text-white/75" : "text-tenue"}`}>{c.texto}</span>
-          {c.detalle && <span className={`block mt-1 font-mono text-xs uppercase tracking-wider ${claro ? "text-white/75" : "text-tenue"}`}>{c.detalle}</span>}
+          {c.detalle && <span className={`block mt-1 t-etiqueta ${claro ? "text-white/75" : "text-tenue"}`}>{c.detalle}</span>}
         </li>
       ))}
     </ul>

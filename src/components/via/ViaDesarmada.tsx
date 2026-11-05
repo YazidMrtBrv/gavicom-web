@@ -249,7 +249,7 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
             <div className="flex flex-col gap-2 md:gap-3 min-w-0">
               <div>
                 <p className="font-mono text-xs md:text-sm text-tenue tracking-wider">La junta, pieza por pieza</p>
-                <h2 id="h-via" className="text-3xl md:text-5xl font-bold tracking-tight scroll-mt-[88px] mt-1">
+                <h2 id="h-via" className="t-seccion scroll-mt-[88px] mt-1">
                   Toda la junta del riel, en un solo pedido
                 </h2>
                 {/* Phones get the one-line version so the whole stage fits one screen. */}
@@ -435,7 +435,7 @@ export default function ViaDesarmada({ piezas }: { piezas: PiezaVia[] }) {
               </div>
               <div className="flex flex-col gap-1.5 md:gap-2 min-w-0">
                 <p className="font-mono text-xs text-azul">{actual.sku}</p>
-                <h3 className="font-sans text-base md:text-lg font-semibold text-tinta leading-snug">{actual.nombre}</h3>
+                <h3 className="t-nombre text-tinta">{actual.nombre}</h3>
                 <p className="via-resumen text-sm text-tenue line-clamp-2 md:line-clamp-3">{actual.resumen}</p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {/* Only the ficha link: the quote is added there, after the

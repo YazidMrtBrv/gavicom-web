@@ -90,7 +90,7 @@ export default function PorQueSolar() {
 
       <div id="panel-segmento" role="tabpanel" aria-labelledby={`seg-${s.id}`} className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
         <div key={`e-${s.id}`} className="aparecer-rapido flex flex-col gap-6">
-          <p className="font-titulo text-2xl md:text-[28px] leading-snug font-semibold text-azul">{s.entrada}</p>
+          <p className="t-frase text-azul">{s.entrada}</p>
           {/* Shops and plants get the incentive as a benefit card; homes get
               the same careful note here, so it is never said twice. */}
           {!s.beneficios.some((b) => b.icono === "ley") && (
@@ -116,7 +116,7 @@ export default function PorQueSolar() {
               <span className="text-azul">
                 <IconoEnergia nombre={b.icono} />
               </span>
-              <h3 className="font-titulo text-lg font-bold text-azul leading-snug">{b.titulo}</h3>
+              <h3 className="t-tarjeta text-azul">{b.titulo}</h3>
               <p className="text-tinta/85">{b.texto}</p>
             </li>
           ))}

@@ -48,7 +48,7 @@ export default function TarjetaProducto({ producto, prioridad = false }: { produ
           )}
         </div>
         <span className="font-mono text-xs text-azul tracking-tight">{producto.sku}</span>
-        <h3 className="font-sans text-[15px] font-semibold leading-snug text-tinta group-hover:text-azul">{producto.nombre}</h3>
+        <h3 className="t-nombre text-tinta group-hover:text-azul">{producto.nombre}</h3>
       </Link>
       {/* The card opens the ficha; the quiet chip adds without leaving the
           grid, for buyers who already know the reference. */}

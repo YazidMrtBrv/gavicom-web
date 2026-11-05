@@ -28,10 +28,10 @@ export default function NoEncontrada() {
       <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,38,66,0.82)_0%,rgba(12,38,66,0.94)_55%,rgba(12,38,66,1)_100%)] md:bg-[linear-gradient(90deg,rgba(12,38,66,0.96)_0%,rgba(12,38,66,0.88)_55%,rgba(12,38,66,0.6)_100%)]" />
       <div className="relative w-full mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-28">
         <p className="font-mono text-sm text-white/75">Error 404</p>
-        <h1 id="h-404" className="mt-3 text-white text-4xl md:text-6xl font-bold tracking-tight max-w-3xl">
+        <h1 id="h-404" className="mt-3 t-titulo text-white max-w-3xl">
           Esta página no existe o cambió de dirección
         </h1>
-        <p className="mt-4 text-white/85 text-base md:text-lg max-w-xl">
+        <p className="mt-4 t-entrada text-white/85 max-w-xl">
           Busca la referencia por nombre o código, o sigue por una de las secciones del sitio.
         </p>
 

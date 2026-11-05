@@ -84,7 +84,7 @@ export default function CotizadorEnergia() {
   return (
     <div className="grid gap-12 md:gap-16">
       <div>
-        <h3 className="font-titulo text-xl md:text-2xl font-bold text-white">
+        <h3 className="t-subtitulo text-white">
           <span className="font-mono text-sm text-white/70 mr-2">Paso 1</span>Calcula tu sistema
         </h3>
         <div className="mt-5">
@@ -104,7 +104,7 @@ export default function CotizadorEnergia() {
       </div>
 
       <div>
-        <h3 className="font-titulo text-xl md:text-2xl font-bold text-white">
+        <h3 className="t-subtitulo text-white">
           <span className="font-mono text-sm text-white/70 mr-2">Paso 2</span>Lo que tienes para cotizar
         </h3>
         <p className="mt-1 text-white/75 max-w-2xl">No necesitas tenerlo todo para escribirnos: lo que marques va en el mensaje.</p>

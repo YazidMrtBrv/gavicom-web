@@ -18,7 +18,7 @@ export default function ContenidoLista({ cerrar }: { cerrar: () => void }) {
   return (
     <div className="flex flex-col h-full max-h-[inherit]">
       <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-linea">
-        <h2 id="h-cajon" className="flex items-center gap-2 font-titulo text-xl font-bold">
+        <h2 id="h-cajon" className="flex items-center gap-2 t-subtitulo">
           <ClipboardList size={22} aria-hidden className="text-azul" />
           Tu lista
           <span className="font-mono text-sm font-normal text-tenue tabular-nums">
