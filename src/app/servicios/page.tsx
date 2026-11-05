@@ -117,13 +117,13 @@ export default function Servicios() {
     <>
       <section className="sobre-azul bg-azul text-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 md:py-20">
-          <p className="font-mono text-sm tracking-[0.2em] uppercase text-white/70">
+          <p className="t-etiqueta text-white/70">
             Servicios técnicos ferroviarios
           </p>
-          <h1 className="mt-3 text-white text-3xl md:text-5xl font-bold leading-[1.1] tracking-tight max-w-4xl text-balance">
+          <h1 className="mt-3 t-titulo text-white max-w-4xl">
             Topografía, mantenimiento, planos y consultoría para tu vía férrea
           </h1>
-          <p className="mt-4 text-white/85 max-w-2xl md:text-lg">
+          <p className="mt-4 t-entrada text-white/85 max-w-2xl">
             El mismo proveedor de tus materiales, en campo. Cuéntanos el tramo, el equipo o el plano y te cotizamos.
           </p>
           <div data-hero-cta className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
@@ -163,7 +163,7 @@ export default function Servicios() {
           >
             <h2
               id={`h-${g.id}`}
-              className="text-2xl md:text-4xl font-bold tracking-tight"
+              className="t-seccion"
             >
               {rotulo(g.sub)}
             </h2>
@@ -192,7 +192,7 @@ export default function Servicios() {
                       </p>
                     </div>
                     <div className="min-w-0">
-                      <h3 className="text-lg md:text-2xl font-bold leading-snug">
+                      <h3 className="t-subtitulo">
                         {s.nombre}
                       </h3>
                       <p className="mt-1 text-tinta">{entregable}</p>
@@ -239,7 +239,7 @@ export default function Servicios() {
         >
           <h2
             id="h-otra-cosa"
-            className="text-2xl md:text-3xl font-bold tracking-tight"
+            className="t-seccion"
           >
             ¿Buscas otra cosa?
           </h2>

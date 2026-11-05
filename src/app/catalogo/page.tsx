@@ -32,9 +32,9 @@ export default function Catalogo() {
           the grid. The H1 keeps "Catálogo" for the page's search intent. */}
       <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div>
-          <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.14em] text-tenue">{COMPANIA_INFO.promesa.replace(/\.$/, "")}</p>
-          <h1 className="mt-2 text-[34px] leading-[1.05] md:text-6xl font-bold tracking-tight text-balance">Catálogo: {PRODUCTOS.length} productos GAVICOM para la vía férrea</h1>
-          <p className="text-tenue mt-3 max-w-2xl md:text-lg">
+          <p className="t-etiqueta text-tenue">{COMPANIA_INFO.promesa.replace(/\.$/, "")}</p>
+          <h1 className="mt-2 t-titulo">Catálogo: {PRODUCTOS.length} productos GAVICOM para la vía férrea</h1>
+          <p className="t-entrada text-tenue mt-3 max-w-2xl">
             Cada pieza tiene su ficha técnica: ábrela, revisa las especificaciones y agrégala a tu cotización. Al final envías la lista completa, con códigos y cantidades.
           </p>
         </div>
@@ -67,7 +67,7 @@ export default function Catalogo() {
           buttons, so without these the guides would be reachable only from
           the home page. */}
       <nav aria-labelledby="h-guias" className="mt-16 border-t border-linea pt-8">
-        <h2 id="h-guias" className="text-2xl font-bold">Guías por línea</h2>
+        <h2 id="h-guias" className="t-seccion">Guías por línea</h2>
         <p className="text-tenue mt-1 max-w-2xl">Qué incluye cada línea, para qué sirve cada pieza y cómo cotizarla.</p>
         <ul className="mt-5 grid gap-px bg-linea border border-linea rounded overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
           {LINEAS.map((l) => (

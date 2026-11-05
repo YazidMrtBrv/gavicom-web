@@ -69,7 +69,7 @@ function Cifra({ etiqueta, valor, unidad, nota }: { etiqueta: string; valor: str
   return (
     <div className="min-w-0">
       <dt className="text-white/75 text-sm">{etiqueta}</dt>
-      <dd className="mt-1 font-titulo font-bold text-3xl sm:text-4xl tabular-nums leading-none">
+      <dd className="mt-1 t-cifra">
         {valor}
         {unidad && <span className="ml-1 text-lg font-semibold whitespace-nowrap">{unidad}</span>}
       </dd>
@@ -262,10 +262,10 @@ export default function Calculadora({ kwh, region, onKwh, onRegion }: Props) {
       </div>
 
       <div className="rounded-sm border border-white/25 bg-white/[0.06] text-white p-5 md:p-6 flex flex-col gap-5">
-        <p className="text-sm font-semibold tracking-[0.2em] uppercase text-white/75">Estimado aproximado</p>
+        <p className="t-etiqueta text-white/75">Estimado aproximado</p>
         {est ? (
           <>
-            <p className="font-titulo font-bold text-2xl sm:text-3xl leading-tight">
+            <p className="t-subtitulo">
               Cubre aprox. <span className="tabular-nums whitespace-nowrap">{fmt(Math.min(100, est.cobertura))} %</span> de tu consumo
             </p>
             <Balance kwh={kwh} generacion={est.generacion} />
@@ -289,7 +289,7 @@ export default function Calculadora({ kwh, region, onKwh, onRegion }: Props) {
             </p>
           </>
         ) : (
-          <p className="text-white/85 text-lg">
+          <p className="t-entrada text-white/85">
             {muyAlto ? "Más de 20.000 kWh: lo calculamos con tu factura." : `Escribe un consumo de al menos ${KWH_MIN} kWh al mes para ver el estimado.`}
           </p>
         )}

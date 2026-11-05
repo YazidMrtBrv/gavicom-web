@@ -101,11 +101,11 @@ const DUDAS = [
   { p: "¿Llegan a mi proyecto?", r: `Atendemos desde ${COMPANIA_INFO.ciudad}, con cobertura en todo el país.` },
 ];
 
-const H2 = "text-3xl md:text-5xl font-bold tracking-tight text-balance";
+const H2 = "t-seccion";
 
 function Antetitulo({ children, claro = false }: { children: string; claro?: boolean }) {
   return (
-    <p data-aparecer className={`font-mono text-xs sm:text-sm uppercase tracking-[0.14em] ${claro ? "text-white/75" : "text-tenue"}`}>
+    <p data-aparecer className={`t-etiqueta ${claro ? "text-white/75" : "text-tenue"}`}>
       {children}
     </p>
   );
@@ -162,12 +162,12 @@ export default function Inicio() {
                 ]}
               />
             </div>
-            <p data-aparecer className="text-lg md:text-xl font-semibold text-tinta border-l-4 border-azul pl-4 max-w-2xl">
+            <p data-aparecer className="t-entrada font-semibold text-tinta border-l-4 border-azul pl-4 max-w-2xl">
               Seleccionada por iNNpulsa Colombia en el programa En-Cadena, Mejores proveedores del sector ferroviario.
             </p>
             <ul data-aparecer="grupo" className="grid gap-3 sm:grid-cols-2">
               <li className="foco flex flex-col gap-2 rounded border border-linea bg-white p-5">
-                <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-azul">
+                <p className="flex items-center gap-2 t-etiqueta text-azul">
                   <Factory size={16} aria-hidden /> Fabricación
                 </p>
                 <p className="font-semibold text-tinta">Operador ferroviario nacional</p>
@@ -179,7 +179,7 @@ export default function Inicio() {
                 )}
               </li>
               <li className="foco flex flex-col gap-2 rounded border border-linea bg-white p-5">
-                <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-azul">
+                <p className="flex items-center gap-2 t-etiqueta text-azul">
                   <Truck size={16} aria-hidden /> Suministro
                 </p>
                 <p className="font-semibold text-tinta">Operador ferroviario de carga</p>
@@ -212,7 +212,7 @@ export default function Inicio() {
             <h2 id="h-lineas" data-aparecer className={H2}>
               Cinco líneas para construir y mantener la vía
             </h2>
-            <p data-aparecer className="text-tenue max-w-2xl md:text-lg">
+            <p data-aparecer className="t-entrada text-tenue max-w-2xl">
               {PRODUCTOS.length} referencias hechas por GAVICOM, cada una con ficha técnica y código.
             </p>
           </div>
@@ -229,7 +229,7 @@ export default function Inicio() {
                 </span>
                 <span className="flex flex-col gap-1.5 min-w-0 flex-1">
                   <span className="flex items-baseline justify-between gap-2">
-                    <span className="font-titulo text-lg font-bold text-tinta group-hover:text-azul">{linea.nombre}</span>
+                    <span className="t-tarjeta text-tinta group-hover:text-azul">{linea.nombre}</span>
                     <span className="font-mono text-xs text-tenue tabular-nums whitespace-nowrap">{total} ref.</span>
                   </span>
                   <span className="text-sm text-tenue">{linea.resumen}</span>
@@ -254,7 +254,7 @@ export default function Inicio() {
           <li>
             <Link href="/servicios" className="foco group flex h-full flex-col gap-1.5 rounded border border-linea bg-gris p-5 hover:border-azul">
               <span className="flex items-baseline justify-between gap-2">
-                <span className="font-titulo text-lg font-bold text-tinta group-hover:text-azul">Servicios técnicos</span>
+                <span className="t-tarjeta text-tinta group-hover:text-azul">Servicios técnicos</span>
                 <span className="font-mono text-xs text-tenue tabular-nums">{SERVICIOS.length}</span>
               </span>
               <span className="text-sm text-tenue">Topografía con dron, mantenimiento de equipos, hidráulica, alquiler de motosoldadores Lincoln, planos y consultoría.</span>
@@ -281,7 +281,7 @@ export default function Inicio() {
           {PASOS.map(([t, d], i) => (
             <li key={t} className="border-t-2 border-azul pt-4">
               <p className="font-mono text-sm tabular-nums text-tenue">0{i + 1}</p>
-              <p className="mt-1 font-titulo text-xl font-bold text-tinta">{t}</p>
+              <p className="mt-1 t-subtitulo text-tinta">{t}</p>
               <p className="mt-1 text-tenue">{d}</p>
             </li>
           ))}

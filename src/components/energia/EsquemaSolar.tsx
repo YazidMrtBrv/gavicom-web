@@ -293,7 +293,7 @@ export default function EsquemaSolar() {
             <li key={p.id} className="esq-tic" data-on={mostrada === TODO || i <= mostrada ? "si" : undefined} />
           ))}
         </ol>
-        <p aria-hidden className="flex-1 min-w-0 truncate font-mono text-xs sm:text-[13px] tracking-wide text-white/85">
+        <p aria-hidden className="flex-1 min-w-0 truncate t-dato tracking-wide text-white/85">
           {actual ? (
             <>
               <span className="text-white font-semibold">{String(mostrada + 1).padStart(2, "0")}</span> · {actual.nombre}

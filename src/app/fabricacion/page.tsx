@@ -55,8 +55,8 @@ const FICHA = [
 
 const PERFILES = PERFILES_ECLISA;
 
-const H2 = "text-3xl md:text-5xl font-bold tracking-tight";
-const ANTETITULO = "font-mono text-sm tracking-[0.2em] uppercase";
+const H2 = "t-seccion";
+const ANTETITULO = "t-etiqueta";
 
 export default function Fabricacion() {
   return (
@@ -67,13 +67,13 @@ export default function Fabricacion() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 md:py-16 lg:py-20 [@media(max-height:760px)]:md:py-12 grid gap-10 md:grid-cols-[1.1fr_1fr] items-center">
           <div data-aparecer className="flex flex-col gap-5">
             <p className={`${ANTETITULO} text-white/70`}>Fabricación en Colombia</p>
-            <h1 className="text-white text-[42px] md:text-6xl font-bold leading-[1.02] tracking-tight text-balance">
+            <h1 className="t-portada text-white">
               Tu pieza ferroviaria, hecha en Colombia.
             </h1>
             <p className="font-mono text-sm text-white/85">
               Hierro nodular ASTM A536 · 5 controles por lote · Planos bajo confidencialidad
             </p>
-            <p className="text-lg text-white/85 max-w-lg">
+            <p className="t-entrada text-white/85 max-w-lg">
               Sin esperar una importación: envíanos el plano, la foto o la muestra. Hacemos la ingeniería inversa, los planos y la fundición con nuestro aliado industrial, y verificamos cada lote.
             </p>
             <div data-hero-cta className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 pt-2">
@@ -95,7 +95,7 @@ export default function Fabricacion() {
               it sits over the photo's lower edge. */}
           <figure data-aparecer className="relative w-full max-w-[460px] md:justify-self-end flex flex-col">
             <figcaption className="order-first mb-4 md:order-none md:mb-0 md:absolute md:inset-x-0 md:bottom-0 md:z-10 md:p-5 md:bg-[linear-gradient(0deg,rgba(12,38,66,0.9),rgba(12,38,66,0))]">
-              <span className="block font-titulo font-bold text-4xl">1.800 kg</span>
+              <span className="block t-cifra">1.800 kg</span>
               <span className="text-white/80">por colada, en hornos de inducción</span>
             </figcaption>
             <div className="corte-ala overflow-hidden rounded">
@@ -139,8 +139,8 @@ export default function Fabricacion() {
 
         <div data-aparecer className="mt-12 grid gap-8 md:grid-cols-2 items-stretch">
           <div>
-            <h3 className="text-xl font-bold">El caso en resumen</h3>
-            <dl className="mt-4 border-t border-linea text-[15px]">
+            <h3 className="t-subtitulo">El caso en resumen</h3>
+            <dl className="mt-4 border-t border-linea text-sm sm:text-base">
               {FICHA.map(([k, v]) => (
                 <div key={k} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-4 py-2.5 border-b border-linea">
                   <dt className="text-tenue">{k}</dt>
@@ -237,7 +237,7 @@ export default function Fabricacion() {
         </ul>
 
         <div data-aparecer className="mt-6 hidden md:block border border-linea rounded overflow-hidden">
-          <table className="w-full text-[15px]">
+          <table className="w-full text-sm sm:text-base">
             <thead className="bg-azul text-white text-left">
               <tr>
                 <th scope="col" className="px-4 py-3 font-semibold">Perfil</th>
@@ -270,14 +270,14 @@ export default function Fabricacion() {
         <div data-aparecer className="rounded border-2 border-azul p-6 md:p-10 grid gap-8 md:grid-cols-[1.2fr_1fr_1fr] items-center">
           <div>
             <p className={`${ANTETITULO} text-tenue`}>Para volúmenes mayores</p>
-            <h2 id="h-volumen" className="mt-2 text-2xl md:text-3xl font-bold tracking-tight">Ya hemos gestionado importaciones de sistemas de sujeción para Colombia.</h2>
+            <h2 id="h-volumen" className="mt-2 t-subtitulo">Ya hemos gestionado importaciones de sistemas de sujeción para Colombia.</h2>
           </div>
           <p>
-            <span className="block font-titulo font-bold text-4xl md:text-5xl text-azul">+3.200 t</span>
+            <span className="block t-cifra text-azul">+3.200 t</span>
             <span className="text-tenue">de capacidad al mes</span>
           </p>
           <p>
-            <span className="block font-titulo font-bold text-4xl md:text-5xl text-azul tabular-nums">1.660.000</span>
+            <span className="block t-cifra text-azul">1.660.000</span>
             <span className="text-tenue">clips para proyectos ferroviarios</span>
           </p>
         </div>

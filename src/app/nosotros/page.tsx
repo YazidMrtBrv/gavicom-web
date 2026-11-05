@@ -49,7 +49,7 @@ const LINEAS = [
   },
 ];
 
-const anteTitulo = "font-mono text-xs md:text-sm tracking-widest uppercase";
+const anteTitulo = "t-etiqueta";
 
 export default function Nosotros() {
   return (
@@ -58,10 +58,10 @@ export default function Nosotros() {
         <p className={`${anteTitulo} text-tenue`}>Nosotros · Desde {COMPANIA_INFO.fundacion}</p>
         {/* The owner's promise is the headline: a buyer comes to this page to
             decide whether to trust the company, so it answers that first. */}
-        <h1 id="h-nosotros" className="mt-3 text-4xl md:text-6xl font-bold tracking-tight max-w-3xl leading-[1.05] text-balance">
+        <h1 id="h-nosotros" className="mt-3 t-titulo max-w-3xl">
           {COMPANIA_INFO.promesa}
         </h1>
-        <p className="mt-5 text-lg md:text-xl leading-relaxed max-w-2xl">
+        <p className="mt-5 t-entrada max-w-2xl">
           Somos una empresa de {COMPANIA_INFO.ciudad}, fundada en {COMPANIA_INFO.fundacion} desde la experiencia directa en infraestructura férrea. Todo lo que ves en este sitio lo fabrica y lo suministra GAVICOM, con cobertura en todo el país.
         </p>
         <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
@@ -87,7 +87,7 @@ export default function Nosotros() {
             <h2 id="h-gaviota" className={`${anteTitulo} text-white/80 font-sans font-normal`}>
               01 · La gaviota
             </h2>
-            <p data-aparecer="grupo" className="frase-gaviota mt-4 font-titulo text-[28px] md:text-[36px] leading-tight font-semibold text-white text-balance">
+            <p data-aparecer="grupo" className="frase-gaviota mt-4 t-frase text-white">
               <span className="block">La gaviota de nuestro logo es por nuestra abuela,</span>
               <span className="block">a quien de cariño le decían «Gaviota».</span>
             </p>
@@ -97,7 +97,7 @@ export default function Nosotros() {
 
       <section aria-labelledby="h-hacemos" className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-20 md:py-28">
         <p className={`${anteTitulo} text-tenue`}>02 · Qué hacemos</p>
-        <h2 id="h-hacemos" className="mt-3 text-3xl md:text-5xl font-bold tracking-tight">
+        <h2 id="h-hacemos" className="mt-3 t-seccion">
           Tres líneas de trabajo
         </h2>
         <ul data-aparecer="grupo" className="mt-10 grid gap-4 md:grid-cols-3">
@@ -107,7 +107,7 @@ export default function Nosotros() {
                 href={l.href}
                 className="group h-full flex flex-col gap-3 border border-linea rounded p-6 bg-white hover:border-azul hover:bg-azul-suave transition-colors"
               >
-                <span className="font-titulo text-2xl font-bold text-azul">{l.nombre}</span>
+                <span className="t-subtitulo text-azul">{l.nombre}</span>
                 <span className="text-tenue leading-relaxed flex-1">{l.texto}</span>
                 <span className="inline-flex items-center gap-2 min-h-11 font-semibold text-azul">
                   {l.accion}
@@ -130,7 +130,7 @@ export default function Nosotros() {
         <figure className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-20">
           <p className={`${anteTitulo} text-tenue`}>03 · Reconocimiento</p>
           <blockquote className="mt-4 border-l-4 border-azul pl-5 md:pl-8">
-            <p className="font-titulo text-2xl md:text-3xl font-semibold text-azul leading-snug max-w-3xl">
+            <p className="t-frase text-azul max-w-3xl">
               Fuimos seleccionados por iNNpulsa Colombia en el programa En-Cadena, Mejores proveedores del sector ferroviario.
             </p>
           </blockquote>
@@ -139,16 +139,16 @@ export default function Nosotros() {
 
       <section aria-labelledby="h-equipo" className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-20 md:py-28">
         <p className={`${anteTitulo} text-tenue`}>04 · Contacto</p>
-        <h2 id="h-equipo" className="mt-3 text-3xl md:text-5xl font-bold tracking-tight">
+        <h2 id="h-equipo" className="mt-3 t-seccion">
           Con quién hablas
         </h2>
         <ul className="mt-10 grid gap-4 sm:grid-cols-2">
           <li className="border border-linea rounded p-6">
-            <p className="font-titulo text-xl font-bold text-azul">{COMPANIA_INFO.gerente}</p>
+            <p className="t-tarjeta text-azul">{COMPANIA_INFO.gerente}</p>
             <p className="mt-1 text-tenue">{COMPANIA_INFO.cargo}</p>
           </li>
           <li className="border border-linea rounded p-6">
-            <p className="font-titulo text-xl font-bold text-azul">{COMPANIA_INFO.directora}</p>
+            <p className="t-tarjeta text-azul">{COMPANIA_INFO.directora}</p>
             <p className="mt-1 text-tenue">Directora ejecutiva</p>
           </li>
         </ul>

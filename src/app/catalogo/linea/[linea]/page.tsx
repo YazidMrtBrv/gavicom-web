@@ -43,8 +43,8 @@ function gruposCon(guia: GuiaLinea, categoria: string) {
   return grupos;
 }
 
-const H2 = "text-2xl md:text-3xl font-bold tracking-tight";
-const ANTETITULO = "font-mono text-xs sm:text-sm uppercase tracking-[0.14em] text-tenue";
+const H2 = "t-seccion";
+const ANTETITULO = "t-etiqueta text-tenue";
 
 export default async function PaginaLinea({ params }: { params: Promise<{ linea: string }> }) {
   const { linea: slug } = await params;
@@ -116,15 +116,15 @@ export default async function PaginaLinea({ params }: { params: Promise<{ linea:
           <p className={`flex items-center gap-2 ${ANTETITULO}`}>
             <IconoLinea categoria={linea.categoria} size={18} /> Línea · {linea.nombre}
           </p>
-          <h1 className="text-3xl md:text-5xl font-bold leading-[1.08] tracking-tight">{guia.h1}</h1>
+          <h1 className="t-titulo">{guia.h1}</h1>
           {guia.intro.map((t) => (
-            <p key={t} className="text-[17px] leading-relaxed text-tinta max-w-3xl">
+            <p key={t} className="t-texto text-tinta max-w-3xl">
               {t}
             </p>
           ))}
         </div>
         <div data-aparecer className="flex flex-col gap-3 rounded border border-linea bg-azul-suave p-5">
-          <p className="font-mono text-3xl font-semibold text-azul tabular-nums">
+          <p className="t-cifra text-azul">
             {productos.length} <span className="text-base font-sans font-semibold">referencias</span>
           </p>
           <p className="text-sm text-tenue">
@@ -178,7 +178,7 @@ export default async function PaginaLinea({ params }: { params: Promise<{ linea:
           </div>
           {/* Scrolls sideways on phones instead of squeezing four columns. */}
           <div data-aparecer className="-mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto">
-            <table className="w-full min-w-[640px] text-[15px] border border-linea">
+            <table className="w-full min-w-[640px] text-sm sm:text-base border border-linea">
               <thead className="bg-azul text-white text-left">
                 <tr>
                   <th scope="col" className="px-4 py-3 font-semibold">Perfil</th>

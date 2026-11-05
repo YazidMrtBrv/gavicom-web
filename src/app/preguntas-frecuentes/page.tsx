@@ -48,9 +48,9 @@ export default function PreguntasFrecuentes() {
         {/* Index stays in view on wide screens so a long answer never hides
             the other questions. */}
         <aside className="lg:sticky lg:top-24 flex flex-col gap-4">
-          <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.14em] text-tenue">Preguntas frecuentes</p>
-          <h1 className="text-3xl md:text-5xl font-bold leading-[1.08] tracking-tight">Lo que nos preguntan antes de cotizar</h1>
-          <p className="text-tenue">
+          <p className="t-etiqueta text-tenue">Preguntas frecuentes</p>
+          <h1 className="t-titulo">Lo que nos preguntan antes de cotizar</h1>
+          <p className="t-entrada text-tenue">
             Suministro ferroviario, fabricación en Colombia y GAVICOM Energy, desde Barranquilla para todo el país.
           </p>
           {/* A buyer reading answers is close to deciding: the next step is
@@ -75,10 +75,10 @@ export default function PreguntasFrecuentes() {
           {PREGUNTAS.map((q, i) => (
             <section key={q.id} id={q.id} aria-labelledby={`h-${q.id}`} data-aparecer className="scroll-mt-24 border-t border-linea py-7 first:border-t-0 first:pt-0">
               <p className="font-mono text-xs tabular-nums text-tenue">{String(i + 1).padStart(2, "0")}</p>
-              <h2 id={`h-${q.id}`} className="mt-1 text-xl md:text-2xl font-bold tracking-tight">
+              <h2 id={`h-${q.id}`} className="mt-1 t-subtitulo">
                 {q.pregunta}
               </h2>
-              <p className="mt-3 text-[17px] leading-relaxed text-tinta">{q.respuesta}</p>
+              <p className="mt-3 t-texto text-tinta">{q.respuesta}</p>
               {q.enlaces && (
                 <ul className="mt-2 flex flex-wrap gap-x-6">
                   {q.enlaces.map((e) => (
@@ -96,7 +96,7 @@ export default function PreguntasFrecuentes() {
       </div>
 
       <section aria-labelledby="h-lineas-faq" className="mt-14 md:mt-20">
-        <h2 id="h-lineas-faq" className="text-2xl md:text-3xl font-bold tracking-tight mb-6">
+        <h2 id="h-lineas-faq" className="t-seccion mb-6">
           Las líneas del catálogo
         </h2>
         <ul data-aparecer="grupo" className="grid gap-px bg-linea border border-linea rounded overflow-hidden sm:grid-cols-2 lg:grid-cols-3">

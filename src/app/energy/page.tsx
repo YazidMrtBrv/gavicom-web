@@ -69,7 +69,7 @@ const HECHO = [
   { t: "Sistemas monopolares", d: "Configuración e instalación de sistemas monopolares." },
 ];
 
-const H2 = "text-3xl md:text-5xl font-bold tracking-tight";
+const H2 = "t-seccion";
 
 function Antetitulo({ n, texto, claro = false }: { n: string; texto: string; claro?: boolean }) {
   return (
@@ -114,10 +114,10 @@ export default function Energy() {
             <p className="inline-flex items-center min-h-8 px-3 rounded-sm border border-white text-white text-sm font-semibold tracking-wide">
               GAVICOM Energy · Solar
             </p>
-            <h1 id="h-energy" className="mt-4 text-white text-[42px] leading-[1.02] sm:text-6xl lg:text-[66px] min-[1400px]:text-[74px] font-bold tracking-tight text-balance">
+            <h1 id="h-energy" className="mt-4 t-portada text-white">
               Paga menos luz con tu propio sistema solar.
             </h1>
-            <p className="mt-3 md:mt-5 text-white/90 text-base md:text-xl max-w-xl">
+            <p className="mt-3 md:mt-5 t-entrada text-white/90 max-w-xl">
               Para tu casa, tu negocio o tu planta en el Caribe colombiano. Un solo equipo te entrega el sistema completo: montaje, cofres, protecciones y gabinetes.
             </p>
             <div data-hero-cta className="mt-5 md:mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -163,20 +163,20 @@ export default function Energy() {
           <h2 id="h-servicios" data-aparecer className={`mt-2 ${H2}`}>
             Tu sistema solar completo, con un solo proveedor
           </h2>
-          <p className="mt-4 text-tenue max-w-2xl md:text-lg">
+          <p className="mt-4 t-entrada text-tenue max-w-2xl">
             El sistema entero o solo la parte que te falta: cofres, montaje, protecciones y gabinetes, del mismo equipo.
           </p>
           <ol data-aparecer="grupo" className="mt-10 grid gap-px bg-linea border border-linea md:grid-cols-2">
             {SERVICIOS_ENERGY.map((s, i) => (
               <li key={s.codigo} id={s.codigo.toLowerCase()} className="bg-white p-6 md:p-8 flex flex-col gap-4">
                 <div className="flex items-start justify-between gap-4">
-                  <p aria-hidden className="font-titulo font-bold text-5xl md:text-6xl leading-none text-azul tabular-nums">
+                  <p aria-hidden className="t-cifra text-azul">
                     {String(i + 1).padStart(2, "0")}
                   </p>
                   <p className="font-mono text-xs text-tenue pt-1">{s.codigo}</p>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <h3 className="font-titulo text-2xl font-bold text-azul leading-tight">{s.corto}</h3>
+                  <h3 className="t-subtitulo text-azul">{s.corto}</h3>
                   <p className="text-tinta">{s.descripcion}</p>
                 </div>
                 <div className="mt-auto flex flex-col gap-4">
@@ -245,19 +245,19 @@ export default function Energy() {
                 <li key={r.titulo} className="grid grid-cols-[3rem_minmax(0,1fr)] sm:grid-cols-[3.5rem_minmax(0,1fr)_7rem] gap-x-4 gap-y-1 py-4 border-b border-linea">
                   <span aria-hidden className="font-mono text-sm text-tenue pt-1 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
                   <div>
-                    <h3 className="font-titulo text-xl font-bold text-azul leading-snug">{r.titulo}</h3>
+                    <h3 className="t-tarjeta text-azul">{r.titulo}</h3>
                     <p className="mt-1 text-tinta/85">{r.texto}</p>
                   </div>
-                  <span aria-hidden className="hidden sm:block font-mono text-xs uppercase tracking-wider text-tenue text-right pt-1.5">{r.clave}</span>
+                  <span aria-hidden className="hidden sm:block t-etiqueta text-tenue text-right pt-1.5">{r.clave}</span>
                 </li>
               ))}
             </ol>
 
-            <h3 className="mt-12 font-titulo text-2xl font-bold">Lo que ya hemos hecho</h3>
+            <h3 className="mt-12 t-subtitulo">Lo que ya hemos hecho</h3>
             <ul data-aparecer="grupo" className="mt-5 grid gap-px bg-linea border border-linea sm:grid-cols-3">
               {HECHO.map(({ t, d }) => (
                 <li key={t} className="bg-white p-5">
-                  <h4 className="font-titulo text-lg font-bold text-azul leading-snug">{t}</h4>
+                  <h4 className="t-tarjeta text-azul">{t}</h4>
                   <p className="mt-1 text-sm text-tenue">{d}</p>
                 </li>
               ))}
@@ -278,7 +278,7 @@ export default function Energy() {
                 <span aria-hidden className="proceso-num absolute left-0 top-0 grid place-items-center size-10 rounded-full border-2 border-azul bg-white font-mono text-sm font-bold text-azul tabular-nums">
                   {i + 1}
                 </span>
-                <h3 className="font-titulo text-lg font-bold text-azul leading-snug">{p.titulo}</h3>
+                <h3 className="t-tarjeta text-azul">{p.titulo}</h3>
                 <p className="mt-1 text-sm text-tinta/85">{p.texto}</p>
               </li>
             ))}

@@ -126,7 +126,7 @@ export default function Cotizacion() {
   if (!lineas.length) {
     return (
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-10">
-        <h1 className="text-3xl font-bold">Mi cotización</h1>
+        <h1 className="t-titulo">Mi cotización</h1>
         <div className="mt-6 max-w-3xl border border-linea rounded bg-gris p-6 flex flex-col gap-3 items-start">
           <p className="font-semibold">Tu lista está vacía.</p>
           <p className="text-tenue text-sm">En el catálogo, toca «Agregar a cotización» en cada referencia que necesites. La lista se guarda en este navegador.</p>
@@ -141,7 +141,7 @@ export default function Cotizacion() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-8 md:pt-10">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="text-3xl font-bold">Mi cotización</h1>
+        <h1 className="t-titulo">Mi cotización</h1>
         <p className="text-tenue tabular-nums">
           {lineas.length} {lineas.length === 1 ? "referencia" : "referencias"} · {total} {total === 1 ? "unidad" : "unidades"}
         </p>
@@ -195,7 +195,7 @@ export default function Cotizacion() {
         </ul>
 
         <section aria-labelledby="h-enviar" className="border border-linea rounded p-5 flex flex-col gap-4 bg-gris">
-          <h2 id="h-enviar" className="text-xl font-bold">
+          <h2 id="h-enviar" className="t-subtitulo">
             Enviar
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">

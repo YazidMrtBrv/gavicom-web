@@ -52,7 +52,7 @@ function Visual({ paso, controles }: { paso: Paso; controles: string[] }) {
   if (!paso.imagen) {
     return (
       <div className="w-full rounded bg-azul text-white p-6 md:p-8">
-        <p className="font-mono text-xs tracking-[0.2em] uppercase text-white/70">Antes de salir, cada lote</p>
+        <p className="t-etiqueta text-white/70">Antes de salir, cada lote</p>
         <ul className="mt-4 flex flex-col gap-3">
           {controles.map((c) => (
             <li key={c} className="flex items-center gap-3">

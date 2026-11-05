@@ -138,7 +138,7 @@ export default function ArmaTuPedido({ perfiles }: { perfiles: string[] }) {
       </div>
 
       <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        <p className="font-mono text-xs tracking-[0.2em] uppercase text-tenue">Así llega tu mensaje</p>
+        <p className="t-etiqueta text-tenue">Así llega tu mensaje</p>
         <pre className="pedido-vista whitespace-pre-wrap break-words font-mono text-sm leading-relaxed rounded border border-linea bg-gris p-4 text-tinta">
           {mensaje}
         </pre>

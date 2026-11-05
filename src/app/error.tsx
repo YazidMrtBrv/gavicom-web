@@ -21,10 +21,10 @@ export default function ErrorSeccion({
   return (
     <section aria-labelledby="h-error" className="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-28">
       <p className="font-mono text-sm text-tenue">Error al cargar</p>
-      <h1 id="h-error" className="mt-3 text-3xl md:text-5xl font-bold tracking-tight max-w-3xl">
+      <h1 id="h-error" className="mt-3 t-titulo max-w-3xl">
         Algo falló al cargar esta sección
       </h1>
-      <p className="mt-4 text-tenue text-base md:text-lg max-w-xl">
+      <p className="mt-4 t-entrada text-tenue max-w-xl">
         Puede ser la conexión. Vuelve a intentarlo; si sigue fallando, escríbenos y te atendemos por WhatsApp.
       </p>
       {error.digest ? <p className="mt-2 font-mono text-xs text-tenue">Código: {error.digest}</p> : null}
