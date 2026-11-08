@@ -10,7 +10,7 @@ import { aprobar, deCliente, deGeimar, nuevaConversacion, referenciasIdentificad
 import { tareasDelDia, rellenar } from "../src/lib/agente/seguimiento.ts";
 import { calcularTablero } from "../src/lib/agente/tablero.ts";
 import { clienteNuevo, clientesEjemplo, cotizacionesEjemplo, respuestaPreciosEjemplo } from "../src/lib/agente/ejemplo.ts";
-import { diagnosticar, decisionPorDesnivel } from "../src/lib/agente/via.ts";
+import { diagnosticar, decisionPorDesnivel, CRITERIOS_VIA } from "../src/lib/agente/via.ts";
 import { generarPdf } from "../src/lib/agente/pdf.ts";
 import { firmaValida, leerEntrantes } from "../src/lib/agente/whatsapp-cloud.ts";
 
@@ -100,15 +100,32 @@ test("returning client is recognised by what they bought", () => {
   assert.match(textos(r, "cliente"), /Camila.*km 12/s);
 });
 
-test("track symptoms get Geimar's field answer", () => {
+test("track symptoms get Geimar's field answer, without unsourced limits", () => {
   assert.equal(diagnosticar("hay polvillo blanco sobre las traviesas")?.id, "bombeo");
   assert.equal(diagnosticar("los durmientes están bailando")?.id, "hamaca");
-  assert.match(decisionPorDesnivel(3), /15 km\/h/);
-  assert.match(decisionPorDesnivel(6), /intervenir/);
   let r = deCliente(nuevaConversacion(clienteNuevo()), "los durmientes me están bailando", ctx());
   assert.match(textos(r, "cliente"), /hamaca/);
   r = deCliente(r.conversacion, "como 3 pulgadas", ctx());
-  assert.match(textos(r, "cliente"), /15 km\/h/);
+  assert.match(textos(r, "geimar"), /3" de desnivel/);
+  assert.match(textos(r, "cliente"), /Geimar/);
+});
+
+test("Geimar's approximate figures never reach a client while unvalidated", () => {
+  assert.equal(CRITERIOS_VIA.validado, false);
+  const cifras = /2[.,]5|15 km|\b30 cm|\b15 cm|400\.000|5"|\b5 pulgadas/;
+  const frases = ["hay polvillo blanco", "los durmientes están bailando", "eclisa rota", "se salen los clips", "tirafondo flojo"];
+  for (const f of frases) {
+    let r = deCliente(nuevaConversacion(clienteNuevo()), f, ctx());
+    assert.doesNotMatch(textos(r, "cliente"), cifras, f);
+    for (const medida of ["2 pulgadas", "3 pulgadas", "6 pulgadas"]) {
+      const r2 = deCliente(r.conversacion, medida, ctx());
+      assert.doesNotMatch(textos(r2, "cliente"), cifras, `${f} → ${medida}`);
+    }
+  }
+  // Once someone fills the source and validates, the limits apply and cite it.
+  const validos = { ...CRITERIOS_VIA, validado: true, fuente: "el reglamento del operador" };
+  assert.match(decisionPorDesnivel(3, validos), /15 km\/h.*reglamento|reglamento.*15 km\/h/);
+  assert.match(decisionPorDesnivel(6, validos), /intervención/);
 });
 
 test("a photo's references enter the same flow", () => {

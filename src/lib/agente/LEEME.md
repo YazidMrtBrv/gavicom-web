@@ -8,7 +8,7 @@ Demo en `/agente` (no indexada, sin enlace en el menú). El mismo motor responde
 |---|---|---|
 | Escribe primero: seguimiento a cotizaciones sin respuesta y aviso de reposición por desgaste | `src/lib/agente/seguimiento.ts` | Listo; reglas de días y meses de reposición por confirmar con Geimar |
 | Pedido completo por metros de vía (eclisas, pernos, clips, almohadillas o placas, clavos y anclas) | `src/lib/agente/pedido.ts` | Listo; `REGLAS.confirmada = false` hasta que Geimar valide cada número |
-| Habla de la vía con el criterio de Geimar (bombeo, efecto hamaca, umbrales de 2,5" y 5") | `src/lib/agente/via.ts` | Listo; falta confirmar de qué norma salen los umbrales |
+| Habla de la vía con el conocimiento de Geimar (bombeo, efecto hamaca, juntas, clips, tirafondos) | `src/lib/agente/via.ts` | Listo. Ninguna cifra técnica sale al cliente: los límites quedan en `CRITERIOS_VIA` con `validado: false` hasta tener la norma (`fuente`); mientras tanto, las medidas que reporte el cliente le llegan a Geimar |
 | Foto de la pieza → referencia del catálogo real | `src/lib/agente/ia.ts`, `/api/agente/foto` | Listo; necesita `ANTHROPIC_API_KEY` |
 | Nota de voz | Simulador: dictado del navegador (Chrome). WhatsApp real: falta escoger servicio de voz a texto | Pendiente decisión |
 | La IA nunca pone precios: Geimar responde precios, el agente arma el PDF y Geimar aprueba con un toque | `motor.ts` (`deGeimar`, `aprobar`), `pdf.ts` | Listo y cubierto por pruebas |
@@ -33,6 +33,7 @@ Plantillas para enviar a aprobación de Meta: `seguimiento_cotizacion` (utilidad
 1. Tabla de conversaciones y cotizaciones en Supabase (hoy el webhook guarda en memoria, que Vercel recicla).
 2. Tarea diaria (Vercel Cron) que corra `tareasDelDia` y mande las plantillas.
 3. Geimar confirma reglas de cálculo, meses de reposición, IVA (`CONFIG` en `precios.ts`) y validez de la cotización.
+4. Si se quieren límites de vía frente al cliente: poner la norma en `CRITERIOS_VIA.fuente`, revisar cada cifra y cambiar `validado` a `true`.
 
 ## Pruebas
 

@@ -3,8 +3,14 @@ import { normalizar } from "./catalogo.ts";
 // Field knowledge from Geimar Martínez (GAVICOM's general manager, track
 // engineer). The agent uses it to answer a symptom like a track person would:
 // what is probably happening, in which layer, what is done about it, and
-// which catalogue references help. Thresholds are Geimar's field criteria;
-// the standard they come from is still to be confirmed, so the agent says so.
+// which catalogue references help.
+//
+// No number reaches a client as a technical limit unless it has a source.
+// Geimar said the figures he gave in conversation (desnivel limits, speed,
+// excavation depths, cost per metre) are NOT precise, so they live below as
+// configuration, switched off, until someone fills `fuente` and sets
+// `validado: true`. Until then the agent describes the problem and the kind of
+// work, and hands any measurement to Geimar instead of judging it.
 
 export interface Diagnostico {
   id: string;
@@ -16,8 +22,29 @@ export interface Diagnostico {
   pregunta?: string;
 }
 
-const UMBRAL_LENTO_PULGADAS = 2.5;
-const UMBRAL_INTERVENIR_PULGADAS = 5;
+export interface CriteriosVia {
+  validado: boolean;
+  // Standard or operator rule the numbers come from (e.g. the railway's
+  // maintenance regulation). Required to switch them on.
+  fuente: string | null;
+  desnivelReducirVelocidadPulgadas: number;
+  velocidadReducidaKmH: number;
+  huecoIntervenirPulgadas: number;
+}
+
+// POR VALIDAR: approximate figures from a conversation with Geimar, which he
+// later said are not precise. Never shown to a client while `validado` is false.
+export const CRITERIOS_VIA: CriteriosVia = {
+  validado: false,
+  fuente: null,
+  desnivelReducirVelocidadPulgadas: 2.5,
+  velocidadReducidaKmH: 15,
+  huecoIntervenirPulgadas: 5,
+};
+
+export function criteriosVigentes(c: CriteriosVia = CRITERIOS_VIA): boolean {
+  return c.validado && Boolean(c.fuente);
+}
 
 const DIAGNOSTICOS: { patron: RegExp; d: Diagnostico }[] = [
   {
@@ -28,7 +55,7 @@ const DIAGNOSTICOS: { patron: RegExp; d: Diagnostico }[] = [
       explicacion:
         "El polvillo blanco sobre las traviesas es el balasto moliéndose con cada pasada: abajo hay agua o finos que suben y la base se está lavando. La vía está avisando.",
       queHacer:
-        "Primero ver en qué capa está la falla. Si es la base, lo que funciona es saneamiento de plataforma: sacar los 30 cm de balasto y unos 15 cm más (o hasta la capa buena), mejorar el suelo, compactar y rearmar. Si además se pone geotextil entre el balasto y la tierra, el lodo deja de subir y la carga se reparte; echar cemento punto por punto tapa el síntoma, no la causa.",
+        "Primero hay que ver en qué capa está la falla. Si es la base, el trabajo de fondo es un saneamiento de plataforma: retirar el balasto hasta llegar a suelo sano, mejorar ese suelo, compactar y rearmar. Separar el balasto de la tierra con geotextil ayuda a que el lodo no vuelva a subir. Las profundidades y el diseño los define el ingeniero según el estudio del tramo.",
       skus: ["GVC-VIA-006", "GVC-VIA-001", "GVC-VIA-003", "GVC-SRV-TOP01", "GVC-SRV-CON01"],
       pregunta: "¿Cuántos metros de vía tienen así y en qué kilómetro?",
     },
@@ -40,7 +67,8 @@ const DIAGNOSTICOS: { patron: RegExp; d: Diagnostico }[] = [
       titulo: "Eso suena a efecto hamaca",
       explicacion:
         "Cuando el agua lava el suelo de la base quedan huecos debajo y los durmientes quedan colgados: el tren pasa y bailan. Es asentamiento diferencial, y cada pasada lo empeora.",
-      queHacer: `El criterio de campo de Geimar: con más de ${UMBRAL_LENTO_PULGADAS} pulgadas de desnivel el tren baja a 15 km/h y el supervisor de vía inspecciona el punto; con un hueco de más de ${UMBRAL_INTERVENIR_PULGADAS} pulgadas toca intervenir. La intervención de fondo es saneamiento de plataforma, no solo volver a calzar.`,
+      queHacer:
+        "Lo primero es medir el desnivel y revisar qué dice el reglamento de mantenimiento de esa vía sobre velocidad e intervención. La solución de fondo suele ser sanear la plataforma, no solo volver a calzar.",
       skus: ["GVC-VIA-001", "GVC-VIA-003", "GVC-VIA-005", "GVC-AK-CF01", "GVC-SRV-TOP01"],
       pregunta: "¿Cuánto desnivel midieron, en pulgadas?",
     },
@@ -84,13 +112,16 @@ export function diagnosticar(texto: string): Diagnostico | null {
   return DIAGNOSTICOS.find(({ patron }) => patron.test(t))?.d ?? null;
 }
 
-// "midieron 3 pulgadas" → the decision that number leads to.
-export function decisionPorDesnivel(pulgadas: number): string {
-  if (pulgadas > UMBRAL_INTERVENIR_PULGADAS)
-    return `Con ${pulgadas}" ya toca intervenir, no es para esperar. Lo que se hace es saneamiento de plataforma en ese tramo.`;
-  if (pulgadas > UMBRAL_LENTO_PULGADAS)
-    return `Con ${pulgadas}" el tren debe pasar a 15 km/h y el supervisor de vía tiene que inspeccionar el punto. Toca programar la intervención antes de que pase de 5".`;
-  return `Con ${pulgadas}" todavía no pasa del límite de ${UMBRAL_LENTO_PULGADAS}", pero vale la pena medirlo cada semana: si crece, es que la base se sigue lavando.`;
+// "midieron 3 pulgadas" → what the agent answers. Without validated criteria
+// it does not judge the number: it thanks, and Geimar reviews it.
+export function decisionPorDesnivel(pulgadas: number, c: CriteriosVia = CRITERIOS_VIA): string {
+  if (!criteriosVigentes(c))
+    return `Anotado: ${pulgadas}" de desnivel. Se lo paso a Geimar para que lo revise con el reglamento de mantenimiento de su vía; un límite así no te lo doy sin la norma que lo respalde.`;
+  if (pulgadas > c.huecoIntervenirPulgadas)
+    return `Con ${pulgadas}" ya pasa el límite de intervención de ${c.huecoIntervenirPulgadas}" (${c.fuente}). Toca programar el saneamiento de ese tramo.`;
+  if (pulgadas > c.desnivelReducirVelocidadPulgadas)
+    return `Con ${pulgadas}" pasa de ${c.desnivelReducirVelocidadPulgadas}": según ${c.fuente}, el tren baja a ${c.velocidadReducidaKmH} km/h y se inspecciona el punto.`;
+  return `Con ${pulgadas}" está por debajo de ${c.desnivelReducirVelocidadPulgadas}" (${c.fuente}). Vale la pena medirlo cada semana: si crece, la base se sigue lavando.`;
 }
 
 export function pulgadasEnTexto(texto: string): number | null {
@@ -98,4 +129,3 @@ export function pulgadasEnTexto(texto: string): number | null {
   return m ? Number(m[1].replace(",", ".")) : null;
 }
 
-export const LIMITES_VIA = { UMBRAL_LENTO_PULGADAS, UMBRAL_INTERVENIR_PULGADAS };

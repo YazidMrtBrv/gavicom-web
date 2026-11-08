@@ -14,7 +14,7 @@ const SUGERENCIAS: Partial<Record<NonNullable<Esperando> | "inicio", string[]>> 
   cantidad: ["200"],
   nombre: ["Camila Restrepo, Vías del Norte"],
   ciudad: ["Ciénaga, Magdalena"],
-  desnivel: ["Como 3 pulgadas", "Más de 5 pulgadas"],
+  desnivel: ["Como 3 pulgadas", "Unas 6 pulgadas"],
 };
 
 export default function Simulador() {

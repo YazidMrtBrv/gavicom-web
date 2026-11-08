@@ -323,7 +323,11 @@ export function deCliente(anterior: Conversacion, texto: string, ctx: Contexto):
       const p = pulgadasEnTexto(texto) ?? (/^\d+([.,]\d+)?$/.test(t) ? Number(t.replace(",", ".")) : null);
       if (p != null) {
         conv.esperando = null;
-        return fin([al(decisionPorDesnivel(p) + "\n\n¿Quieres que te arme el pedido de material y herramienta para ese tramo?", ["Cotizar por metros de vía", "Hablar con Geimar"])]);
+        const quien = conv.cliente.nombre || "Un cliente nuevo";
+        return fin([
+          al(decisionPorDesnivel(p) + "\n\n¿Quieres que te arme el pedido de material y herramienta para ese tramo?", ["Cotizar por metros de vía", "Hablar con Geimar"]),
+          aGeimar(`${quien} reporta ${p}" de desnivel con durmientes que bailan. Revísalo con el reglamento de su vía y escríbele.`),
+        ]);
       }
       break;
     }
