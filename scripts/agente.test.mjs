@@ -191,3 +191,28 @@ test("the quote PDF is a real PDF with the brand fonts", async () => {
   assert.equal(Buffer.from(bytes.slice(0, 5)).toString(), "%PDF-");
   assert.ok(bytes.length < 400_000, `${bytes.length} bytes`);
 });
+
+test("Microsoft 365: reads the inbox and only creates drafts", async () => {
+  const { Buzon, aCorreo, adjuntoPdf } = await import("../src/lib/agente/microsoft.ts");
+  const c = aCorreo({ id: "AAMk1", subject: "RFQ-1", from: { emailAddress: { name: "Ana", address: "ana@x.ejemplo" } }, receivedDateTime: "2026-11-08T12:00:00Z", body: { content: "Hola\r\n- Pala de drenaje: 6 und\r\n" } }, "gerencia@gavicom.com");
+  assert.deepEqual([c.id, c.de.correo, c.cuerpo], ["AAMk1", "ana@x.ejemplo", "Hola\n- Pala de drenaje: 6 und"]);
+  assert.equal(adjuntoPdf("a.pdf", new Uint8Array([37, 80, 68, 70])).contentBytes, "JVBERg==");
+
+  const llamadas = [];
+  const pedir = async (url, init) => {
+    llamadas.push([init.method ?? "GET", url.replace(/\?.*/, "")]);
+    if (url.includes("oauth2")) return Response.json({ access_token: "t", expires_in: 3600 });
+    if (url.includes("/createReply")) return Response.json({ id: "BORRADOR1" });
+    if (url.includes("/mailFolders/inbox/messages"))
+      return Response.json({ value: [{ id: "m1", subject: "x", categories: [] }, { id: "m2", subject: "y", categories: ["Agente GAVICOM"] }] });
+    return Response.json({ id: "ok" });
+  };
+  const buzon = new Buzon({ tenant: "t", cliente: "c", secreto: "s", buzon: "gerencia@gavicom.com" }, pedir);
+  const nuevos = await buzon.nuevos(new Date("2026-11-06T00:00:00Z"));
+  assert.deepEqual(nuevos.map((x) => x.id), ["m1"], "emails the agent already tagged are skipped");
+  const id = await buzon.borradorRespuesta({ id: "b", tipo: "aclaracion", para: c.de, asunto: "RE", cuerpo: "Cordial saludo", enRespuestaA: "m1", porque: "" }, { nombre: "C.pdf", bytes: new Uint8Array([1]) });
+  assert.equal(id, "BORRADOR1");
+  // Never a send call: only token, list, draft reply and attachment.
+  assert.ok(llamadas.every(([, url]) => !/\/send(Mail)?$|\/reply$|\/replyAll$|\/forward$/.test(url)), JSON.stringify(llamadas));
+  assert.ok(llamadas.some(([m, url]) => m === "POST" && url.endsWith("/messages/BORRADOR1/attachments")));
+});

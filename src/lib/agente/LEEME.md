@@ -18,15 +18,16 @@ Demo en `/agente` (sin enlace en el menú y con `noindex`): una bandeja con corr
 | Nota técnica cuando el cliente cuenta una falla (bombeo, durmientes que bailan…) | `via.ts`, `redaccion.ts` | Listo. Ninguna cifra técnica sale al cliente: los límites quedan en `CRITERIOS_VIA` con `validado: false` hasta tener la norma (`fuente`) |
 | Tablero en plata: cotizado, ganado, perdido y por qué | `tablero.ts` | Listo; hoy con datos de ejemplo |
 
-## Para conectarlo al buzón real
+## Para conectarlo al buzón real (Microsoft 365)
 
-Depende de dónde está el correo de gavicom.com:
+El correo de gavicom.com está en Microsoft 365. El agente entra por Microsoft Graph (`microsoft.ts`) y la tarea programada es `/api/agente/revisar`.
 
-- **Google Workspace**: API de Gmail con permiso solo para leer y crear borradores (`gmail.readonly` + `gmail.compose`).
-- **Microsoft 365 / Outlook**: Microsoft Graph con `Mail.Read` + `Mail.ReadWrite` (borradores).
-- **Otro proveedor (cPanel, etc.)**: IMAP para leer y guardar en la carpeta Borradores.
+1. **Entra ID:** registrar la app "Agente GAVICOM" con un secreto de cliente. Permiso de aplicación: **leer y escribir correo** (Mail.ReadWrite). **Nunca Mail.Send**: el agente no puede enviar.
+2. **Amarrarlo solo a gerencia@:** en Exchange Online, con "RBAC for Applications" (ámbito de administración sobre ese buzón), que es lo que Microsoft recomienda en lugar de las antiguas Application Access Policies. Así la app no puede abrir ningún otro buzón de la empresa.
+3. **Vercel** (lo pone Yazid, nunca en el repo ni en el chat): `MS_TENANT_ID`, `MS_CLIENT_ID`, `MS_CLIENT_SECRET`, `MS_BUZON` (gerencia@gavicom.com), `CRON_SECRET` y `ANTHROPIC_API_KEY`.
+4. **Tarea diaria:** agregar en `vercel.json` un cron que llame `/api/agente/revisar` (por ejemplo a las 6:00 a. m. de Colombia = 11:00 UTC). Es un cambio de configuración de Vercel: lo aprueba Yazid.
 
-Las claves van en Vercel, nunca en el repo ni en el chat. Más `ANTHROPIC_API_KEY` para correos enredados, PDF y fotos.
+Qué hace hoy `/api/agente/revisar` con el buzón conectado: lee los correos nuevos, marca en Outlook las solicitudes con la categoría "Agente GAVICOM" y una de estado ("Cotización: por precios" o "Cotización: faltan datos"), y deja en el hilo el borrador que pregunta lo que falta. Las cotizaciones con precios, el seguimiento y la reposición necesitan guardarse entre una corrida y otra (punto 1 de abajo).
 
 ## Antes de producción
 

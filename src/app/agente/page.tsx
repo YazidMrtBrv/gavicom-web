@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 
 const FALTA = [
   {
-    titulo: "Conectar el buzón de gerencia@",
-    texto: "Un acceso al correo de GAVICOM con permiso para leer la bandeja y guardar borradores, nada más: el agente nunca envía. La clave la pone Yazid en Vercel.",
+    titulo: "Conectar el buzón de gerencia@ en Microsoft 365",
+    texto: "Una app en Microsoft con permiso solo para leer la bandeja de gerencia@ y guardar borradores: no puede enviar ni abrir otros buzones. Las claves las pone Yazid en Vercel.",
   },
   {
     titulo: "Correos reales de muestra",
