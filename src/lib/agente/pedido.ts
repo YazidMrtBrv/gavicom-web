@@ -82,15 +82,3 @@ export function calcularPedido(metros: number, riel: Riel, durmiente: Durmiente)
   if (!REGLAS.confirmada) notas.push("Cantidades con reglas de cálculo que GAVICOM está confirmando; Geimar las revisa antes de cotizar.");
   return { metros, riel, durmiente, lineas, notas };
 }
-
-// Short WhatsApp text for an order: one line per reference.
-export function textoPedido(p: Pedido): string {
-  const filas = p.lineas.map((l) => `• *${l.cantidad.toLocaleString("es-CO")}* × ${l.nombre}\n   _${l.porque}_`);
-  return [
-    `Esto es lo que lleva ${p.metros.toLocaleString("es-CO")} m de vía en riel de ${NOMBRE_RIEL[p.riel]} sobre durmiente de ${p.durmiente}:`,
-    "",
-    ...filas,
-    "",
-    ...p.notas,
-  ].join("\n");
-}

@@ -1,8 +1,8 @@
 import type { LineaCotizada } from "./tipos.ts";
 
-// Prices only come from Geimar. He answers the agent on WhatsApp the way he
-// would type them on the phone ("1 85.000", "2: 3200", "3 12 mil") and this
-// file turns that into numbers. The agent never fills a price by itself.
+// Prices only come from Geimar: he types them in the agent's panel the way
+// he writes them ("185.000", "12 mil") and this file turns that into
+// numbers. The agent never fills a price by itself.
 
 export interface Configuracion {
   ivaPct: number;
@@ -27,20 +27,13 @@ function numeroColombiano(crudo: string, sufijo?: string): number | null {
   return Math.round(n);
 }
 
-// Returns one price per line number (1-based), or null for lines he skipped.
-export function leerPrecios(texto: string, totalLineas: number): (number | null)[] {
-  const precios: (number | null)[] = Array(totalLineas).fill(null);
-  const patron = /(?:^|\n|;|,\s+|\s{2,})\s*#?(\d{1,2})(?:\s*[:=)\-.]\s*|\s+)\$?\s*(\d(?:[\d.,]*\d)?)[ \t]*(mil|k|millones|millon|m)?\b/gi;
-  for (const m of texto.matchAll(patron)) {
-    const i = Number(m[1]) - 1;
-    const valor = numeroColombiano(m[2], m[3]);
-    if (i >= 0 && i < totalLineas && valor && valor > 0) precios[i] = valor;
-  }
-  return precios;
-}
-
-export function aplicarPrecios(lineas: LineaCotizada[], precios: (number | null)[]): LineaCotizada[] {
-  return lineas.map((l, i) => ({ ...l, precioUnitario: precios[i] ?? l.precioUnitario }));
+// One price as Geimar types it in the panel: "185.000", "$ 1.250.000",
+// "12 mil". Null when it is not a price.
+export function leerPrecio(texto: string): number | null {
+  const m = texto.trim().match(/^\$?\s*(\d(?:[\d.,]*\d)?)\s*(mil|k|millones|millon|m)?$/i);
+  if (!m) return null;
+  const n = numeroColombiano(m[1], m[2]);
+  return n && n > 0 ? n : null;
 }
 
 export function faltanPrecios(lineas: LineaCotizada[]): number[] {

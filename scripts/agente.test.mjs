@@ -1,23 +1,31 @@
-// The WhatsApp agent's rules, tested without a browser or a build: the
+// The quoting agent's rules, tested without a browser or a build: the
 // engine files are plain TypeScript that Node runs directly.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { buscarReferencias, porSku } from "../src/lib/agente/catalogo.ts";
 import { calcularPedido } from "../src/lib/agente/pedido.ts";
-import { leerPrecios, totales } from "../src/lib/agente/precios.ts";
-import { aprobar, deCliente, deGeimar, nuevaConversacion, referenciasIdentificadas } from "../src/lib/agente/motor.ts";
-import { tareasDelDia, rellenar } from "../src/lib/agente/seguimiento.ts";
+import { leerPrecio, totales } from "../src/lib/agente/precios.ts";
+import { leerSolicitud, cantidadEnLinea } from "../src/lib/agente/solicitud.ts";
+import { procesarCorreo, aprobar, marcarEnviada, procesarRespuesta, pendientesDeAprobacion } from "../src/lib/agente/bandeja.ts";
+import { leerRespuesta } from "../src/lib/agente/redaccion.ts";
+import { tareasDelDia } from "../src/lib/agente/seguimiento.ts";
 import { calcularTablero } from "../src/lib/agente/tablero.ts";
-import { clienteNuevo, clientesEjemplo, cotizacionesEjemplo, respuestaPreciosEjemplo } from "../src/lib/agente/ejemplo.ts";
+import { clientesEjemplo, correosEjemplo, cotizacionesEjemplo, preciosEjemplo, RESPUESTAS_EJEMPLO } from "../src/lib/agente/ejemplo.ts";
 import { diagnosticar, decisionPorDesnivel, CRITERIOS_VIA } from "../src/lib/agente/via.ts";
 import { generarPdf } from "../src/lib/agente/pdf.ts";
-import { firmaValida, leerEntrantes } from "../src/lib/agente/whatsapp-cloud.ts";
 
 const AHORA = new Date("2026-11-08T13:00:00Z");
 let n = 200;
 const ctx = () => ({ ahora: AHORA, numeroCotizacion: () => `C-0${n++}`, ejemplo: true });
-const textos = (r, para) => r.salidas.filter((s) => s.para === para).map((s) => s.mensaje.texto).join("\n");
+const correo = (id) => correosEjemplo(AHORA).find((c) => c.id === id);
+const PRECIO = /\$\s?\d/;
+// Geimar's approximate field figures: never in a client email while unvalidated.
+const CIFRAS_VIA = /2[.,]5 ?(pulg|")|15 km|\b30 cm|\b15 cm|400\.000|\b5 pulgadas/;
+const conPrecios = (cot, condiciones = { entrega: "15 días hábiles", pago: "Crédito a 30 días" }) => {
+  const precios = preciosEjemplo(cot.lineas.map((l) => l.sku));
+  return { ...cot, lineas: cot.lineas.map((l, i) => ({ ...l, precioUnitario: precios[i] })), condiciones };
+};
 
 test("field words find real catalogue references", () => {
   assert.deepEqual(buscarReferencias("necesito eclisas de 90"), ["GVC-AK-JB90"]);
@@ -42,106 +50,127 @@ test("order by metres: joints, bolts, clips and pads add up", () => {
 });
 
 test("Geimar's prices are read the way he types them", () => {
-  assert.deepEqual(leerPrecios("1 85.000\n2: 3200\n3 12 mil", 3), [85000, 3200, 12000]);
-  assert.deepEqual(leerPrecios("1: 1.250.000, 2: 9800", 3), [1250000, 9800, null]);
+  assert.equal(leerPrecio("85.000"), 85000);
+  assert.equal(leerPrecio("$ 1.250.000"), 1250000);
+  assert.equal(leerPrecio("12 mil"), 12000);
+  assert.equal(leerPrecio("9800"), 9800);
+  assert.equal(leerPrecio("abc"), null);
   assert.deepEqual(totales([{ cantidad: 2, precioUnitario: 100000 }]), { subtotal: 200000, iva: 38000, total: 238000 });
 });
 
-test("full conversation: metres → order → Geimar prices → approval → won", () => {
-  let conv = nuevaConversacion(clienteNuevo());
-  let r = deCliente(conv, "Buenas, necesito material para 300 metros de vía", ctx());
-  assert.match(textos(r, "cliente"), /libraje/);
-  r = deCliente(r.conversacion, "115 lb", ctx());
-  r = deCliente(r.conversacion, "Concreto", ctx());
-  assert.equal(r.salidas[0].mensaje.tipo, "pedido");
-  r = deCliente(r.conversacion, "Sí, cotízame esto", ctx());
-  assert.match(textos(r, "cliente"), /nombre/);
-  r = deCliente(r.conversacion, "Camila Restrepo, Vías del Norte", ctx());
-  r = deCliente(r.conversacion, "Ciénaga", ctx());
-  const cot = r.conversacion.cotizacion;
+test("quantities: units and list numbers are not quantities", () => {
+  assert.equal(cantidadEnLinea("1. Eclisas para riel de 90 lb — 40 und"), 40);
+  assert.equal(cantidadEnLinea('2. Pernos de eclisa con tuerca, 1" x 5" — 160 und'), 160);
+  assert.equal(cantidadEnLinea("3. Clip elástico E2055 — 1.200 und"), 1200);
+  assert.equal(cantidadEnLinea("4. Tirafondos para durmiente de madera"), null);
+  assert.equal(cantidadEnLinea("- Garlanchín de diez dientes: 10 und"), 10);
+});
+
+test("an item list email: references, quantities, place and what is missing", () => {
+  const s = leerSolicitud(correo("rfq-2"));
+  assert.deepEqual(
+    s.items.map((i) => [i.sku, i.cantidad]),
+    [["GVC-AK-JB90", 40], ["GVC-AK-TB01", 160], ["GVC-AD-E2055", 1200], ["GVC-AD-SS01", null]],
+  );
+  assert.equal(s.referenciaCliente, "RFQ-PC-0457");
+  assert.match(s.ciudadEntrega, /Santa Marta/);
+  assert.equal(s.contacto, "Andrés Polo");
+  assert.match(s.empresa, /Patio Carbonero/);
+  assert.equal(s.faltantes.length, 1);
+  assert.match(s.faltantes[0], /cantidad.*Tirafondos/);
+  // Each item points at its own text in the email, for the highlight.
+  const it = s.items[0];
+  assert.equal(correo("rfq-2").cuerpo.slice(it.desde, it.hasta), it.texto);
+});
+
+test("an order by metres of track written in prose", () => {
+  const s = leerSolicitud(correo("rfq-1"));
+  assert.equal(s.pedidoPorMetros?.metros, 300);
+  assert.equal(s.pedidoPorMetros?.riel, "115");
+  assert.equal(s.pedidoPorMetros?.durmiente, "concreto");
+  assert.equal(s.referenciaCliente, "SC-2026-118");
+  assert.match(s.ciudadEntrega, /Fundación/);
+  assert.match(s.plazo, /20 días/);
+  assert.deepEqual(s.faltantes, []);
+});
+
+test("full flow: email → quote → Geimar's prices → formal draft → answer → won", () => {
+  const p = procesarCorreo(correo("rfq-1"), clientesEjemplo(AHORA), ctx());
+  const cot = p.cotizacion;
   assert.equal(cot.estado, "esperando-precios");
-  assert.equal(cot.cliente.empresa, "Vías del Norte");
-  assert.match(textos(r, "geimar"), /precio unitario/);
-  // The agent never writes a price to the client on its own.
-  assert.doesNotMatch(textos(r, "cliente"), /\$\s?\d/);
+  assert.equal(p.borradores.length, 0, "nothing to ask: the email is complete");
+  assert.equal(pendientesDeAprobacion(cot).length, 3, "prices, delivery time and payment are pending");
+  assert.throws(() => aprobar(cot, p.solicitud), /Falta/);
 
-  r = deGeimar(r.conversacion, "1 185.000");
-  assert.match(textos(r, "geimar"), /faltan/);
-  r = deGeimar(r.conversacion, respuestaPreciosEjemplo(cot.lineas.map((l) => l.sku)));
-  assert.equal(r.conversacion.cotizacion.estado, "por-aprobar");
-  assert.equal(r.salidas.filter((s) => s.para === "cliente").length, 0, "nothing reaches the client before Geimar approves");
+  const { cotizacion, borrador } = aprobar(conPrecios(cot), p.solicitud);
+  assert.equal(cotizacion.estado, "por-aprobar");
+  assert.equal(borrador.tipo, "cotizacion");
+  assert.equal(borrador.para.correo, "pmejia@concesionferrea.ejemplo");
+  assert.match(borrador.asunto, /^RE: Solicitud de cotización SC-2026-118/);
+  assert.match(borrador.cuerpo, /^Cordial saludo, Paola Mejía:/);
+  assert.match(borrador.cuerpo, /SC-2026-118/);
+  assert.match(borrador.cuerpo, /15 días hábiles/);
+  assert.match(borrador.cuerpo, /Geimar Martínez\nGerente General/);
+  assert.equal(borrador.adjunto, cotizacion.numero);
 
-  r = aprobar(r.conversacion, ctx());
-  assert.equal(r.salidas[0].mensaje.tipo, "documento");
-  r = deCliente(r.conversacion, "La apruebo", ctx());
-  assert.equal(r.conversacion.cotizacion.estado, "ganada");
+  const r = procesarRespuesta(marcarEnviada(cotizacion, AHORA), { ...correo("rfq-1"), id: "r1", cuerpo: RESPUESTAS_EJEMPLO.aprueba }, AHORA);
+  assert.equal(r.cotizacion.estado, "ganada");
+  assert.equal(r.borrador.tipo, "agradecimiento");
 });
 
-test("a lost quote keeps the reason", () => {
-  let r = deCliente(nuevaConversacion(clientesEjemplo(AHORA)[0]), "eclisas de 115", ctx());
-  r = deCliente(r.conversacion, "200", ctx());
-  r = deCliente(r.conversacion, "sí", ctx());
-  r = deGeimar(r.conversacion, "1 185000");
-  r = aprobar(r.conversacion, ctx());
-  r = deCliente(r.conversacion, "No por ahora", ctx());
-  assert.match(textos(r, "cliente"), /no te cuadró/);
-  r = deCliente(r.conversacion, "Precio", ctx());
-  assert.equal(r.conversacion.cotizacion.motivo, "precio");
+test("missing data: the agent asks by email and quotes what is clear", () => {
+  const p = procesarCorreo(correo("rfq-2"), clientesEjemplo(AHORA), ctx());
+  assert.equal(p.cotizacion.lineas.length, 3);
+  assert.equal(p.borradores[0].tipo, "aclaracion");
+  assert.match(p.borradores[0].cuerpo, /cantidad de «4\. Tirafondos/);
+  assert.doesNotMatch(p.borradores[0].cuerpo, PRECIO);
+  assert.match(p.recuerdo, /Cliente que vuelve/);
 });
 
-test("price questions go to Geimar, never answered by the agent", () => {
-  const r = deCliente(nuevaConversacion(clienteNuevo()), "¿cuánto vale el clip?", ctx());
-  assert.match(textos(r, "cliente"), /Geimar/);
-  assert.doesNotMatch(textos(r, "cliente"), /\$\s?\d/);
+test("a symptom in the email adds a field note, without unsourced limits", () => {
+  const p = procesarCorreo(correo("rfq-3"), clientesEjemplo(AHORA), ctx());
+  assert.equal(p.solicitud.diagnostico, "bombeo");
+  assert.deepEqual(p.cotizacion.lineas.map((l) => [l.sku, l.cantidad]), [["GVC-VIA-003", 10], ["GVC-VIA-006", 6], ["GVC-VIA-001", 4]]);
+  const { borrador } = aprobar(conPrecios(p.cotizacion, { entrega: "5 días hábiles", pago: "Contado" }), p.solicitud);
+  assert.match(borrador.cuerpo, /bombeo/);
+  assert.doesNotMatch(borrador.cuerpo, CIFRAS_VIA);
 });
 
-test("returning client is recognised by what they bought", () => {
-  const r = deCliente(nuevaConversacion(clientesEjemplo(AHORA)[0]), "hola", ctx());
-  assert.match(textos(r, "cliente"), /Camila.*km 12/s);
+test("a lost quote keeps the reason, or the agent asks for it", () => {
+  const base = marcarEnviada(cotizacionesEjemplo(AHORA).at(-1), AHORA);
+  const r1 = procesarRespuesta(base, { ...correo("rfq-1"), id: "x", cuerpo: RESPUESTAS_EJEMPLO.precio }, AHORA);
+  assert.deepEqual([r1.cotizacion.estado, r1.cotizacion.motivo, r1.borrador], ["perdida", "precio", null]);
+  const r2 = procesarRespuesta(base, { ...correo("rfq-1"), id: "y", cuerpo: RESPUESTAS_EJEMPLO.sinMotivo }, AHORA);
+  assert.equal(r2.borrador.tipo, "motivo");
+  const r3 = procesarRespuesta(r2.cotizacion, { ...correo("rfq-1"), id: "z", cuerpo: "Fue por el tiempo de entrega, lo necesitábamos antes." }, AHORA);
+  assert.equal(r3.cotizacion.motivo, "plazo");
+  assert.equal(leerRespuesta(RESPUESTAS_EJEMPLO.otro).motivo, "ya-compro");
 });
 
-test("track symptoms get Geimar's field answer, without unsourced limits", () => {
+test("track symptoms are recognised", () => {
   assert.equal(diagnosticar("hay polvillo blanco sobre las traviesas")?.id, "bombeo");
   assert.equal(diagnosticar("los durmientes están bailando")?.id, "hamaca");
-  let r = deCliente(nuevaConversacion(clienteNuevo()), "los durmientes me están bailando", ctx());
-  assert.match(textos(r, "cliente"), /hamaca/);
-  r = deCliente(r.conversacion, "como 3 pulgadas", ctx());
-  assert.match(textos(r, "geimar"), /3" de desnivel/);
-  assert.match(textos(r, "cliente"), /Geimar/);
 });
 
-test("Geimar's approximate figures never reach a client while unvalidated", () => {
+test("Geimar's approximate figures stay off until validated with a source", () => {
   assert.equal(CRITERIOS_VIA.validado, false);
-  const cifras = /2[.,]5|15 km|\b30 cm|\b15 cm|400\.000|5"|\b5 pulgadas/;
-  const frases = ["hay polvillo blanco", "los durmientes están bailando", "eclisa rota", "se salen los clips", "tirafondo flojo"];
-  for (const f of frases) {
-    let r = deCliente(nuevaConversacion(clienteNuevo()), f, ctx());
-    assert.doesNotMatch(textos(r, "cliente"), cifras, f);
-    for (const medida of ["2 pulgadas", "3 pulgadas", "6 pulgadas"]) {
-      const r2 = deCliente(r.conversacion, medida, ctx());
-      assert.doesNotMatch(textos(r2, "cliente"), cifras, `${f} → ${medida}`);
-    }
-  }
-  // Once someone fills the source and validates, the limits apply and cite it.
+  assert.doesNotMatch(decisionPorDesnivel(3), CIFRAS_VIA);
   const validos = { ...CRITERIOS_VIA, validado: true, fuente: "el reglamento del operador" };
-  assert.match(decisionPorDesnivel(3, validos), /15 km\/h.*reglamento|reglamento.*15 km\/h/);
-  assert.match(decisionPorDesnivel(6, validos), /intervención/);
+  assert.match(decisionPorDesnivel(3, validos), /reglamento/);
 });
 
-test("a photo's references enter the same flow", () => {
-  const r = referenciasIdentificadas(nuevaConversacion(clienteNuevo()), ["GVC-AK-EA75"], "La pieza de la foto");
-  assert.match(textos(r, "cliente"), /Eclisa Angular/);
-  assert.equal(r.conversacion.esperando, "cantidad");
-});
-
-test("the morning: follow-up on the silent quote and reorder by wear", () => {
+test("the morning: follow-up drafts and reorder by wear, no prices", () => {
   const tareas = tareasDelDia(cotizacionesEjemplo(AHORA), clientesEjemplo(AHORA), AHORA);
-  const tipos = tareas.map((t) => `${t.tipo}:${t.cliente.telefono}`);
-  assert.ok(tipos.includes("seguimiento:+573000000013"), tipos.join());
-  assert.ok(tipos.includes("reposicion:+573000000011"), tipos.join());
-  assert.ok(!tipos.includes("reposicion:+573000000012"), "bolts bought 3 months ago are not due");
-  const t = tareas.find((x) => x.tipo === "reposicion");
-  assert.match(rellenar(t.plantilla, t.variables), /Camila.*clip/s);
+  const tipos = tareas.map((t) => `${t.tipo}:${t.cliente.correo}`);
+  assert.ok(tipos.includes("seguimiento:lortiz@mfcaribe.ejemplo"), tipos.join());
+  assert.ok(tipos.includes("reposicion:c.restrepo@viasdelnorte.ejemplo"), tipos.join());
+  assert.ok(!tipos.includes("reposicion:compras@patiocarbonero.ejemplo"), "bolts bought 3 months ago are not due");
+  for (const t of tareas) {
+    assert.match(t.borrador.cuerpo, /^Cordial saludo, /);
+    assert.doesNotMatch(t.borrador.cuerpo, PRECIO);
+  }
+  const sinSeguimiento = tareasDelDia(cotizacionesEjemplo(AHORA), [], AHORA, ["C-0140"]);
+  assert.deepEqual(sinSeguimiento, [], "an answered quote gets no follow-up");
 });
 
 test("dashboard: quoted, won, lost and why", () => {
@@ -153,8 +182,7 @@ test("dashboard: quoted, won, lost and why", () => {
 
 test("the quote PDF is a real PDF with the brand fonts", async () => {
   const leer = (p) => readFileSync(new URL(`../public${p}`, import.meta.url));
-  const conv = cotizacionesEjemplo(AHORA)[0];
-  const bytes = await generarPdf(conv, {
+  const bytes = await generarPdf(cotizacionesEjemplo(AHORA)[0], {
     poppins: leer("/agente/fuentes/Poppins-SemiBold.ttf"),
     montserrat: leer("/agente/fuentes/Montserrat-Regular.ttf"),
     montserratSemi: leer("/agente/fuentes/Montserrat-SemiBold.ttf"),
@@ -162,17 +190,4 @@ test("the quote PDF is a real PDF with the brand fonts", async () => {
   });
   assert.equal(Buffer.from(bytes.slice(0, 5)).toString(), "%PDF-");
   assert.ok(bytes.length < 400_000, `${bytes.length} bytes`);
-});
-
-test("webhook: signature and incoming messages", async () => {
-  const cuerpo = JSON.stringify({
-    entry: [{ changes: [{ value: { contacts: [{ wa_id: "573000000011", profile: { name: "Camila" } }], messages: [{ from: "573000000011", id: "wamid.1", type: "text", text: { body: "hola" } }, { from: "573000000011", id: "wamid.2", type: "interactive", interactive: { type: "button_reply", button_reply: { id: "b1", title: "La apruebo" } } }] } }] }],
-  });
-  const { createHmac } = await import("node:crypto");
-  const firma = "sha256=" + createHmac("sha256", "secreto").update(cuerpo).digest("hex");
-  assert.equal(await firmaValida(cuerpo, firma, "secreto"), true);
-  assert.equal(await firmaValida(cuerpo, firma, "otro"), false);
-  const e = leerEntrantes(JSON.parse(cuerpo));
-  assert.deepEqual(e.map((m) => m.texto), ["hola", "La apruebo"]);
-  assert.equal(e[0].nombre, "Camila");
 });

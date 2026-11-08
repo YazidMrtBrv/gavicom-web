@@ -62,7 +62,7 @@ export async function generarPdf(cot: Cotizacion, r: Recursos): Promise<Uint8Arr
   doc.registerFontkit(fontkit);
   doc.setTitle(`Cotización ${cot.numero} · GAVICOM`);
   doc.setAuthor(COMPANIA_INFO.nombre);
-  doc.setCreator("Asistente de WhatsApp de GAVICOM");
+  doc.setCreator("Agente de cotizaciones de GAVICOM");
   const titulo = await doc.embedFont(r.poppins, { subset: true });
   const texto = await doc.embedFont(r.montserrat, { subset: true });
   const semi = await doc.embedFont(r.montserratSemi, { subset: true });
@@ -97,6 +97,7 @@ export async function generarPdf(cot: Cotizacion, r: Recursos): Promise<Uint8Arr
   page.drawText(`Válida por ${CONFIG.validezDias} días`, { x: col2, y, size: 10, font: texto, color: TENUE });
   y -= 15;
   page.drawText(`Pedido: ${cot.origen}`, { x: M, y, size: 9, font: texto, color: TENUE });
+  if (cot.referenciaCliente) page.drawText(`Su referencia: ${cot.referenciaCliente}`, { x: col2, y, size: 9, font: texto, color: TENUE });
   y -= 30;
 
   // Table
@@ -139,7 +140,22 @@ export async function generarPdf(cot: Cotizacion, r: Recursos): Promise<Uint8Arr
   };
   filaTotal("Subtotal", t.subtotal);
   filaTotal(`IVA ${CONFIG.ivaPct}%`, t.iva);
+  const yTotales = y;
   filaTotal("Total", t.total, true);
+
+  // Conditions, on the left of the totals block.
+  const condiciones: [string, string][] = [
+    ["Tiempo de entrega", cot.condiciones.entrega || "Por confirmar"],
+    ["Lugar de entrega", cot.cliente.ciudad || "Por confirmar"],
+    ["Forma de pago", cot.condiciones.pago || "Por confirmar"],
+  ];
+  let yc = yTotales + 38;
+  page.drawText("Condiciones", { x: M, y: yc + 14, size: 8, font: semi, color: TENUE });
+  for (const [k, v] of condiciones) {
+    page.drawText(`${k}: `, { x: M, y: yc, size: 9, font: semi, color: TINTA });
+    page.drawText(v, { x: M + semi.widthOfTextAtSize(`${k}: `, 9), y: yc, size: 9, font: texto, color: TINTA });
+    yc -= 14;
+  }
 
   // Footer
   const pie = [

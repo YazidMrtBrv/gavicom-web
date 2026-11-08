@@ -3,10 +3,10 @@ import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { CATALOGO, catalogoParaIA } from "./catalogo.ts";
 
-// The two jobs that need a model: reading a photo of a piece, and turning a
-// messy message into a plain one the engine (motor.ts) understands. The
-// model never answers the client and never sees a price: it only returns
-// catalogue codes or a rewritten sentence, and code checks both.
+// The two jobs that need a model: reading a photo of a piece attached to an
+// email, and reading request emails the rules could not (solicitud.ts). The
+// model never writes to the client and never sees a price: it only returns
+// catalogue codes and quantities, and code checks every code.
 //
 // Server only. Needs ANTHROPIC_API_KEY in Vercel; without it, iaDisponible()
 // is false and the app says so instead of pretending.
@@ -24,7 +24,7 @@ function claude(): Anthropic {
 }
 
 // Stable prefix (catalogue) first, so repeated calls reuse the prompt cache.
-const SISTEMA_FOTO = `Eres el ojo técnico de GAVICOM, proveedor ferroviario en Barranquilla. Te mandan la foto de una pieza de vía férrea por WhatsApp. Di qué referencias del catálogo pueden ser, de la más probable a la menos, solo con códigos de esta lista. Si la foto no muestra una pieza ferroviaria o no se reconoce, devuelve la lista vacía. No inventes códigos ni precios.
+const SISTEMA_FOTO = `Eres el ojo técnico de GAVICOM, proveedor ferroviario en Barranquilla. Un cliente adjuntó la foto de una pieza de vía férrea a un correo. Di qué referencias del catálogo pueden ser, de la más probable a la menos, solo con códigos de esta lista. Si la foto no muestra una pieza ferroviaria o no se reconoce, devuelve la lista vacía. No inventes códigos ni precios.
 
 Catálogo (código | nombre | línea | especificación):
 ${catalogoParaIA()}`;
@@ -59,27 +59,35 @@ export async function identificarPieza(base64: string, tipo: MediaImagen): Promi
   return { skus: res.parsed_output.skus.filter((s) => validos.has(s)).slice(0, 3), pieza: res.parsed_output.pieza };
 }
 
-const SISTEMA_TEXTO = `Reescribes mensajes de clientes de un proveedor ferroviario colombiano (GAVICOM) para que un sistema de reglas los entienda. Devuelve UNA frase corta en español con el vocabulario de abajo, conservando cifras, unidades y nombres. No respondas al cliente, no inventes datos, no pongas precios.
+// For request emails the rules could not read (free prose, odd layouts, the
+// text of an attached PDF): the model lists what is asked, only with real
+// catalogue codes; code then validates every code before using it.
+const SISTEMA_CORREO = `Lees solicitudes de cotización que recibe GAVICOM, proveedor ferroviario colombiano. Devuelve los ítems que el cliente pide, cada uno con el código del catálogo que corresponde (solo de la lista) y la cantidad si el correo la dice. Si un ítem no está en el catálogo, déjalo con código vacío. No inventes cantidades ni precios.
 
-Vocabulario que el sistema entiende:
-- Pedido por longitud: "necesito material para 300 metros de vía, riel de 115 lb, durmiente de concreto"
-- Piezas: eclisas, pernos, clips, tirafondos, clavos, placa de asiento, anclas, almohadillas, garlanchín, pala de drenaje, troley, disco de corte, saca clip
-- Fallas: "polvillo blanco" (bombeo), "durmientes bailando" (efecto hamaca), "eclisa rota", "se salen los clips", "tirafondo flojo"
-- Respuestas: "sí", "no", "la apruebo", "no por ahora", "precio", "tiempo de entrega", "ya le compré a otro proveedor", "proyecto aplazado"
-- Saludo: "hola"`;
+Catálogo (código | nombre | línea | especificación):
+${catalogoParaIA()}`;
 
-const RespuestaTexto = z.object({ frase: z.string() });
+const RespuestaCorreo = z.object({
+  items: z.array(
+    z.object({
+      texto: z.string().describe("Cómo lo escribió el cliente"),
+      sku: z.string().describe("Código del catálogo, o vacío si no está"),
+      cantidad: z.number().nullable(),
+    }),
+  ),
+});
 
-export async function reescribir(texto: string): Promise<string | null> {
+export async function leerItemsConIA(texto: string): Promise<{ texto: string; sku: string | null; cantidad: number | null }[]> {
   const res = await claude().beta.messages.parse({
     model: MODELO,
-    max_tokens: 1000,
+    max_tokens: 4000,
     betas: ["server-side-fallback-2026-07-01"],
     fallbacks: "default",
-    output_config: { effort: "low", format: betaZodOutputFormat(RespuestaTexto) },
-    system: [{ type: "text", text: SISTEMA_TEXTO, cache_control: { type: "ephemeral" } }],
-    messages: [{ role: "user", content: texto.slice(0, 2000) }],
+    output_config: { effort: "low", format: betaZodOutputFormat(RespuestaCorreo) },
+    system: [{ type: "text", text: SISTEMA_CORREO, cache_control: { type: "ephemeral" } }],
+    messages: [{ role: "user", content: texto.slice(0, 20_000) }],
   });
-  if (res.stop_reason === "refusal") return null;
-  return res.parsed_output?.frase ?? null;
+  if (res.stop_reason === "refusal" || !res.parsed_output) return [];
+  const validos = new Set(CATALOGO.map((p) => p.sku));
+  return res.parsed_output.items.map((i) => ({ texto: i.texto, sku: validos.has(i.sku) ? i.sku : null, cantidad: i.cantidad && i.cantidad > 0 ? i.cantidad : null }));
 }

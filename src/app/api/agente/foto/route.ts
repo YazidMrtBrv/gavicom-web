@@ -2,7 +2,7 @@ import { iaDisponible, identificarPieza, type MediaImagen } from "@/lib/agente/i
 import { superaLimite } from "@/lib/agente/limite";
 
 const TIPOS: MediaImagen[] = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-// About 4 MB of image once decoded; WhatsApp photos are well under it.
+// About 4 MB of image once decoded; phone photos are resized before sending.
 const MAX_BASE64 = 5_500_000;
 
 export async function POST(request: Request) {

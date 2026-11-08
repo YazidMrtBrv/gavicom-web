@@ -2,7 +2,7 @@ import { PRODUCTOS_Y_SERVICIOS, type Producto } from "../../constants/productos.
 
 // The agent only ever names references that exist in the real catalogue
 // (src/constants/productos.ts). This file finds them from the words people
-// actually use on a WhatsApp chat, which are rarely the catalogue's names.
+// actually use in a request email, which are rarely the catalogue's names.
 
 export const CATALOGO: Producto[] = PRODUCTOS_Y_SERVICIOS.filter((p) => !p.oculto);
 
@@ -30,6 +30,7 @@ const SINONIMOS: { patron: RegExp; skus: string[] }[] = [
   { patron: /eclisa.*angular|angular.*75/, skus: ["GVC-AK-EA75"] },
   { patron: /eclisa|joint bar|barra de union|planchuela/, skus: ["GVC-AK-JB115", "GVC-AK-JB90", "GVC-AK-EA75", "GVC-AK-JB30"] },
   { patron: /skl/, skus: ["GVC-AD-SKL14"] },
+  { patron: /e ?2055/, skus: ["GVC-AD-E2055"] },
   { patron: /\bclip|grapa elastica|e2055|pandrol/, skus: ["GVC-AD-E2055", "GVC-AD-SKL14"] },
   { patron: /saca ?clip|sacaclip|sacar (los )?clips/, skus: ["GVC-FIJ-001", "GVC-FIJ-002"] },
   { patron: /tirafondo|sleeper screw|tornillo de durmiente/, skus: ["GVC-AD-SS01"] },
@@ -42,10 +43,13 @@ const SINONIMOS: { patron: RegExp; skus: string[] }[] = [
   { patron: /calzo/, skus: ["GVC-AK-CF01", "GVC-AK-CL01"] },
   { patron: /cuna de apoyo/, skus: ["GVC-AK-CA75"] },
   { patron: /cuna de rueda|calzo de rueda/, skus: ["GVC-CR-001"] },
+  { patron: /garlanch\w* de (diez|10)|(diez|10) dientes/, skus: ["GVC-VIA-003"] },
+  { patron: /garlanch\w* de (cuatro|4)|(cuatro|4) dientes/, skus: ["GVC-VIA-002"] },
   { patron: /garlanch/, skus: ["GVC-VIA-002", "GVC-VIA-003"] },
   { patron: /desguarnec/, skus: ["GVC-VIA-001"] },
   { patron: /volcariel|voltear riel/, skus: ["GVC-MAN-001"] },
   { patron: /pala de drenaje|drenaje/, skus: ["GVC-VIA-006"] },
+  { patron: /pala (de lastre|aislada)/, skus: ["GVC-VIA-005"] },
   { patron: /pala/, skus: ["GVC-VIA-005", "GVC-VIA-006"] },
   { patron: /tenaza|pinza/, skus: ["GVC-MAN-003", "GVC-MAN-002", "GVC-MAN-004"] },
   { patron: /troley|troely|trolley|zorra/, skus: ["GVC-EQP-001", "GVC-EQP-002"] },
@@ -90,6 +94,28 @@ export function buscarReferencias(texto: string): string[] {
     for (const s of candidatos) if (!encontrados.includes(s) && porSku(s)) encontrados.push(s);
   }
   return encontrados;
+}
+
+// One line of a request list names ONE thing: "Pernos de eclisa" is a bolt,
+// not a joint bar. The word that comes first is the thing; a more specific
+// rule that agrees with it ("E2055" inside "clip elástico") narrows it down.
+export function referenciaDeLinea(texto: string): string[] {
+  const t = normalizar(texto);
+  const coincidencias = SINONIMOS.flatMap(({ patron, skus }) => {
+    const m = t.match(patron);
+    return m ? [{ i: m.index ?? 0, skus: skus.filter((s) => porSku(s)) }] : [];
+  }).filter((c) => c.skus.length);
+  if (!coincidencias.length) return [];
+  coincidencias.sort((a, b) => a.i - b.i || a.skus.length - b.skus.length);
+  let elegidos = coincidencias[0].skus;
+  for (const c of coincidencias) {
+    if (c.skus.length < elegidos.length && c.skus.every((s) => elegidos.includes(s))) elegidos = c.skus;
+  }
+  if (elegidos.includes("GVC-AK-JB115") && elegidos.length > 1) {
+    const riel = rielEnTexto(t);
+    if (riel) elegidos = [ECLISA_POR_RIEL[riel]];
+  }
+  return elegidos;
 }
 
 // Plain list the photo recogniser receives: code, name and a few words of

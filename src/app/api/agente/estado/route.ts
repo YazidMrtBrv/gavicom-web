@@ -4,6 +4,6 @@ import { iaDisponible } from "@/lib/agente/ia";
 export async function GET() {
   return Response.json({
     ia: iaDisponible(),
-    whatsapp: Boolean(process.env.WHATSAPP_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID),
+    correo: Boolean(process.env.CORREO_IMAP_HOST && process.env.CORREO_USUARIO),
   });
 }
