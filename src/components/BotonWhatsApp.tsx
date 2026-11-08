@@ -62,7 +62,9 @@ export default function BotonWhatsApp() {
 
   // Pages that already lead with a WhatsApp button would show it twice, and
   // the floating one covered form fields there.
-  if (ruta === "/cotizacion" || ruta === "/contacto") return null;
+  // The agent demo is a mailbox demo for GAVICOM; a floating sales button
+  // there would cover the agent's panel on phones.
+  if (ruta === "/cotizacion" || ruta === "/contacto" || ruta === "/agente") return null;
 
   const enFicha = ruta.startsWith("/catalogo/");
   const conCotizacion = total > 0;
