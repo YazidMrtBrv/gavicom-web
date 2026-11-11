@@ -24,15 +24,20 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
+    // Keeps gavicomferroviario.com as the single indexable address: without
+    // this the vercel.app addresses serve the same pages and compete with it.
+    const alDominio = (host: string) => ({
+      source: "/:path*",
+      has: [{ type: "host" as const, value: host }],
+      destination: "https://gavicomferroviario.com/:path*",
+      permanent: true, // 308
+    });
     return [
-      // Keeps gavicomferroviario.com as the single indexable address: without
-      // this the vercel.app alias serves the same pages and competes with it.
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "gavicom-web.vercel.app" }],
-        destination: "https://gavicomferroviario.com/:path*",
-        permanent: true,
-      },
+      alDominio("gavicom-web.vercel.app"),
+      // In a production build, every other *.vercel.app address too (each
+      // deployment's own URL and the main-branch alias). Preview builds are
+      // left alone so pull requests can still be reviewed on their URL.
+      ...(process.env.VERCEL_ENV === "production" ? [alDominio("(?<sub>.+)\\.vercel\\.app")] : []),
     ];
   },
 };

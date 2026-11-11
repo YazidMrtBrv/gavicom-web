@@ -52,7 +52,8 @@ export default function BarraAccionFicha() {
           <button
             type="button"
             onClick={() => agregar(sku, nombre, cantidad, variante)}
-            aria-label={`Agregar ${cantidad > 1 ? `${cantidad} de ` : ""}${completo} a la cotización`}
+            // Starts with the visible word, so voice control finds it (WCAG 2.5.3).
+            aria-label={`Agregar a cotización: ${cantidad > 1 ? `${cantidad} de ` : ""}${completo}`}
             className="inline-flex items-center justify-center gap-1.5 min-h-11 px-4 rounded bg-azul text-white text-sm font-semibold whitespace-nowrap hover:bg-azul-hover"
           >
             <Plus size={16} aria-hidden /> Agregar
