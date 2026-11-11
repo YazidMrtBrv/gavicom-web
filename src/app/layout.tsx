@@ -190,9 +190,35 @@ const sitioWeb = {
   },
 };
 
+// The same company as a local business, for Google's local results and Maps.
+// Only facts the site already states: city (no street address is published),
+// phone, email, daily hours and national coverage. Kept apart from the
+// Organization node so it can gain a street address and geo once GAVICOM
+// publishes them (Google Business Profile), without touching the rest.
+const negocio = {
+  "@type": "LocalBusiness",
+  "@id": `${SITE_URL}/#negocio`,
+  name: EMPRESA,
+  url: SITE_URL,
+  logo: `${SITE_URL}/apple-icon.png`,
+  image: `${SITE_URL}/marca/gavicom-azul.png`,
+  telephone: "+57-315-050-9803",
+  email: COMPANIA_INFO.email,
+  description: DESCRIPCION,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: COMPANIA_INFO.ciudad,
+    addressRegion: COMPANIA_INFO.departamento,
+    addressCountry: "CO",
+  },
+  areaServed: { "@type": "Country", name: "Colombia" },
+  openingHoursSpecification: HORARIO_LD,
+  parentOrganization: { "@id": `${SITE_URL}/#organizacion` },
+};
+
 const jsonLd = {
   "@context": "https://schema.org",
-  "@graph": [organizacion, sitioWeb],
+  "@graph": [organizacion, negocio, sitioWeb],
 };
 
 export default function RootLayout({

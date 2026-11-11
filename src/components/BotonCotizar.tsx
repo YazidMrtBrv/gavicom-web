@@ -61,7 +61,9 @@ export default function BotonCotizar({
   return (
     <button
       type="button"
-      aria-label={`Agregar ${cantidad > 1 ? `${cantidad} de ` : ""}${completo} a la cotización`}
+      // The accessible name starts with the words on the button (WCAG 2.5.3),
+      // so someone using voice control can say what they see.
+      aria-label={`${etiqueta ?? "Agregar a cotización"}: ${cantidad > 1 ? `${cantidad} de ` : ""}${completo}`}
       onClick={() => agregar(sku, nombre, cantidad, variante)}
       className={`${base} bg-azul text-white hover:bg-azul-hover`}
     >

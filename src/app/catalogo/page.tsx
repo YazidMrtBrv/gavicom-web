@@ -48,6 +48,8 @@ export default function Catalogo() {
           on these items from ?linea, ?sub, ?origen and ?q. */}
       <script dangerouslySetInnerHTML={{ __html: scriptFiltroPrevio() }} />
       <CatalogoFiltrable>
+        {/* The cards are h3: this keeps the heading outline h1 → h2 → h3. */}
+        <h2 className="sr-only">Productos</h2>
         <ul id="grilla-catalogo" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {PRODUCTOS.map((p, i) => (
             <li

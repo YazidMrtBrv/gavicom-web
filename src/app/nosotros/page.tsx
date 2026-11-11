@@ -7,11 +7,14 @@ import { COMPANIA_INFO } from "@/constants/productos";
 import { BotonWhatsAppVenta, LineaHorario } from "@/components/venta/Venta";
 import "./nosotros.css";
 
-const TITULO = "Nosotros | GAVICOM SAS";
+// The root template adds " | GAVICOM SAS"; "Nosotros" alone said nothing in
+// search results, so the title also says what the company is and where.
+const TITULO_CORTO = "Nosotros: suministro ferroviario, Barranquilla";
+const TITULO = `${TITULO_CORTO} | GAVICOM SAS`;
 const DESCRIPCION = `${COMPANIA_INFO.nombre}, desde ${COMPANIA_INFO.fundacion}: ${COMPANIA_INFO.promesa.toLowerCase()} Suministro férreo, piezas fabricadas en Colombia y GAVICOM Energy, desde ${COMPANIA_INFO.ciudad}.`;
 
 export const metadata: Metadata = {
-  title: "Nosotros",
+  title: TITULO_CORTO,
   description: DESCRIPCION,
   alternates: alternas("/nosotros"),
   openGraph: {
